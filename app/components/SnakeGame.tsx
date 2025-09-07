@@ -130,8 +130,15 @@ export default function SnakeGame() {
         height={canvasSize}
         style={{ border: '2px solid black', width: '90vw', maxWidth: 400, height: 'auto', aspectRatio: '1/1' }}
       />
-      {gameOver && <div className="text-red-500">Game Over!</div>}
-      {!started && <div className="text-gray-500">Appuie sur une flèche pour commencer</div>}
+      {gameOver && (
+        <div className="flex flex-col items-center">
+          <div className="text-red-500">Game Over!</div>
+          <div className="text-gray-500 mt-2">Appuie sur <b>R</b> pour recommencer</div>
+        </div>
+      )}
+      {!started && !gameOver && (
+        <div className="text-gray-500">Appuie sur une flèche pour commencer</div>
+      )}
     </div>
   );
 }
