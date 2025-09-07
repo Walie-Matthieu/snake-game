@@ -17,6 +17,7 @@ export default function SnakeGame() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [started, setStarted] = useState<boolean>(false);
   const [canvasSize, setCanvasSize] = useState<number>(400);
+  const [score, setScore] = useState<number>(0); // 1. Ajout du score
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function SnakeGame() {
     setDirection('right');
     setGameOver(false);
     setStarted(false);
+    setScore(0); // 3. Réinitialise le score
   }
 
   // Gestion des touches
@@ -88,6 +90,7 @@ export default function SnakeGame() {
         x: Math.floor(Math.random() * GRID_SIZE),
         y: Math.floor(Math.random() * GRID_SIZE)
       });
+      setScore(prev => prev + 1); // 2. Incrémente le score
     } else {
       newSnake.pop();
     }
@@ -124,6 +127,7 @@ export default function SnakeGame() {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
+      <div className="text-lg font-bold text-green-700">Score : {score}</div> {/* 4. Affiche le score */}
       <canvas
         ref={canvasRef}
         width={canvasSize}
