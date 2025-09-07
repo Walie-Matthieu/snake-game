@@ -18,6 +18,7 @@ export default function SnakeGame() {
   const [started, setStarted] = useState<boolean>(false);
   const [canvasSize, setCanvasSize] = useState<number>(400);
   const [score, setScore] = useState<number>(0); // 1. Ajout du score
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
@@ -46,6 +47,10 @@ export default function SnakeGame() {
         resetGame();
         return;
       }
+      if (e.key === 't' || e.key === 'T') {
+        setIsPaused(prev => !prev);
+        return;
+      }
       if (!started) setStarted(true);
       switch (e.key) {
         case 'ArrowUp': setDirection('up'); break;
@@ -60,10 +65,10 @@ export default function SnakeGame() {
 
   // Boucle du jeu
   useEffect(() => {
-    if (!started || gameOver) return;
+    if (!started || gameOver || isPaused) return;
     const gameLoop = setInterval(updateGame, 100);
     return () => clearInterval(gameLoop);
-  }, [snake, direction, started, gameOver]);
+  }, [snake, direction, started, gameOver, isPaused]);
 
   function updateGame() {
     if (gameOver) return;
@@ -127,7 +132,7 @@ export default function SnakeGame() {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="text-lg font-bold text-green-700">Score : {score}</div> {/* 4. Affiche le score */}
+      <div className="text-lg font-bold text-green-700">Score : {score}</div>
       <canvas
         ref={canvasRef}
         width={canvasSize}
@@ -139,6 +144,9 @@ export default function SnakeGame() {
           <div className="text-red-500">Game Over!</div>
           <div className="text-gray-500 mt-2">Appuie sur <b>R</b> pour recommencer</div>
         </div>
+      )}
+      {isPaused && !gameOver && (
+        <div className="text-yellow-500 font-bold">PAUSE</div>
       )}
       {!started && !gameOver && (
         <div className="text-gray-500">Appuie sur une flèche pour commencer</div>
