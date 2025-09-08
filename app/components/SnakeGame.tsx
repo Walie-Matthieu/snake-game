@@ -9,6 +9,14 @@ type Position = {
 
 const GRID_SIZE = 20; // 20x20 cases
 
+const SNAKE_COLORS = [
+  { head: 'green', body: '#3eb53eff' },        // Couleurs de base
+  { head: '#800080', body: '#da70d6' },        // Violet/Orchidée
+  { head: '#0000ff', body: '#87ceeb' },        // Bleu/Bleu ciel
+  { head: '#ff4500', body: '#ffa07a' },        // Orange/Saumon
+  { head: '#8b4513', body: '#deb887' },        // Marron/Beige
+];
+
 export default function SnakeGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
@@ -113,15 +121,18 @@ export default function SnakeGame() {
     if (!ctx) return;
 
     const cellSize = canvasSize / GRID_SIZE;
-
     ctx.clearRect(0, 0, canvasSize, canvasSize);
 
-    // Draw snake
+    // Choisis la couleur basée sur le nombre de pommes jaunes mangées
+    const colorIndex = Math.floor(score / 5) % SNAKE_COLORS.length;
+    const snakeColor = SNAKE_COLORS[colorIndex];
+
+    // Draw snake avec les nouvelles couleurs
     snakeToDraw.forEach((segment, idx) => {
       if (idx === 0) {
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = snakeColor.head;
       } else {
-        ctx.fillStyle = '#3eb53eff';
+        ctx.fillStyle = snakeColor.body;
       }
       ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize - 2, cellSize - 2);
     });
