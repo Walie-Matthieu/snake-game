@@ -115,8 +115,14 @@ export default function SnakeGame() {
     ctx.clearRect(0, 0, canvasSize, canvasSize);
 
     // Draw snake
-    ctx.fillStyle = 'green';
-    snakeToDraw.forEach(segment => {
+    snakeToDraw.forEach((segment, idx) => {
+      if (idx === 0) {
+        // Tête : vert foncé
+        ctx.fillStyle = 'green';
+      } else {
+        // Corps : vert très clair
+        ctx.fillStyle = '#3eb53eff'; // vert pastel très clair
+      }
       ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize - 2, cellSize - 2);
     });
 
@@ -146,7 +152,10 @@ export default function SnakeGame() {
         </div>
       )}
       {isPaused && !gameOver && (
-        <div className="text-yellow-500 font-bold">PAUSE</div>
+        <div className="flex flex-col items-center">
+          <div className="text-yellow-500 font-bold">PAUSE</div>
+          <div className="text-gray-500 mt-2">Appuie sur <b>T</b> pour continuer</div>
+        </div>
       )}
       {!started && !gameOver && (
         <div className="text-gray-500">Appuie sur une flèche pour commencer</div>
