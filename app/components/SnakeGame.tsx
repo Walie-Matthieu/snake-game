@@ -37,7 +37,7 @@ export default function SnakeGame() {
     setDirection('right');
     setGameOver(false);
     setStarted(false);
-    setScore(0); // 3. Réinitialise le score
+    setScore(0);
   }
 
   // Gestion des touches
@@ -90,18 +90,23 @@ export default function SnakeGame() {
 
     newSnake.unshift(head);
 
+    // Collision avec la pomme (rouge ou jaune)
     if (head.x === food.x && head.y === food.y) {
-      setFood(getRandomFoodPosition(newSnake)); // <-- Utilise la fonction
-      setScore(prev => prev + 1);
+      setFood(getRandomFoodPosition(newSnake));
+      if (isYellowApple(score)) {
+        setScore(prev => prev + 2);
+      } else {
+        setScore(prev => prev + 1);
+      }
     } else {
       newSnake.pop();
     }
 
     setSnake(newSnake);
-    drawGame(newSnake, food);
+    drawGame(newSnake, food, isYellowApple(score));
   }
 
-  function drawGame(snakeToDraw = snake, foodToDraw = food) {
+  function drawGame(snakeToDraw = snake, foodToDraw = food, yellow = isYellowApple(score)) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -114,24 +119,22 @@ export default function SnakeGame() {
     // Draw snake
     snakeToDraw.forEach((segment, idx) => {
       if (idx === 0) {
-        // Tête : vert foncé
         ctx.fillStyle = 'green';
       } else {
-        // Corps : vert très clair
-        ctx.fillStyle = '#3eb53eff'; // vert pastel très clair
+        ctx.fillStyle = '#3eb53eff';
       }
       ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize - 2, cellSize - 2);
     });
 
-    // Draw food
-    ctx.fillStyle = 'red';
+    // Draw apple (rouge ou jaune)
+    ctx.fillStyle = yellow ? 'yellow' : 'red';
     ctx.fillRect(foodToDraw.x * cellSize, foodToDraw.y * cellSize, cellSize - 2, cellSize - 2);
   }
 
   // Redessine à chaque changement de taille ou d'état
   useEffect(() => {
-    drawGame();
-  }, [canvasSize, snake, food]);
+    drawGame(snake, food, isYellowApple(score));
+  }, [canvasSize, snake, food, score]);
 
   function getRandomFoodPosition(snake: Position[]): Position {
     let newPos: Position;
@@ -142,6 +145,10 @@ export default function SnakeGame() {
       };
     } while (snake.some(segment => segment.x === newPos.x && segment.y === newPos.y));
     return newPos;
+  }
+
+  function isYellowApple(score: number) {
+    return (score + 1) % 5 === 0;
   }
 
   return (
