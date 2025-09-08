@@ -91,11 +91,8 @@ export default function SnakeGame() {
     newSnake.unshift(head);
 
     if (head.x === food.x && head.y === food.y) {
-      setFood({
-        x: Math.floor(Math.random() * GRID_SIZE),
-        y: Math.floor(Math.random() * GRID_SIZE)
-      });
-      setScore(prev => prev + 1); // 2. Incrémente le score
+      setFood(getRandomFoodPosition(newSnake)); // <-- Utilise la fonction
+      setScore(prev => prev + 1);
     } else {
       newSnake.pop();
     }
@@ -135,6 +132,17 @@ export default function SnakeGame() {
   useEffect(() => {
     drawGame();
   }, [canvasSize, snake, food]);
+
+  function getRandomFoodPosition(snake: Position[]): Position {
+    let newPos: Position;
+    do {
+      newPos = {
+        x: Math.floor(Math.random() * GRID_SIZE),
+        y: Math.floor(Math.random() * GRID_SIZE)
+      };
+    } while (snake.some(segment => segment.x === newPos.x && segment.y === newPos.y));
+    return newPos;
+  }
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
