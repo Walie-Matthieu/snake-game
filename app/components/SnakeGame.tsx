@@ -59,7 +59,32 @@ export default function SnakeGame() {
         setIsPaused(prev => !prev);
         return;
       }
-      if (!started) setStarted(true);
+      // Démarre seulement si une flèche est pressée
+      if (!started) {
+        switch (e.key) {
+          case 'ArrowUp':
+            setDirection('up');
+            setStarted(true);
+            break;
+          case 'ArrowDown':
+            setDirection('down');
+            setStarted(true);
+            break;
+          case 'ArrowLeft':
+            setDirection('left');
+            setStarted(true);
+            break;
+          case 'ArrowRight':
+            setDirection('right');
+            setStarted(true);
+            break;
+          default:
+            // Ignore toute autre touche avant le démarrage
+            return;
+        }
+        return;
+      }
+      // Si le jeu est déjà démarré, on gère les flèches normalement
       switch (e.key) {
         case 'ArrowUp': setDirection('up'); break;
         case 'ArrowDown': setDirection('down'); break;
