@@ -154,12 +154,113 @@ export default function SnakeGame() {
 
     // Draw snake avec les nouvelles couleurs
     snakeToDraw.forEach((segment, idx) => {
+      // Tête
       if (idx === 0) {
+        // Tête ronde
         ctx.fillStyle = snakeColor.head;
-      } else {
-        ctx.fillStyle = snakeColor.body;
+        const cx = segment.x * cellSize + cellSize / 2;
+        const cy = segment.y * cellSize + cellSize / 2;
+        const r = (cellSize - 2) / 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bec/pointe directionnelle
+        ctx.fillStyle = snakeColor.head; // Bec même couleur que la tête
+        let tip: [number, number], base1: [number, number], base2: [number, number];
+        const becLength = r * 1.70;
+        const becWidth = r * 1.70;
+        switch (direction) {
+          case 'up':
+            tip = [cx, cy - r - becLength / 2];
+            base1 = [cx - becWidth / 2, cy - r / 2];
+            base2 = [cx + becWidth / 2, cy - r / 2];
+            break;
+          case 'down':
+            tip = [cx, cy + r + becLength / 2];
+            base1 = [cx - becWidth / 2, cy + r / 2];
+            base2 = [cx + becWidth / 2, cy + r / 2];
+            break;
+          case 'left':
+            tip = [cx - r - becLength / 2, cy];
+            base1 = [cx - r / 2, cy - becWidth / 2];
+            base2 = [cx - r / 2, cy + becWidth / 2];
+            break;
+          case 'right':
+          default:
+            tip = [cx + r + becLength / 2, cy];
+            base1 = [cx + r / 2, cy - becWidth / 2];
+            base2 = [cx + r / 2, cy + becWidth / 2];
+            break;
+        }
+        ctx.beginPath();
+        ctx.moveTo(tip[0], tip[1]);
+        ctx.lineTo(base1[0], base1[1]);
+        ctx.lineTo(base2[0], base2[1]);
+        ctx.closePath();
+        ctx.fill();
       }
-      ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize - 2, cellSize - 2);
+      // Queue (dernier segment)
+      else if (idx === snakeToDraw.length - 1 && snakeToDraw.length > 1) {
+        // Détermine la direction de la queue
+        const prev = snakeToDraw[idx - 1];
+        const tail = segment;
+        let tailDir: string = 'right';
+        if (prev.x < tail.x) tailDir = 'right';
+        else if (prev.x > tail.x) tailDir = 'left';
+        else if (prev.y < tail.y) tailDir = 'down';
+        else if (prev.y > tail.y) tailDir = 'up';
+
+        // Pentagone orienté
+        ctx.fillStyle = snakeColor.body;
+        let cx = tail.x * cellSize + cellSize / 2;
+        let cy = tail.y * cellSize + cellSize / 2;
+        const r = cellSize * 0.5; // pentagone un peu plus grand
+        // Décalage pour rapprocher le pentagone du segment précédent
+        const offset = cellSize * 0.18;
+        switch (tailDir) {
+          case 'up': cy += offset; break;
+          case 'down': cy -= offset; break;
+          case 'left': cx += offset; break;
+          case 'right': default: cx -= offset; break;
+        }
+
+        // Calcul l'angle de rotation selon la direction
+        let angle = 0;
+        const pentagonOffset = (3 * Math.PI) / 2 + Math.PI; // inversé à l'opposé
+        switch (tailDir) {
+          case 'up': angle = -Math.PI / 2 + pentagonOffset; break;
+          case 'down': angle = Math.PI / 2 + pentagonOffset; break;
+          case 'left': angle = Math.PI + pentagonOffset; break;
+          case 'right': default: angle = 0 + pentagonOffset; break;
+        }
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+
+        ctx.beginPath();
+        // Pointe (apex)
+        ctx.moveTo(0, -r);
+        // Sommet latéral gauche (rapproché)
+        const sideAngle = Math.PI / 5.5; // diminue pour rapprocher (ex: 5.5 < 5)
+        ctx.lineTo(-Math.sin(sideAngle) * r * 0.7, -Math.cos(sideAngle) * r * 0.9);
+        // Coin de base gauche
+        ctx.lineTo(-r, r * 0.6);
+        // Coin de base droit
+        ctx.lineTo(r, r * 0.6);
+        // Sommet latéral droit (rapproché)
+        ctx.lineTo(Math.sin(sideAngle) * r * 0.7, -Math.cos(sideAngle) * r * 0.9);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+      }
+      // Corps classique
+      else {
+        ctx.fillStyle = snakeColor.body;
+        ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize - 2, cellSize - 2);
+      }
     });
 
     // Draw apple (rouge ou jaune)
