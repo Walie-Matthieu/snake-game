@@ -154,7 +154,11 @@ export default function SnakeGame() {
 
     // Draw snake avec les nouvelles couleurs
     snakeToDraw.forEach((segment, idx) => {
-      // Tête
+      // Définir la couleur de glow selon la couleur du segment
+      ctx.save();
+      ctx.shadowColor = idx === 0 ? snakeColor.head : snakeColor.body;
+      ctx.shadowBlur = 18; // Ajuste l'intensité du glow ici
+
       if (idx === 0) {
         // Tête ronde
         ctx.fillStyle = snakeColor.head;
@@ -166,7 +170,7 @@ export default function SnakeGame() {
         ctx.fill();
 
         // Bec/pointe directionnelle
-        ctx.fillStyle = snakeColor.head; // Bec même couleur que la tête
+        ctx.fillStyle = snakeColor.head;
         let tip: [number, number], base1: [number, number], base2: [number, number];
         const becLength = r * 1.70;
         const becWidth = r * 1.70;
@@ -261,6 +265,7 @@ export default function SnakeGame() {
         ctx.fillStyle = snakeColor.body;
         ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize - 2, cellSize - 2);
       }
+      ctx.restore();
     });
 
     // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT ===
