@@ -17,6 +17,14 @@ const SNAKE_COLORS = [
   { head: '#8b4513', body: '#deb887' },        // Marron/Beige
 ];
 
+const SNAKE_ABILITIES = [
+  { name: "Normal", description: "Aucune capacité spéciale" },
+  { name: "Rapide", description: "Le serpent se déplace plus vite" },
+  { name: "Traverseur", description: "Peut traverser les murs" },
+  { name: "Double Score", description: "Chaque pomme vaut 2 points" },
+  { name: "Invincible", description: "Peut traverser son corps" },
+];
+
 export default function SnakeGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
@@ -27,6 +35,7 @@ export default function SnakeGame() {
   const [canvasSize, setCanvasSize] = useState<number>(400);
   const [score, setScore] = useState<number>(0); // 1. Ajout du score
   const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [abilityIndex, setAbilityIndex] = useState<number>(0);
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
@@ -116,27 +125,52 @@ export default function SnakeGame() {
       case 'right': head.x++; break;
     }
 
+    // Gestion des bords selon le pouvoir Traverseur
     if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-      setGameOver(true);
-      return;
+      if (abilityIndex === 2) { // Traverseur : wrap-around
+        if (head.x < 0) head.x = GRID_SIZE - 1;
+        else if (head.x >= GRID_SIZE) head.x = 0;
+        if (head.y < 0) head.y = GRID_SIZE - 1;
+        else if (head.y >= GRID_SIZE) head.y = 0;
+      } else {
+        setGameOver(true);
+        return;
+      }
     }
 
     newSnake.unshift(head);
 
+    // === Correction ici ===
+    const yellow = isYellowApple(score);
+
     // Collision avec la pomme (rouge ou jaune)
     if (head.x === food.x && head.y === food.y) {
       setFood(getRandomFoodPosition(newSnake));
-      if (isYellowApple(score)) {
-        setScore(prev => prev + 2);
+      
+      // Si c'est une pomme jaune, change le pouvoir
+      if (yellow) {
+        // Change le pouvoir seulement quand une pomme jaune est mangée
+        setAbilityIndex(prev => (prev + 1) % SNAKE_ABILITIES.length);
+        
+        if (abilityIndex === 3) { // Double Score
+          setScore(prev => prev + 4); // 2 points × 2
+        } else {
+          setScore(prev => prev + 2); // 2 points normal
+        }
       } else {
-        setScore(prev => prev + 1);
+        // Pomme rouge
+        if (abilityIndex === 3) { // Double Score
+          setScore(prev => prev + 2); // 1 point × 2
+        } else {
+          setScore(prev => prev + 1); // 1 point normal
+        }
       }
     } else {
       newSnake.pop();
     }
 
     setSnake(newSnake);
-    drawGame(newSnake, food, isYellowApple(score));
+    drawGame(newSnake, food, yellow);
   }
 
   function drawGame(snakeToDraw = snake, foodToDraw = food, yellow = isYellowApple(score)) {
@@ -330,7 +364,12 @@ export default function SnakeGame() {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="text-lg font-bold text-green-700">Score : {score}</div>
+      <div className="text-lg font-bold text-green-700">
+        Score : {score} | Pouvoir : {SNAKE_ABILITIES[abilityIndex].name}
+      </div>
+      <div className="text-sm text-gray-500 mb-2">
+        {SNAKE_ABILITIES[abilityIndex].description}
+      </div>
       <canvas
         ref={canvasRef}
         width={canvasSize}
