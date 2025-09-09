@@ -22,7 +22,7 @@ const SNAKE_ABILITIES = [
   { name: "Traverseur", description: "Peut traverser les murs" },
   { name: "Double Score", description: "Chaque pomme vaut 2 points" },
   { name: "Invincible", description: "Peut traverser son corps" },
-  { name: "Rétrécissement", description: "Espace pour perdre un segment" },
+  { name: "Rétrécissement", description: "Se rétrécit automatiquement de moitié" },
 ];
 
 export default function SnakeGame() {
@@ -67,11 +67,6 @@ export default function SnakeGame() {
       }
       if (e.key === 't' || e.key === 'T') {
         setIsPaused(prev => !prev);
-        return;
-      }
-      // Pouvoir de rétrécissement (violet)
-      if (e.key === ' ' && abilityIndex === 4 && snake.length > 3) {
-        setSnake(prev => prev.slice(0, -1));
         return;
       }
       // Démarre seulement si une flèche est pressée
@@ -119,6 +114,15 @@ export default function SnakeGame() {
     return () => clearInterval(gameLoop);
   }, [snake, direction, started, gameOver, isPaused]);
 
+  // Rétrécit automatiquement le serpent quand on passe en mode Rétrécissement
+  useEffect(() => {
+    if (abilityIndex === 4 && snake.length > 3) {
+      const half = Math.ceil(snake.length / 2);
+      setSnake(snake.slice(0, half));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [abilityIndex]);
+
   function updateGame() {
     if (gameOver) return;
 
@@ -159,18 +163,16 @@ export default function SnakeGame() {
     // Collision avec la pomme (rouge ou jaune)
     if (head.x === food.x && head.y === food.y) {
       setFood(getRandomFoodPosition(newSnake));
-      
       // Si c'est une pomme jaune, change le pouvoir
       if (yellow) {
-        setAbilityIndex(prev => (prev + 1) % SNAKE_ABILITIES.length);
-        
+        const nextAbility = (abilityIndex + 1) % SNAKE_ABILITIES.length;
+        setAbilityIndex(nextAbility);
         if (abilityIndex === 2) { // Double Score
           setScore(prev => prev + 4); // 2 points × 2
         } else {
           setScore(prev => prev + 2); // 2 points normal
         }
       } else {
-        // Pomme rouge
         if (abilityIndex === 2) { // Double Score
           setScore(prev => prev + 2); // 1 point × 2
         } else {
@@ -193,6 +195,19 @@ export default function SnakeGame() {
 
     const cellSize = canvasSize / GRID_SIZE;
     ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    // Fond dégradé néon
+    ctx.save();
+    const gradient = ctx.createRadialGradient(
+      canvasSize / 2, canvasSize / 2, canvasSize * 0.1, // réduit le rayon du cercle intérieur
+      canvasSize / 2, canvasSize / 2, canvasSize / 1.1
+    );
+    gradient.addColorStop(0, '#262a75ff'); // centre violet lumineux
+    gradient.addColorStop(0.3, '#181825'); // sombre intermédiaire (position 0.3 au lieu de 0.5)
+    gradient.addColorStop(1, '#0a0a1a'); // bord très sombre
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+    ctx.restore();
 
     // Utilise la couleur du pouvoir actif
     const snakeColor = SNAKE_COLORS[abilityIndex];
@@ -340,7 +355,10 @@ export default function SnakeGame() {
       ctx.restore();
     }
 
-    // Draw apple (rouge ou jaune) en rond
+    // Draw apple (rouge ou jaune) en rond avec effet néon
+    ctx.save();
+    ctx.shadowColor = yellow ? 'yellow' : 'red';
+    ctx.shadowBlur = 18;
     ctx.beginPath();
     ctx.arc(
       foodToDraw.x * cellSize + cellSize / 2,
@@ -351,6 +369,7 @@ export default function SnakeGame() {
     );
     ctx.fillStyle = yellow ? 'yellow' : 'red';
     ctx.fill();
+    ctx.restore();
   }
 
   // Redessine à chaque changement de taille ou d'état
