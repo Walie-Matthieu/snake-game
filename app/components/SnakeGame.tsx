@@ -263,6 +263,33 @@ export default function SnakeGame() {
       }
     });
 
+    // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT ===
+    let traitColor = 'orange';
+    if (colorIndex === 2 || colorIndex === 3 || colorIndex === 4) {
+      traitColor = 'yellow';
+    }
+    if (snakeToDraw.length > 1) {
+      ctx.save();
+      ctx.strokeStyle = traitColor;
+      ctx.lineWidth = Math.max(2, cellSize * 0.18); // épaisseur du trait
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      // Commence au centre de la tête
+      ctx.moveTo(
+        snakeToDraw[0].x * cellSize + cellSize / 2,
+        snakeToDraw[0].y * cellSize + cellSize / 2
+      );
+      // Passe par chaque segment
+      for (let i = 1; i < snakeToDraw.length; i++) {
+        ctx.lineTo(
+          snakeToDraw[i].x * cellSize + cellSize / 2,
+          snakeToDraw[i].y * cellSize + cellSize / 2
+        );
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
     // Draw apple (rouge ou jaune) en rond
     ctx.beginPath();
     ctx.arc(
