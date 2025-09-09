@@ -10,19 +10,19 @@ type Position = {
 const GRID_SIZE = 20; // 20x20 cases
 
 const SNAKE_COLORS = [
-  { head: 'green', body: '#3eb53eff' },        // Couleurs de base
-  { head: '#800080', body: '#da70d6' },        // Violet/Orchidée
-  { head: '#0000ff', body: '#87ceeb' },        // Bleu/Bleu ciel
-  { head: '#ff4500', body: '#ffa07a' },        // Orange/Saumon
-  { head: '#8b4513', body: '#deb887' },        // Marron/Beige
+  { head: 'green', body: '#3eb53eff' },        // Normal (vert)
+  { head: '#0000ff', body: '#87ceeb' },        // Traverseur (bleu)
+  { head: '#ff4500', body: '#ffa07a' },        // Double Score (orange)
+  { head: '#8b4513', body: '#deb887' },        // Invincible (marron)
+  { head: '#800080', body: '#da70d6' },        // Rétrécissement (violet)
 ];
 
 const SNAKE_ABILITIES = [
   { name: "Normal", description: "Aucune capacité spéciale" },
-  { name: "Rapide", description: "Le serpent se déplace plus vite" },
   { name: "Traverseur", description: "Peut traverser les murs" },
   { name: "Double Score", description: "Chaque pomme vaut 2 points" },
   { name: "Invincible", description: "Peut traverser son corps" },
+  { name: "Rétrécissement", description: "Espace pour perdre un segment" },
 ];
 
 export default function SnakeGame() {
@@ -55,6 +55,7 @@ export default function SnakeGame() {
     setGameOver(false);
     setStarted(false);
     setScore(0);
+    setAbilityIndex(0); // <-- Avec ça pour revenir en mode Normal
   }
 
   // Gestion des touches
@@ -66,6 +67,11 @@ export default function SnakeGame() {
       }
       if (e.key === 't' || e.key === 'T') {
         setIsPaused(prev => !prev);
+        return;
+      }
+      // Pouvoir de rétrécissement (violet)
+      if (e.key === ' ' && abilityIndex === 4 && snake.length > 3) {
+        setSnake(prev => prev.slice(0, -1));
         return;
       }
       // Démarre seulement si une flèche est pressée
@@ -103,12 +109,13 @@ export default function SnakeGame() {
     };
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [started]);
+  }, [started, snake.length, abilityIndex]);
 
   // Boucle du jeu
   useEffect(() => {
     if (!started || gameOver || isPaused) return;
-    const gameLoop = setInterval(updateGame, 100);
+    const speed = 100;
+    const gameLoop = setInterval(updateGame, speed);
     return () => clearInterval(gameLoop);
   }, [snake, direction, started, gameOver, isPaused]);
 
@@ -127,7 +134,7 @@ export default function SnakeGame() {
 
     // Gestion des bords selon le pouvoir Traverseur
     if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-      if (abilityIndex === 2) { // Traverseur : wrap-around
+      if (abilityIndex === 1) { // Traverseur : wrap-around
         if (head.x < 0) head.x = GRID_SIZE - 1;
         else if (head.x >= GRID_SIZE) head.x = 0;
         if (head.y < 0) head.y = GRID_SIZE - 1;
@@ -140,6 +147,12 @@ export default function SnakeGame() {
 
     newSnake.unshift(head);
 
+    // Collision avec soi-même (sauf si Invincible)
+    if (abilityIndex !== 3 && newSnake.slice(1).some(seg => seg.x === head.x && seg.y === head.y)) {
+      setGameOver(true);
+      return;
+    }
+
     // === Correction ici ===
     const yellow = isYellowApple(score);
 
@@ -149,17 +162,16 @@ export default function SnakeGame() {
       
       // Si c'est une pomme jaune, change le pouvoir
       if (yellow) {
-        // Change le pouvoir seulement quand une pomme jaune est mangée
         setAbilityIndex(prev => (prev + 1) % SNAKE_ABILITIES.length);
         
-        if (abilityIndex === 3) { // Double Score
+        if (abilityIndex === 2) { // Double Score
           setScore(prev => prev + 4); // 2 points × 2
         } else {
           setScore(prev => prev + 2); // 2 points normal
         }
       } else {
         // Pomme rouge
-        if (abilityIndex === 3) { // Double Score
+        if (abilityIndex === 2) { // Double Score
           setScore(prev => prev + 2); // 1 point × 2
         } else {
           setScore(prev => prev + 1); // 1 point normal
@@ -182,9 +194,8 @@ export default function SnakeGame() {
     const cellSize = canvasSize / GRID_SIZE;
     ctx.clearRect(0, 0, canvasSize, canvasSize);
 
-    // Choisis la couleur basée sur le nombre de pommes jaunes mangées
-    const colorIndex = Math.floor(score / 5) % SNAKE_COLORS.length;
-    const snakeColor = SNAKE_COLORS[colorIndex];
+    // Utilise la couleur du pouvoir actif
+    const snakeColor = SNAKE_COLORS[abilityIndex];
 
     // Draw snake avec les nouvelles couleurs
     snakeToDraw.forEach((segment, idx) => {
@@ -304,7 +315,7 @@ export default function SnakeGame() {
 
     // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT ===
     let traitColor = 'orange';
-    if (colorIndex === 2 || colorIndex === 3 || colorIndex === 4) {
+    if (abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4) {
       traitColor = 'yellow';
     }
     if (snakeToDraw.length > 1) {
