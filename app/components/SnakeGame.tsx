@@ -263,9 +263,17 @@ export default function SnakeGame() {
       }
     });
 
-    // Draw apple (rouge ou jaune)
+    // Draw apple (rouge ou jaune) en rond
+    ctx.beginPath();
+    ctx.arc(
+      foodToDraw.x * cellSize + cellSize / 2,
+      foodToDraw.y * cellSize + cellSize / 2,
+      (cellSize - 2) / 2,
+      0,
+      Math.PI * 2
+    );
     ctx.fillStyle = yellow ? 'yellow' : 'red';
-    ctx.fillRect(foodToDraw.x * cellSize, foodToDraw.y * cellSize, cellSize - 2, cellSize - 2);
+    ctx.fill();
   }
 
   // Redessine à chaque changement de taille ou d'état
