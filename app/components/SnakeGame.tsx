@@ -36,6 +36,9 @@ export default function SnakeGame() {
   const [score, setScore] = useState<number>(0); // 1. Ajout du score
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [abilityIndex, setAbilityIndex] = useState<number>(0);
+  const [previousSnake, setPreviousSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
+  const [animationProgress, setAnimationProgress] = useState(1);
+  const animationRef = useRef<number | null>(null);
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
@@ -123,12 +126,24 @@ export default function SnakeGame() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [abilityIndex]);
 
+  // Ajuste la fonction de collision avec le corps
+  function isHeadCollidingWithBody(head: Position, body: Position[], cellSize: number) {
+    const radius = (cellSize - 2) / 2 * 0.7; // Réduit la zone de collision à 70%
+    return body.some(seg => {
+      const dx = (head.x - seg.x) * cellSize;
+      const dy = (head.y - seg.y) * cellSize;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      return dist < radius * 2; // Collision plus précise
+    });
+  }
+
   function updateGame() {
     if (gameOver) return;
 
     const newSnake = [...snake];
     const head = { ...newSnake[0] };
 
+    // Calcule la nouvelle position de la tête
     switch (direction) {
       case 'up': head.y--; break;
       case 'down': head.y++; break;
@@ -136,14 +151,27 @@ export default function SnakeGame() {
       case 'right': head.x++; break;
     }
 
-    // Gestion des bords selon le pouvoir Traverseur
-    if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+    // Collision avec les murs (hitbox circulaire)
+    const cellSize = canvasSize / GRID_SIZE;
+    const radius = (cellSize - 2) / 2 * 0.7; // Réduit la zone de collision à 70%
+    const headPx = {
+      x: head.x * cellSize + cellSize / 2,
+      y: head.y * cellSize + cellSize / 2
+    };
+    // Collision avec les murs plus précise
+    if (
+      headPx.x - radius < 0 ||
+      headPx.x + radius > canvasSize ||
+      headPx.y - radius < 0 ||
+      headPx.y + radius > canvasSize
+    ) {
       if (abilityIndex === 1) { // Traverseur : wrap-around
         if (head.x < 0) head.x = GRID_SIZE - 1;
         else if (head.x >= GRID_SIZE) head.x = 0;
         if (head.y < 0) head.y = GRID_SIZE - 1;
         else if (head.y >= GRID_SIZE) head.y = 0;
       } else {
+        setAnimationProgress(1);
         setGameOver(true);
         return;
       }
@@ -152,7 +180,10 @@ export default function SnakeGame() {
     newSnake.unshift(head);
 
     // Collision avec soi-même (sauf si Invincible)
-    if (abilityIndex !== 3 && newSnake.slice(1).some(seg => seg.x === head.x && seg.y === head.y)) {
+    if (
+      abilityIndex !== 3 &&
+      isHeadCollidingWithBody(head, newSnake.slice(1), canvasSize / GRID_SIZE)
+    ) {
       setGameOver(true);
       return;
     }
@@ -183,9 +214,29 @@ export default function SnakeGame() {
       newSnake.pop();
     }
 
+    setPreviousSnake(snake);
     setSnake(newSnake);
+    setAnimationProgress(0);
     drawGame(newSnake, food, yellow);
   }
+
+  useEffect(() => {
+    if (animationProgress < 1) {
+      const animate = () => {
+        setAnimationProgress(prev => {
+          const next = Math.min(prev + 0.15, 1);
+          if (next < 1) {
+            animationRef.current = requestAnimationFrame(animate);
+          }
+          return next;
+        });
+      };
+      animationRef.current = requestAnimationFrame(animate);
+      return () => {
+        if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      };
+    }
+  }, [animationProgress]);
 
   function drawGame(snakeToDraw = snake, foodToDraw = food, yellow = isYellowApple(score)) {
     const canvas = canvasRef.current;
@@ -199,11 +250,11 @@ export default function SnakeGame() {
     // Fond dégradé néon
     ctx.save();
     const gradient = ctx.createRadialGradient(
-      canvasSize / 2, canvasSize / 2, canvasSize * 0.1, // réduit le rayon du cercle intérieur
+      canvasSize / 2, canvasSize / 2, canvasSize * 0.05, // centre lumineux plus petit
       canvasSize / 2, canvasSize / 2, canvasSize / 1.1
     );
     gradient.addColorStop(0, '#262a75ff'); // centre violet lumineux
-    gradient.addColorStop(0.3, '#181825'); // sombre intermédiaire (position 0.3 au lieu de 0.5)
+    gradient.addColorStop(0.2, '#181825'); // sombre intermédiaire plus tôt
     gradient.addColorStop(1, '#0a0a1a'); // bord très sombre
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvasSize, canvasSize);
@@ -212,8 +263,17 @@ export default function SnakeGame() {
     // Utilise la couleur du pouvoir actif
     const snakeColor = SNAKE_COLORS[abilityIndex];
 
+    // Interpolation pour animation fluide
+    const interpolatedSnake = snakeToDraw.map((segment, i) => {
+      if (previousSnake.length <= i || animationProgress === 1) return segment;
+      return {
+        x: previousSnake[i].x + (segment.x - previousSnake[i].x) * animationProgress,
+        y: previousSnake[i].y + (segment.y - previousSnake[i].y) * animationProgress
+      };
+    });
+
     // Draw snake avec les nouvelles couleurs
-    snakeToDraw.forEach((segment, idx) => {
+    interpolatedSnake.forEach((segment, idx) => {
       // Définir la couleur de glow selon la couleur du segment
       ctx.save();
       ctx.shadowColor = idx === 0 ? snakeColor.head : snakeColor.body;
@@ -333,22 +393,22 @@ export default function SnakeGame() {
     if (abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4) {
       traitColor = 'yellow';
     }
-    if (snakeToDraw.length > 1) {
+    if (interpolatedSnake.length > 1) {
       ctx.save();
       ctx.strokeStyle = traitColor;
       ctx.lineWidth = Math.max(2, cellSize * 0.18); // épaisseur du trait
       ctx.lineCap = 'round';
       ctx.beginPath();
-      // Commence au centre de la tête
+      // Commence au dernier segment
       ctx.moveTo(
-        snakeToDraw[0].x * cellSize + cellSize / 2,
-        snakeToDraw[0].y * cellSize + cellSize / 2
+        interpolatedSnake[interpolatedSnake.length - 1].x * cellSize + cellSize / 2,
+        interpolatedSnake[interpolatedSnake.length - 1].y * cellSize + cellSize / 2
       );
-      // Passe par chaque segment
-      for (let i = 1; i < snakeToDraw.length; i++) {
+      // Remonte jusqu'au deuxième segment (juste avant la tête)
+      for (let i = interpolatedSnake.length - 2; i > 0; i--) {
         ctx.lineTo(
-          snakeToDraw[i].x * cellSize + cellSize / 2,
-          snakeToDraw[i].y * cellSize + cellSize / 2
+          interpolatedSnake[i].x * cellSize + cellSize / 2,
+          interpolatedSnake[i].y * cellSize + cellSize / 2
         );
       }
       ctx.stroke();
