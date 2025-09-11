@@ -263,6 +263,40 @@ export default function SnakeGame() {
     // Utilise la couleur du pouvoir actif
     const snakeColor = SNAKE_COLORS[abilityIndex];
 
+    // Cadre néon à l'intérieur, couleur selon le serpent (triple passe)
+    {
+      const outerLW = Math.max(2, cellSize * 0.32);
+      const midLW = Math.max(2, cellSize * 0.22);
+      const coreLW = Math.max(1.5, cellSize * 0.1);
+      const inset = outerLW / 2 + 1; // garde le cadre bien à l'intérieur
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+
+      // Halo externe
+      ctx.strokeStyle = snakeColor.head;
+      ctx.lineWidth = outerLW;
+      ctx.lineJoin = 'round';
+      ctx.shadowColor = snakeColor.head;
+      ctx.shadowBlur = 40;
+      ctx.globalAlpha = 0.35;
+      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+      // Halo intermédiaire
+      ctx.lineWidth = midLW;
+      ctx.shadowBlur = 24;
+      ctx.globalAlpha = 0.6;
+      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+      // Ligne centrale
+      ctx.lineWidth = coreLW;
+      ctx.shadowBlur = 6;
+      ctx.globalAlpha = 1;
+      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+      ctx.restore();
+    }
+
     // Interpolation pour animation fluide
     const interpolatedSnake = snakeToDraw.map((segment, i) => {
       if (previousSnake.length <= i || animationProgress === 1) return segment;
