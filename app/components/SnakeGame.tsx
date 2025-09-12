@@ -265,10 +265,17 @@ export default function SnakeGame() {
 
     // Cadre néon à l'intérieur, couleur selon le serpent (triple passe)
     {
-      const outerLW = Math.max(2, cellSize * 0.32);
-      const midLW = Math.max(2, cellSize * 0.22);
-      const coreLW = Math.max(1.5, cellSize * 0.1);
-      const inset = outerLW / 2 + 1; // garde le cadre bien à l'intérieur
+      const cellSize = canvasSize / GRID_SIZE;
+
+      // Épaisseurs x2
+      const outerLW = Math.max(3.0, cellSize * 0.75);
+      const midLW   = Math.max(2.4, cellSize * 0.24);
+      const coreLW  = Math.max(2.0, cellSize * 0.12);
+
+      // Ecart minimal au bord
+      const EDGE_MARGIN = 0;
+      const OUTSET_NUDGE = 1; // pousse ~1px vers l’extérieur
+      const inset = EDGE_MARGIN + outerLW / 2 - OUTSET_NUDGE;
 
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
@@ -278,19 +285,19 @@ export default function SnakeGame() {
       ctx.lineWidth = outerLW;
       ctx.lineJoin = 'round';
       ctx.shadowColor = snakeColor.head;
-      ctx.shadowBlur = 40;
+      ctx.shadowBlur = 18;
       ctx.globalAlpha = 0.35;
       ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
       // Halo intermédiaire
       ctx.lineWidth = midLW;
-      ctx.shadowBlur = 24;
+      ctx.shadowBlur = 10;
       ctx.globalAlpha = 0.6;
       ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
       // Ligne centrale
       ctx.lineWidth = coreLW;
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 3;
       ctx.globalAlpha = 1;
       ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
