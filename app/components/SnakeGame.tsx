@@ -53,12 +53,14 @@ export default function SnakeGame() {
 
   function resetGame() {
     setSnake([{ x: 10, y: 10 }]);
+    setPreviousSnake([{ x: 10, y: 10 }]); // reset interp
+    setAnimationProgress(1);               // animation terminée
     setFood({ x: 5, y: 5 });
     setDirection('right');
     setGameOver(false);
     setStarted(false);
     setScore(0);
-    setAbilityIndex(0); // <-- Avec ça pour revenir en mode Normal
+    setAbilityIndex(0); // Normal
   }
 
   // Gestion des touches
@@ -179,19 +181,8 @@ export default function SnakeGame() {
 
     newSnake.unshift(head);
 
-    // Collision avec soi-même (sauf si Invincible)
-    if (
-      abilityIndex !== 3 &&
-      isHeadCollidingWithBody(head, newSnake.slice(1), canvasSize / GRID_SIZE)
-    ) {
-      setGameOver(true);
-      return;
-    }
-
-    // === Correction ici ===
+    // === Collision avec la pomme (rouge ou jaune)
     const yellow = isYellowApple(score);
-
-    // Collision avec la pomme (rouge ou jaune)
     if (head.x === food.x && head.y === food.y) {
       setFood(getRandomFoodPosition(newSnake));
       // Si c'est une pomme jaune, change le pouvoir
@@ -212,6 +203,15 @@ export default function SnakeGame() {
       }
     } else {
       newSnake.pop();
+    }
+
+    // === Collision avec soi-même (après éventuel pop), sauf si Invincible
+    if (
+      abilityIndex !== 3 &&
+      isHeadCollidingWithBody(head, newSnake.slice(1), canvasSize / GRID_SIZE)
+    ) {
+      setGameOver(true);
+      return;
     }
 
     setPreviousSnake(snake);
@@ -253,8 +253,8 @@ export default function SnakeGame() {
       canvasSize / 2, canvasSize / 2, canvasSize * 0.05, // centre lumineux plus petit
       canvasSize / 2, canvasSize / 2, canvasSize / 1.1
     );
-    gradient.addColorStop(0, '#262a75ff'); // centre violet lumineux
-    gradient.addColorStop(0.2, '#181825'); // sombre intermédiaire plus tôt
+    gradient.addColorStop(0, '#282842ff'); // centre violet lumineux
+    gradient.addColorStop(0.2, '#020207ff'); // sombre intermédiaire plus tôt
     gradient.addColorStop(1, '#0a0a1a'); // bord très sombre
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvasSize, canvasSize);
@@ -424,7 +424,8 @@ export default function SnakeGame() {
 
     // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT ===
     let traitColor = 'orange';
-    if (abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4) {
+    // Était: if (abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4)
+    if (abilityIndex === 1 || abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4) {
       traitColor = 'yellow';
     }
     if (interpolatedSnake.length > 1) {
@@ -498,7 +499,7 @@ export default function SnakeGame() {
         ref={canvasRef}
         width={canvasSize}
         height={canvasSize}
-        style={{ border: '2px solid black', width: '90vw', maxWidth: 400, height: 'auto', aspectRatio: '1/1' }}
+        style={{ /* border: '2px solid black', */ width: '90vw', maxWidth: 400, height: 'auto', aspectRatio: '1/1' }}
       />
       {gameOver && (
         <div className="flex flex-col items-center">
