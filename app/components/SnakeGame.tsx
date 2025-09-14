@@ -8,7 +8,7 @@ type Position = {
 };
 
 const GRID_SIZE = 20; // 20x20 cases
-const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal
+// const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal (désactivé)
 const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
 const SNAKE_COLORS = [
@@ -79,8 +79,6 @@ export default function SnakeGame() {
   const [displayAppleColor, setDisplayAppleColor] = useState<string>('red');
   const [displayFrameColor, setDisplayFrameColor] = useState<string>(SNAKE_COLORS[0].head); // ← nouveau
 
-  const colorAnimHBRef = useRef<number | null>(null);
-  const colorAnimTraitRef = useRef<number | null>(null);
   const colorAnimFrameRef = useRef<number | null>(null); // ← nouveau
   // const colorAnimAppleRef = useRef<number | null>(null);
 
@@ -261,7 +259,7 @@ export default function SnakeGame() {
     setPreviousSnake(snake);
     setSnake(newSnake);
     setAnimationProgress(0);
-    drawGame(newSnake, food, yellow);
+    drawGame(newSnake, food);
   }
 
   useEffect(() => {
@@ -327,7 +325,7 @@ export default function SnakeGame() {
     setDisplayAppleColor(isYellowApple(score) ? 'yellow' : 'red');
   }, [score]);
 
-  function drawGame(snakeToDraw = snake, foodToDraw = food, yellow = isYellowApple(score)) {
+  function drawGame(snakeToDraw = snake, foodToDraw = food) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -357,8 +355,6 @@ export default function SnakeGame() {
 
     // Cadre néon à l'intérieur, couleur selon le serpent (triple passe)
     {
-      const cellSize = canvasSize / GRID_SIZE;
-
       // Épaisseurs x2 (inchangées)
       const outerLW = Math.max(3.0, cellSize * 0.75);
       const midLW   = Math.max(2.4, cellSize * 0.24);
@@ -527,19 +523,39 @@ export default function SnakeGame() {
       ctx.strokeStyle = traitColor;
       ctx.lineWidth = Math.max(2, cellSize * 0.18);
       ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Centres des segments
+      const pts = interpolatedSnake.map(seg => ({
+        x: seg.x * cellSize + cellSize / 2,
+        y: seg.y * cellSize + cellSize / 2,
+      }));
+
+      // Seuil pour "casser" le chemin quand on détecte un wrap (saut trop grand)
+      const BREAK_DIST = cellSize * 1.2;
+
       ctx.beginPath();
-      // Commence au dernier segment
-      ctx.moveTo(
-        interpolatedSnake[interpolatedSnake.length - 1].x * cellSize + cellSize / 2,
-        interpolatedSnake[interpolatedSnake.length - 1].y * cellSize + cellSize / 2
-      );
-      // Remonte jusqu'au deuxième segment (juste avant la tête)
-      for (let i = interpolatedSnake.length - 2; i > 0; i--) {
-        ctx.lineTo(
-          interpolatedSnake[i].x * cellSize + cellSize / 2,
-          interpolatedSnake[i].y * cellSize + cellSize / 2
-        );
+      // On part de la queue
+      ctx.moveTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+
+      for (let i = pts.length - 2; i > 0; i--) {
+        const prev = pts[i + 1]; // point précédent dans le chemin (plus proche de la queue)
+        const curr = pts[i];
+
+        const dx = curr.x - prev.x;
+        const dy = curr.y - prev.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist > BREAK_DIST) {
+          // Grand saut (wrap) → on "casse" le trait et on recommence un sous-chemin
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(curr.x, curr.y);
+        } else {
+          ctx.lineTo(curr.x, curr.y);
+        }
       }
+
       ctx.stroke();
       ctx.restore();
     }
@@ -563,8 +579,8 @@ export default function SnakeGame() {
 
   // Redessine à chaque changement de taille ou d'état (+ couleurs affichées)
   useEffect(() => {
-    drawGame(snake, food, isYellowApple(score));
-  }, [canvasSize, snake, food, score, displayHeadColor, displayBodyColor, displayTraitColor, displayAppleColor, displayFrameColor]);
+    drawGame(snake, food);
+  }, [canvasSize, snake, food, displayHeadColor, displayBodyColor, displayTraitColor, displayAppleColor, displayFrameColor]);
 
   function getRandomFoodPosition(snake: Position[]): Position {
     let newPos: Position;
