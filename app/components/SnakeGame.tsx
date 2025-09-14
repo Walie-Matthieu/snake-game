@@ -8,6 +8,8 @@ type Position = {
 };
 
 const GRID_SIZE = 20; // 20x20 cases
+const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal
+const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
 const SNAKE_COLORS = [
   { head: 'green', body: '#3eb53eff' },        // Normal (vert)
@@ -25,6 +27,36 @@ const SNAKE_ABILITIES = [
   { name: "Rétrécissement", description: "Se rétrécit automatiquement de moitié" },
 ];
 
+// Helpers couleurs (parse + lerp + easing)
+function hexToRgb(hex: string): [number, number, number] {
+  let h = hex.replace('#', '').trim();
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  if (h.length === 8) h = h.slice(0, 6); // ignore alpha #RRGGBBAA
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return [r, g, b];
+}
+const NAME_TO_HEX: Record<string, string> = {
+  green: '#008000',
+  yellow: '#ffff00',
+  orange: '#ffa500',
+  red: '#ff0000',
+  blue: '#0000ff',
+  brown: '#8b4513',
+  purple: '#800080',
+};
+function parseColorToRgb(c: string): [number, number, number] {
+  if (c.startsWith('#')) return hexToRgb(c);
+  const hex = NAME_TO_HEX[c.toLowerCase()];
+  return hex ? hexToRgb(hex) : [0, 0, 0];
+}
+function rgbToCss([r, g, b]: [number, number, number]) {
+  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+}
+function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
+function easeInOutQuad(t: number) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
 export default function SnakeGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
@@ -39,6 +71,18 @@ export default function SnakeGame() {
   const [previousSnake, setPreviousSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [animationProgress, setAnimationProgress] = useState(1);
   const animationRef = useRef<number | null>(null);
+
+  // Couleurs affichées (interpolées)
+  const [displayHeadColor, setDisplayHeadColor] = useState<string>(SNAKE_COLORS[0].head);
+  const [displayBodyColor, setDisplayBodyColor] = useState<string>(SNAKE_COLORS[0].body);
+  const [displayTraitColor, setDisplayTraitColor] = useState<string>('orange');
+  const [displayAppleColor, setDisplayAppleColor] = useState<string>('red');
+  const [displayFrameColor, setDisplayFrameColor] = useState<string>(SNAKE_COLORS[0].head); // ← nouveau
+
+  const colorAnimHBRef = useRef<number | null>(null);
+  const colorAnimTraitRef = useRef<number | null>(null);
+  const colorAnimFrameRef = useRef<number | null>(null); // ← nouveau
+  // const colorAnimAppleRef = useRef<number | null>(null);
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
@@ -238,6 +282,51 @@ export default function SnakeGame() {
     }
   }, [animationProgress]);
 
+  // Transition douce des couleurs tête/corps quand le pouvoir change
+  // [TRANSITION SERPENT DÉSACTIVÉE] — Animation commentée ci-dessus.
+  // Mise à jour immédiate des couleurs tête/corps (pas de transition)
+  useEffect(() => {
+    const target = SNAKE_COLORS[abilityIndex];
+    setDisplayHeadColor(target.head);
+    setDisplayBodyColor(target.body);
+  }, [abilityIndex]);
+
+  // Transition douce du trait dorsal (orange <-> jaune) selon le pouvoir
+  // [TRANSITION TRAIT DORSAL DÉSACTIVÉE] — Animation commentée ci-dessus.
+  // Mise à jour immédiate du trait dorsal (pas de transition)
+  useEffect(() => {
+    setDisplayTraitColor(abilityIndex === 0 ? 'orange' : 'yellow');
+  }, [abilityIndex]);
+
+  // Transition douce du cadre (indépendante du serpent)
+  useEffect(() => {
+    const toHead = parseColorToRgb(SNAKE_COLORS[abilityIndex].head);
+    const from = parseColorToRgb(displayFrameColor);
+    const DURATION = FRAME_TRANSITION_MS;
+    let start: number | null = null;
+    if (colorAnimFrameRef.current) cancelAnimationFrame(colorAnimFrameRef.current);
+
+    const step = (ts: number) => {
+      if (start === null) start = ts;
+      const t = Math.min(1, (ts - start) / DURATION);
+      const e = easeInOutQuad(t);
+      setDisplayFrameColor(rgbToCss([
+        lerp(from[0], toHead[0], e),
+        lerp(from[1], toHead[1], e),
+        lerp(from[2], toHead[2], e),
+      ] as [number, number, number]));
+      if (t < 1) colorAnimFrameRef.current = requestAnimationFrame(step);
+    };
+    colorAnimFrameRef.current = requestAnimationFrame(step);
+    return () => { if (colorAnimFrameRef.current) cancelAnimationFrame(colorAnimFrameRef.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [abilityIndex]);
+
+  // Couleur de la pomme sans transition (immédiate)
+  useEffect(() => {
+    setDisplayAppleColor(isYellowApple(score) ? 'yellow' : 'red');
+  }, [score]);
+
   function drawGame(snakeToDraw = snake, foodToDraw = food, yellow = isYellowApple(score)) {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -260,31 +349,33 @@ export default function SnakeGame() {
     ctx.fillRect(0, 0, canvasSize, canvasSize);
     ctx.restore();
 
-    // Utilise la couleur du pouvoir actif
-    const snakeColor = SNAKE_COLORS[abilityIndex];
+    // Utilise les couleurs interpolées (pouvoir actif)
+    const snakeColor = {
+      head: displayHeadColor,
+      body: displayBodyColor,
+    };
 
     // Cadre néon à l'intérieur, couleur selon le serpent (triple passe)
     {
       const cellSize = canvasSize / GRID_SIZE;
 
-      // Épaisseurs x2
+      // Épaisseurs x2 (inchangées)
       const outerLW = Math.max(3.0, cellSize * 0.75);
       const midLW   = Math.max(2.4, cellSize * 0.24);
       const coreLW  = Math.max(2.0, cellSize * 0.12);
 
-      // Ecart minimal au bord
       const EDGE_MARGIN = 0;
-      const OUTSET_NUDGE = 1; // pousse ~1px vers l’extérieur
+      const OUTSET_NUDGE = 1;
       const inset = EDGE_MARGIN + outerLW / 2 - OUTSET_NUDGE;
 
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
 
       // Halo externe
-      ctx.strokeStyle = snakeColor.head;
+      ctx.strokeStyle = displayFrameColor;   // ← cadre utilise sa propre couleur/interpolation
       ctx.lineWidth = outerLW;
       ctx.lineJoin = 'round';
-      ctx.shadowColor = snakeColor.head;
+      ctx.shadowColor = displayFrameColor;
       ctx.shadowBlur = 18;
       ctx.globalAlpha = 0.35;
       ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
@@ -429,16 +520,12 @@ export default function SnakeGame() {
       ctx.restore();
     });
 
-    // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT ===
-    let traitColor = 'orange';
-    // Était: if (abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4)
-    if (abilityIndex === 1 || abilityIndex === 2 || abilityIndex === 3 || abilityIndex === 4) {
-      traitColor = 'yellow';
-    }
+    // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT (interpolé) ===
+    const traitColor = displayTraitColor; // ← remplace la logique conditionnelle
     if (interpolatedSnake.length > 1) {
       ctx.save();
       ctx.strokeStyle = traitColor;
-      ctx.lineWidth = Math.max(2, cellSize * 0.18); // épaisseur du trait
+      ctx.lineWidth = Math.max(2, cellSize * 0.18);
       ctx.lineCap = 'round';
       ctx.beginPath();
       // Commence au dernier segment
@@ -457,9 +544,9 @@ export default function SnakeGame() {
       ctx.restore();
     }
 
-    // Draw apple (rouge ou jaune) en rond avec effet néon
+    // Draw apple (couleur interpolée rouge/jaune) en rond avec effet néon
     ctx.save();
-    ctx.shadowColor = yellow ? 'yellow' : 'red';
+    ctx.shadowColor = displayAppleColor; // ← interpolé
     ctx.shadowBlur = 18;
     ctx.beginPath();
     ctx.arc(
@@ -469,15 +556,15 @@ export default function SnakeGame() {
       0,
       Math.PI * 2
     );
-    ctx.fillStyle = yellow ? 'yellow' : 'red';
+    ctx.fillStyle = displayAppleColor; // ← interpolé
     ctx.fill();
     ctx.restore();
   }
 
-  // Redessine à chaque changement de taille ou d'état
+  // Redessine à chaque changement de taille ou d'état (+ couleurs affichées)
   useEffect(() => {
     drawGame(snake, food, isYellowApple(score));
-  }, [canvasSize, snake, food, score]);
+  }, [canvasSize, snake, food, score, displayHeadColor, displayBodyColor, displayTraitColor, displayAppleColor, displayFrameColor]);
 
   function getRandomFoodPosition(snake: Position[]): Position {
     let newPos: Position;
