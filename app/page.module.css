@@ -1,0 +1,37 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+  max-width: 1024px;
+  padding: 16px;
+  margin: 0 auto; /* centre le conteneur */
+}
+.gameLeft {
+  order: 1;
+  flex: 0 0 auto;
+}
+.asideRight {
+  /* supprime le positionnement absolu et les décalages fixes */
+  position: static;
+  margin-top: 10; /* réinitialise la marge supérieure */
+  left: auto;
+
+  order: 2;
+  margin-left: auto;     /* pousse à droite */
+  align-self: flex-start;/* aligne en haut */
+  flex: 1 1 260px;
+  min-width: 240px;
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+/* Empilage propre sur petits écrans */
+@media (max-width: 1023px) {
+  .asideRight {
+    margin-left: 0;
+    min-width: unset;
+    max-width: 100%;
+  }
+}
