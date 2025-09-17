@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fallback to ensure blue background even if Tailwind isn’t applied yet */
+html, body { min-height: 100%; }
+body { background-color: #0c1a42; color: #f0ecec; }
+
+/* Scrollbar styles */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #181818; }
+::-webkit-scrollbar-thumb { background: #555555; }
+::-webkit-scrollbar-thumb:hover { background: #555555; }

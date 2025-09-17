@@ -1,3 +1,13 @@
+/* reset global pour éviter la barre liée à la marge UA du body */
+/* fix: pas de liste dans :global(...) */
+:global(html) {
+  margin: 0;
+}
+:global(body) {
+  margin: 0;
+  overflow-x: hidden; /* empêche la barre horizontale quand on décale à gauche */
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -7,31 +17,96 @@
   max-width: 1024px;
   padding: 16px;
   margin: 0 auto; /* centre le conteneur */
+  overflow: visible;     /* évite le clipping quand on décale le jeu */
 }
 .gameLeft {
   order: 1;
   flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  transform: none; /* base: pas d’offset (mobile-first) */
+  will-change: transform;
 }
+
+/* Titre collé au bloc de jeu (au-dessus par défaut) */
+.gameLeft::before {
+  content: 'Snake Game';
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  text-align: left; /* sera centré sur mobile ci-dessous */
+  order: 0;
+}
+
+/* Masque visuel du h1 original (garde l’accessibilité) */
+:global(main > h1) {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
 .asideRight {
-  /* supprime le positionnement absolu et les décalages fixes */
   position: static;
-  margin-top: 10; /* réinitialise la marge supérieure */
+  margin-top: 10px; /* ajuster verticalement (valeur + ou -) */
   left: auto;
 
   order: 2;
-  margin-left: auto;     /* pousse à droite */
-  align-self: flex-start;/* aligne en haut */
+  margin-left: auto;    /* garder auto pour rester collé à droite */
+  transform: none;      /* changer ici (ex: translate(-40px, -10px)) pour un décalage global desktop si hors media query */
+  will-change: transform;
+  align-self: flex-start;
   flex: 1 1 260px;
   min-width: 240px;
   max-width: 360px;
   line-height: 1.6;
 }
 
-/* Empilage propre sur petits écrans */
-@media (max-width: 1023px) {
+/* Mobile ≤ 767px: empilement propre, centré */
+@media (max-width: 767px) {
+  .row { gap: 16px; padding: 12px; }
+  .gameLeft { align-items: center; }
+  .gameLeft::before { text-align: center; margin-bottom: 8px; }
   .asideRight {
     margin-left: 0;
     min-width: unset;
     max-width: 100%;
+    align-self: stretch;
+    /* (Option) déplacer "À propos" sur mobile: ajouter transform: translate(x,y); ici */
+  }
+}
+
+/* Tablette 768–1023px: léger décalage fluide vers la gauche */
+/* === Ajuster le déplacement "À propos" tablette ici === */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .gameLeft {
+    margin-left: 0;
+    margin-top: -12px;
+    transform: translateX(clamp(-48px, -4vw, -24px));
+  }
+  .asideRight {
+    margin-right: 0; /* ne pas mettre de grandes marges négatives */
+    transform: translate(-24px, -8px); /* modifier X (gauche/droite) et Y (haut/bas) */
+  }
+}
+
+/* Desktop ≥ 1024px: décalage principal (gauche + haut) */
+/* === Ajuster le déplacement "À propos" desktop ici === */
+@media (min-width: 1024px) {
+  .gameLeft {
+    margin-left: 0;
+    margin-top: clamp(-32px, -2vw, -16px);
+    transform: translateX(clamp(-140px, -8vw, -60px));
+  }
+  .asideRight {
+    margin-right: 0;
+    transform: translate(-80px, -12px); /* X: gauche(-)/droite(+), Y: haut(-)/bas(+) */
   }
 }
