@@ -1,3 +1,6 @@
+/* Ajouter tout en haut (import police Google) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
+
 /* reset global pour éviter la barre liée à la marge UA du body */
 /* fix: pas de liste dans :global(...) */
 :global(html) {
@@ -24,19 +27,37 @@
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  transform: none; /* base: pas d’offset (mobile-first) */
+  position: relative;
+  padding-top: 48px;
+
+  /* Offsets séparés */
+  --game-offset-x: 0px;    /* déplacer le bloc JEU (canvas + titre) */
+  --game-offset-y: 0px;
+  --title-offset-x: 0px;   /* déplacer UNIQUEMENT le titre */
+  --title-offset-y: 0px;
+
+  --title-font-size: clamp(30px, 2vw, 50px); /* ajuste la taille */
+  --title-letter-spacing: 1px;               /* ajuste l’espacement */
+  --title-color: #ffffff;                    /* couleur titre */
+
+  transform: translate(var(--game-offset-x), var(--game-offset-y));
   will-change: transform;
 }
 
 /* Titre collé au bloc de jeu (au-dessus par défaut) */
 .gameLeft::before {
   content: 'Snake Game';
-  display: block;
-  font-size: 24px;
+  position: absolute;
+  top: var(--title-offset-y);
+  left: var(--title-offset-x);
+  font-size: var(--title-font-size);
+  font-family: 'Poppins', system-ui, Arial, sans-serif;
   font-weight: 700;
-  margin: 0 0 12px 0;
-  text-align: left; /* sera centré sur mobile ci-dessous */
-  order: 0;
+  letter-spacing: var(--title-letter-spacing);
+  color: var(--title-color);
+  text-shadow: 0 0 6px rgba(255,255,255,0.4);
+  line-height: 1;
+  margin: 0;
 }
 
 /* Masque visuel du h1 original (garde l’accessibilité) */
@@ -55,12 +76,14 @@
 /* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
 .asideRight {
   position: static;
-  margin-top: 10px; /* ajuster verticalement (valeur + ou -) */
+  margin-top: 20px; /* ajuster verticalement (valeur + ou -) */
   left: auto;
 
   order: 2;
-  margin-left: auto;    /* garder auto pour rester collé à droite */
-  transform: none;      /* changer ici (ex: translate(-40px, -10px)) pour un décalage global desktop si hors media query */
+  margin-left: 310px;    /* garder auto pour rester collé à droite */
+  --aside-offset-x: 0px;
+  --aside-offset-y: 0px;
+  transform: translate(var(--aside-offset-x), var(--aside-offset-y));
   will-change: transform;
   align-self: flex-start;
   flex: 1 1 260px;
@@ -87,13 +110,14 @@
 /* === Ajuster le déplacement "À propos" tablette ici === */
 @media (min-width: 768px) and (max-width: 1023px) {
   .gameLeft {
-    margin-left: 0;
-    margin-top: -12px;
-    transform: translateX(clamp(-48px, -4vw, -24px));
+    --game-offset-x: clamp(-48px, -4vw, -24px); /* déplacer le bloc jeu */
+    --game-offset-y: -12px;
+    /* laisser le titre indépendant si besoin */
+    /* ex pour titre seul: --title-offset-x: -10px; */
   }
   .asideRight {
-    margin-right: 0; /* ne pas mettre de grandes marges négatives */
-    transform: translate(-24px, -8px); /* modifier X (gauche/droite) et Y (haut/bas) */
+    --aside-offset-x: -24px;
+    --aside-offset-y: -8px;
   }
 }
 
@@ -101,12 +125,132 @@
 /* === Ajuster le déplacement "À propos" desktop ici === */
 @media (min-width: 1024px) {
   .gameLeft {
-    margin-left: 0;
-    margin-top: clamp(-32px, -2vw, -16px);
-    transform: translateX(clamp(-140px, -8vw, -60px));
+    --game-offset-x: 0px;        /* 0 => ne bouge pas le bloc */
+    --game-offset-y: 0px;
+    --title-offset-x: -100px;    /* déplacer uniquement le titre */
+    --title-offset-y: -50px;
   }
   .asideRight {
-    margin-right: 0;
-    transform: translate(-80px, -12px); /* X: gauche(-)/droite(+), Y: haut(-)/bas(+) */
+    --aside-offset-x: -80px;
+    --aside-offset-y: -12px;
   }
 }
+
+/* === CONTROLE INDIVIDUEL DES TEXTES (ajout) ================================
+   Tu peux modifier chaque ligne via les variables ci‑dessous sans toucher au JSX.
+   - Pour changer taille/couleur: modifie la variable correspondante.
+   - Pour déplacer: modifie les offsets X/Y (négatif = gauche/haut, positif = droite/bas).
+   - Pour cacher temporairement: display: none; sur le sélecteur voulu.
+============================================================================= */
+
+/* 1) Titre du jeu (pseudo-élément .gameLeft::before déjà existant)
+      Variables déjà définies dans .gameLeft :
+      --title-font-size, --title-letter-spacing, --title-color
+      Offsets : --title-offset-x, --title-offset-y
+      Pour le déplacer seul: change uniquement ces offsets.
+*/
+
+/* 2) Bloc "À propos" : déclarations des variables par défaut */
+.asideRight {
+  /* === Variables "À propos" (toutes les lignes) === */
+  --about-title-font-size: 22px;      /* Taille du h2 "À propos" */
+  --about-title-color: #ffffff;       /* Couleur du h2 */
+  --about-title-weight: 700;          /* Graisse du h2 */
+  --about-title-letter-spacing: 0.5px;/* Espacement lettres du h2 */
+  --about-title-offset-x: 0px;        /* Déplacement horizontal du h2 */
+  --about-title-offset-y: 0px;        /* Déplacement vertical du h2 */
+
+  --about-line1-font-size: 14px;      /* Taille première ligne de texte */
+  --about-line1-color: #d7e7ff;       /* Couleur première ligne */
+  --about-line1-weight: 400;          /* Graisse première ligne */
+  --about-line1-offset-x: 0px;        /* Déplacement horizontal ligne 1 */
+  --about-line1-offset-y: 0px;        /* Déplacement vertical ligne 1 */
+
+  --about-line2-font-size: 14px;      /* Taille deuxième ligne de texte */
+  --about-line2-color: #d7e7ff;       /* Couleur deuxième ligne */
+  --about-line2-weight: 400;          /* Graisse deuxième ligne */
+  --about-line2-offset-x: 0px;        /* Déplacement horizontal ligne 2 */
+  --about-line2-offset-y: 0px;        /* Déplacement vertical ligne 2 */
+
+  --about-shared-line-height: 1.45;   /* Hauteur de ligne par défaut des paragraphes */
+  --about-paragraph-spacing: 6px;     /* Espace sous chaque paragraphe (except le dernier) */
+}
+
+/* 2.a) Titre "À propos" (h2) */
+.asideRight > h2 {
+  position: relative;
+  margin: 0 0 10px 0;
+  font-size: var(--about-title-font-size);
+  font-weight: var(--about-title-weight);
+  letter-spacing: var(--about-title-letter-spacing);
+  color: var(--about-title-color);
+  line-height: 1.15;
+  transform: translate(var(--about-title-offset-x), var(--about-title-offset-y));
+  /* Pour ajouter une ombre: text-shadow: 0 0 4px rgba(255,255,255,0.3); */
+}
+
+/* 2.b) Première ligne de paragraphe */
+.asideRight > p:first-of-type {
+  position: relative;
+  margin: 0 0 var(--about-paragraph-spacing) 0;
+  font-size: var(--about-line1-font-size);
+  font-weight: var(--about-line1-weight);
+  color: var(--about-line1-color);
+  line-height: var(--about-shared-line-height);
+  transform: translate(var(--about-line1-offset-x), var(--about-line1-offset-y));
+  /* Pour souligner: text-decoration: underline; */
+}
+
+/* 2.c) Deuxième ligne de paragraphe */
+.asideRight > p:nth-of-type(2) {
+  position: relative;
+  margin: 0;
+  font-size: var(--about-line2-font-size);
+  font-weight: var(--about-line2-weight);
+  color: var(--about-line2-color);
+  line-height: var(--about-shared-line-height);
+  transform: translate(var(--about-line2-offset-x), var(--about-line2-offset-y));
+}
+
+/* 3) Exemple: styles spécifiques PC uniquement (optionnel)
+      Active ce bloc si tu veux des tailles différentes uniquement sur desktop. */
+@media (min-width: 1024px) {
+  .asideRight {
+    /* === Ajustements desktop optionnels === */
+    /* --about-title-font-size: 26px;
+       --about-line1-font-size: 15px;
+       --about-line2-font-size: 15px;
+       --about-title-offset-x: -10px;
+       --about-line1-offset-x: -8px;
+       --about-line2-offset-x: -8px; */
+  }
+}
+
+/* 4) Exemple: override rapide tablette uniquement */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .asideRight {
+    /* Overrides tablette (décommente si nécessaire)
+       --about-title-font-size: 24px;
+       --about-title-offset-x: -6px; */
+  }
+}
+
+/* 5) Exemple: override mobile */
+@media (max-width: 767px) {
+  .asideRight {
+    /* Overrides mobile (décommente si nécessaire)
+       --about-title-font-size: 20px;
+       --about-line1-font-size: 13px;
+       --about-line2-font-size: 13px; */
+  }
+}
+
+/* ========================================================================== */
+/* Fin contrôle textes indépendants */
+
+.colorVert { color: #31c95a; font-weight: 600; text-shadow: 0 0 4px rgba(49,201,90,0.5); }
+.colorBleu { color: #1e90ff; font-weight: 600; text-shadow: 0 0 4px rgba(30,144,255,0.5); }
+.colorOrange { color: #ff7a1e; font-weight: 600; text-shadow: 0 0 4px rgba(255,122,30,0.5); }
+.colorMarron { color: #8b4513; font-weight: 600; text-shadow: 0 0 4px rgba(139,69,19,0.4); }
+.colorViolet { color: #a440ff; font-weight: 600; text-shadow: 0 0 4px rgba(164,64,255,0.55); }
+/* Ajuste les couleurs/effets si besoin */
