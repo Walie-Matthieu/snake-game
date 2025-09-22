@@ -11,6 +11,15 @@ const GRID_SIZE = 20; // 20x20 cases
 // const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal (désactivé)
 const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
+/* === Clignotement cadre Game Over (uniquement) ===
+   - GO_FLASH_COUNT : nombre de clignotements (ON rapides)
+   - GO_FLASH_ON_MS : durée visible de chaque flash
+   - GO_FLASH_PAUSE_MS : pause (cadre éteint) entre deux flash
+   Après le dernier flash le cadre reste allumé définitivement. */
+const GO_FLASH_COUNT = 3;
+const GO_FLASH_ON_MS = 180;
+const GO_FLASH_PAUSE_MS = 500;
+
 const SNAKE_COLORS = [
   { head: 'green', body: '#3eb53eff' },        // Normal (vert)
   { head: '#0000ff', body: '#87ceeb' },        // Traverseur (bleu)
@@ -80,6 +89,9 @@ export default function SnakeGame() {
   const [displayFrameColor, setDisplayFrameColor] = useState<string>(SNAKE_COLORS[0].head);
   // + état pour la croix collision
   const [collisionMarker, setCollisionMarker] = useState<Position | null>(null);
+  // --- états clignotement Game Over ---
+  const [goFlashVisible, setGoFlashVisible] = useState(true);
+  const [goFlashDone, setGoFlashDone] = useState(false);
   const colorAnimFrameRef = useRef<number | null>(null); // ← nouveau
   // const colorAnimAppleRef = useRef<number | null>(null);
 
@@ -105,6 +117,8 @@ export default function SnakeGame() {
     setScore(0);
     setAbilityIndex(0);
     setCollisionMarker(null); // reset croix
+    setGoFlashVisible(true);
+    setGoFlashDone(false);
   }
 
   // Gestion des touches
@@ -342,6 +356,53 @@ export default function SnakeGame() {
     if (gameOver) drawGame(snake, food);
   }, [gameOver, snake, food]);
 
+  // === Séquence clignotement cadre Game Over ===
+  useEffect(() => {
+    if (!gameOver) {
+      // réinitialise si on relance une partie
+      setGoFlashVisible(true);
+      setGoFlashDone(false);
+      return;
+    }
+    // lance la séquence uniquement à la transition vers gameOver
+    let flashIndex = 0;
+    let phase: 'on' | 'pause' = 'on';
+    let last = performance.now();
+    let raf: number;
+
+    const loop = (now: number) => {
+      if (!gameOver) return;               // sécurité
+      if (goFlashDone) return;             // séquence terminée
+
+      if (phase === 'on') {
+        if (!goFlashVisible) setGoFlashVisible(true);
+        if (now - last >= GO_FLASH_ON_MS) {
+          if (flashIndex === GO_FLASH_COUNT - 1) {
+            // dernier flash -> on fige allumé
+            setGoFlashDone(true);
+            setGoFlashVisible(true);
+            return;
+          } else {
+            phase = 'pause';
+            last = now;
+            setGoFlashVisible(false);
+          }
+        }
+      } else { // pause
+        if (now - last >= GO_FLASH_PAUSE_MS) {
+          flashIndex++;
+            phase = 'on';
+            last = now;
+            setGoFlashVisible(true);
+        }
+      }
+      raf = requestAnimationFrame(loop);
+    };
+
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [gameOver, goFlashDone]);
+
   function drawGame(snakeToDraw = snake, foodToDraw = food) {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -370,40 +431,42 @@ export default function SnakeGame() {
       body: displayBodyColor,
     };
 
-    // === Cadre (normal ou Game Over) ===
+    // === Cadre (normal ou Game Over clignotant) ===
     if (gameOver) {
-      // Cadre rouge qui REMPLACE le cadre couleur serpent
-      const red = '#61080fff';
-      const glow = '#5a080fff';
-      const outerLW = Math.max(5, cellSize * 0.9);
-      const midLW   = Math.max(3.5, cellSize * 0.45);
-      const coreLW  = Math.max(2.2, cellSize * 0.22);
-      const inset = outerLW / 2;
+      if (goFlashVisible || goFlashDone) {
+        // même épaisseur que le cadre normal
+        const outerLW = Math.max(3.0, cellSize * 0.75);
+        const midLW   = Math.max(2.4, cellSize * 0.24);
+        const coreLW  = Math.max(2.0, cellSize * 0.12);
+        const EDGE_MARGIN = 0;
+        const OUTSET_NUDGE = 1;
+        const inset = EDGE_MARGIN + outerLW / 2 - OUTSET_NUDGE;
 
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
+        const red = '#bd0716ff';
+        const glow = '#97242dff';
 
-      // Halo externe rouge
-      ctx.strokeStyle = red;
-      ctx.lineWidth = outerLW;
-      ctx.shadowColor = glow;
-      ctx.shadowBlur = 28;
-      ctx.globalAlpha = 0.55;
-      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
 
-      // Halo intermédiaire
-      ctx.lineWidth = midLW;
-      ctx.shadowBlur = 16;
-      ctx.globalAlpha = 0.85;
-      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+        ctx.strokeStyle = red;
+        ctx.lineWidth = outerLW;
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 18;
+        ctx.globalAlpha = 0.35;
+        ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
-      // Ligne centrale vive
-      ctx.lineWidth = coreLW;
-      ctx.shadowBlur = 6;
-      ctx.globalAlpha = 1;
-      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+        ctx.lineWidth = midLW;
+        ctx.shadowBlur = 10;
+        ctx.globalAlpha = 0.6;
+        ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
-      ctx.restore();
+        ctx.lineWidth = coreLW;
+        ctx.shadowBlur = 3;
+        ctx.globalAlpha = 1;
+        ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+        ctx.restore();
+      }
     } else {
       // Cadre néon normal (couleur serpent)
       const outerLW = Math.max(3.0, cellSize * 0.75);
@@ -651,9 +714,21 @@ export default function SnakeGame() {
   }
 
   // Redessine à chaque changement de taille ou d'état (+ couleurs affichées)
+  // Redessine à chaque changement y compris clignotement
   useEffect(() => {
     drawGame(snake, food);
-  }, [canvasSize, snake, food, displayHeadColor, displayBodyColor, displayTraitColor, displayAppleColor, displayFrameColor]);
+  }, [
+    canvasSize,
+    snake,
+    food,
+    displayHeadColor,
+    displayBodyColor,
+    displayTraitColor,
+    displayAppleColor,
+    displayFrameColor,
+    goFlashVisible,
+    goFlashDone
+  ]);
 
   function getRandomFoodPosition(snake: Position[]): Position {
     let newPos: Position;

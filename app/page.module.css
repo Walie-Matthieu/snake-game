@@ -1,5 +1,5 @@
-/* Ajouter tout en haut (import police Google) */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
+/* Import Google Font (ajout du poids 400 pour les paragraphes) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
 /* reset global pour éviter la barre liée à la marge UA du body */
 /* fix: pas de liste dans :global(...) */
@@ -9,6 +9,9 @@
 :global(body) {
   margin: 0;
   overflow-x: hidden; /* empêche la barre horizontale quand on décale à gauche */
+  /* Police globale unifiée (même que le titre) */
+  font-family: 'Poppins', system-ui, Arial, sans-serif;
+  font-weight: 400; /* poids par défaut sans changer les tailles existantes */
 }
 
 .row {
@@ -215,34 +218,17 @@
 /* 3) Exemple: styles spécifiques PC uniquement (optionnel)
       Active ce bloc si tu veux des tailles différentes uniquement sur desktop. */
 @media (min-width: 1024px) {
-  .asideRight {
-    /* === Ajustements desktop optionnels === */
-    /* --about-title-font-size: 26px;
-       --about-line1-font-size: 15px;
-       --about-line2-font-size: 15px;
-       --about-title-offset-x: -10px;
-       --about-line1-offset-x: -8px;
-       --about-line2-offset-x: -8px; */
-  }
+  .asideRight { /* placeholder: ajoute des variables custom ici si besoin */ }
 }
 
 /* 4) Exemple: override rapide tablette uniquement */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .asideRight {
-    /* Overrides tablette (décommente si nécessaire)
-       --about-title-font-size: 24px;
-       --about-title-offset-x: -6px; */
-  }
+  .asideRight { line-height: var(--about-shared-line-height); }
 }
 
 /* 5) Exemple: override mobile */
 @media (max-width: 767px) {
-  .asideRight {
-    /* Overrides mobile (décommente si nécessaire)
-       --about-title-font-size: 20px;
-       --about-line1-font-size: 13px;
-       --about-line2-font-size: 13px; */
-  }
+  .asideRight { line-height: var(--about-shared-line-height); }
 }
 
 /* ========================================================================== */
