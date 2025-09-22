@@ -59,7 +59,7 @@
   letter-spacing: var(--title-letter-spacing);
   color: var(--title-color);
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
-  line-height: 1;
+  line-height: 3;
   margin: 0;
 }
 
@@ -231,8 +231,34 @@
   .asideRight { line-height: var(--about-shared-line-height); }
 }
 
-/* ========================================================================== */
-/* Fin contrôle textes indépendants */
+/* Utilitaires pour empêcher un retour à la ligne sur un groupe de mots */
+.noWrap,
+.noBreak,
+.keepTogether {
+  white-space: nowrap;
+}
+
+/* Variante: conserver sur une ligne mais compacter un peu pour éviter un retour de "me le dire" */
+.noWrapFit {
+  white-space: nowrap;
+  font-size: 0.95em;       /* léger rétrécissement */
+  letter-spacing: -0.25px; /* compacte sans trop affecter la lisibilité */
+}
+
+/* Empêche le retour + compacte légèrement le groupe final pour éviter qu'il saute seul */
+.compressEnd {
+  white-space: nowrap;
+  display: inline-block;
+  font-size: 0.97em;
+  letter-spacing: -0.3px;
+}
+
+/* Spécifique : envelopper le mot "dire" avec <span class="direWord">dire</span>
+   ou utiliser la classe existante .noWrap. Cette alias rend l’intention explicite. */
+.direWord { white-space: nowrap; }
+
+/* (Alternative rapide sans span) Remplacer l'espace avant "dire" par &nbsp; dans le JSX :
+   "ce que l’on veut&nbsp;dire" — empêche la coupure. */
 
 .colorVert { color: #31c95a; font-weight: 600; text-shadow: 0 0 4px rgba(49,201,90,0.5); }
 .colorBleu { color: #1e90ff; font-weight: 600; text-shadow: 0 0 4px rgba(30,144,255,0.5); }
@@ -240,3 +266,11 @@
 .colorMarron { color: #8b4513; font-weight: 600; text-shadow: 0 0 4px rgba(139,69,19,0.4); }
 .colorViolet { color: #a440ff; font-weight: 600; text-shadow: 0 0 4px rgba(164,64,255,0.55); }
 /* Ajuste les couleurs/effets si besoin */
+
+/* Solution paragraphe final - contrôle strict */
+.lastParagraph {
+  font-size: 0.96em;         /* Légèrement plus petit pour tenir sur la ligne */
+  word-break: keep-all;      /* Évite de couper les mots */
+  word-spacing: -0.5px;      /* Compacte l'ensemble légèrement */
+  text-wrap: balance;        /* Équilibre les lignes */
+}
