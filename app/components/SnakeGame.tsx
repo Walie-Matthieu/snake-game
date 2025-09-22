@@ -77,8 +77,9 @@ export default function SnakeGame() {
   const [displayBodyColor, setDisplayBodyColor] = useState<string>(SNAKE_COLORS[0].body);
   const [displayTraitColor, setDisplayTraitColor] = useState<string>('orange');
   const [displayAppleColor, setDisplayAppleColor] = useState<string>('red');
-  const [displayFrameColor, setDisplayFrameColor] = useState<string>(SNAKE_COLORS[0].head); // ← nouveau
-
+  const [displayFrameColor, setDisplayFrameColor] = useState<string>(SNAKE_COLORS[0].head);
+  // + état pour la croix collision
+  const [collisionMarker, setCollisionMarker] = useState<Position | null>(null);
   const colorAnimFrameRef = useRef<number | null>(null); // ← nouveau
   // const colorAnimAppleRef = useRef<number | null>(null);
 
@@ -102,7 +103,8 @@ export default function SnakeGame() {
     setGameOver(false);
     setStarted(false);
     setScore(0);
-    setAbilityIndex(0); // Normal
+    setAbilityIndex(0);
+    setCollisionMarker(null); // reset croix
   }
 
   // Gestion des touches
@@ -209,12 +211,14 @@ export default function SnakeGame() {
       headPx.y - radius < 0 ||
       headPx.y + radius > canvasSize
     ) {
-      if (abilityIndex === 1) { // Traverseur : wrap-around
+      if (abilityIndex === 1) {
+        // Traverseur : wrap-around
         if (head.x < 0) head.x = GRID_SIZE - 1;
         else if (head.x >= GRID_SIZE) head.x = 0;
         if (head.y < 0) head.y = GRID_SIZE - 1;
         else if (head.y >= GRID_SIZE) head.y = 0;
       } else {
+        setCollisionMarker(head); // mémorise position pour croix
         setAnimationProgress(1);
         setGameOver(true);
         return;
@@ -252,6 +256,7 @@ export default function SnakeGame() {
       abilityIndex !== 3 &&
       isHeadCollidingWithBody(head, newSnake.slice(1), canvasSize / GRID_SIZE)
     ) {
+      setCollisionMarker(head); // croix
       setGameOver(true);
       return;
     }
@@ -324,6 +329,13 @@ export default function SnakeGame() {
   useEffect(() => {
     setDisplayAppleColor(isYellowApple(score) ? 'yellow' : 'red');
   }, [score]);
+
+  // Redessine après collision pour afficher la croix
+  useEffect(() => {
+    if (collisionMarker) {
+      drawGame(snake, food);
+    }
+  }, [collisionMarker, gameOver]); 
 
   function drawGame(snakeToDraw = snake, foodToDraw = food) {
     const canvas = canvasRef.current;
@@ -575,6 +587,33 @@ export default function SnakeGame() {
     ctx.fillStyle = displayAppleColor; // ← interpolé
     ctx.fill();
     ctx.restore();
+
+    // Croix rouge (collision)
+    if (collisionMarker) {
+      const cellSize = canvasSize / GRID_SIZE;
+      const cx = collisionMarker.x * cellSize + cellSize / 2;
+      const cy = collisionMarker.y * cellSize + cellSize / 2;
+      const size = cellSize * 0.7; // taille de la croix
+      const half = size / 2;
+
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      ctx.save();
+      ctx.strokeStyle = '#ff2d2d';
+      ctx.lineWidth = Math.max(2, cellSize * 0.15);
+      ctx.shadowColor = '#ff2d2d';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.moveTo(cx - half, cy - half);
+      ctx.lineTo(cx + half, cy + half);
+      ctx.moveTo(cx + half, cy - half);
+      ctx.lineTo(cx - half, cy + half);
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   // Redessine à chaque changement de taille ou d'état (+ couleurs affichées)
