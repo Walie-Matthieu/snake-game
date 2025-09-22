@@ -337,6 +337,11 @@ export default function SnakeGame() {
     }
   }, [collisionMarker, gameOver]); 
 
+  // Dessine aussi quand on passe en état gameOver (même sans collisionMarker futur)
+  useEffect(() => {
+    if (gameOver) drawGame(snake, food);
+  }, [gameOver, snake, food]);
+
   function drawGame(snakeToDraw = snake, foodToDraw = food) {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -365,13 +370,45 @@ export default function SnakeGame() {
       body: displayBodyColor,
     };
 
-    // Cadre néon à l'intérieur, couleur selon le serpent (triple passe)
-    {
-      // Épaisseurs x2 (inchangées)
+    // === Cadre (normal ou Game Over) ===
+    if (gameOver) {
+      // Cadre rouge qui REMPLACE le cadre couleur serpent
+      const red = '#61080fff';
+      const glow = '#5a080fff';
+      const outerLW = Math.max(5, cellSize * 0.9);
+      const midLW   = Math.max(3.5, cellSize * 0.45);
+      const coreLW  = Math.max(2.2, cellSize * 0.22);
+      const inset = outerLW / 2;
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+
+      // Halo externe rouge
+      ctx.strokeStyle = red;
+      ctx.lineWidth = outerLW;
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 28;
+      ctx.globalAlpha = 0.55;
+      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+      // Halo intermédiaire
+      ctx.lineWidth = midLW;
+      ctx.shadowBlur = 16;
+      ctx.globalAlpha = 0.85;
+      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+      // Ligne centrale vive
+      ctx.lineWidth = coreLW;
+      ctx.shadowBlur = 6;
+      ctx.globalAlpha = 1;
+      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+
+      ctx.restore();
+    } else {
+      // Cadre néon normal (couleur serpent)
       const outerLW = Math.max(3.0, cellSize * 0.75);
       const midLW   = Math.max(2.4, cellSize * 0.24);
       const coreLW  = Math.max(2.0, cellSize * 0.12);
-
       const EDGE_MARGIN = 0;
       const OUTSET_NUDGE = 1;
       const inset = EDGE_MARGIN + outerLW / 2 - OUTSET_NUDGE;
@@ -379,8 +416,7 @@ export default function SnakeGame() {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
 
-      // Halo externe
-      ctx.strokeStyle = displayFrameColor;   // ← cadre utilise sa propre couleur/interpolation
+      ctx.strokeStyle = displayFrameColor;
       ctx.lineWidth = outerLW;
       ctx.lineJoin = 'round';
       ctx.shadowColor = displayFrameColor;
@@ -388,13 +424,11 @@ export default function SnakeGame() {
       ctx.globalAlpha = 0.35;
       ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
-      // Halo intermédiaire
       ctx.lineWidth = midLW;
       ctx.shadowBlur = 10;
       ctx.globalAlpha = 0.6;
       ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
 
-      // Ligne centrale
       ctx.lineWidth = coreLW;
       ctx.shadowBlur = 3;
       ctx.globalAlpha = 1;
