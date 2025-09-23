@@ -27,9 +27,20 @@ export default function Home() {
               <li>En <span className={styles.colorMarron}>marron</span>, il peut traverser son corps sans se mordre.</li>
               <li>En <span className={styles.colorViolet}>violet</span>, il rétrécit de quelques cubes.</li>
             </ul>
-            <p style={{ margin: '-8px 0 0 0', textAlign: 'left', fontSize: '0.94em' }}>
-              <div style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>Si ça vous a plu n'hésitez pas à me le dire</div>
-              <br />Et si ça ne vous a pas plu dites-le moi quand même !
+            <p
+              style={{
+                margin: '0',
+                textAlign: 'left',
+                fontSize: '0.85em',
+                lineHeight: 1.3,
+                letterSpacing: '0.2px'
+              }}
+            >
+              <span style={{ whiteSpace: 'nowrap' }}>
+                Si ça vous a plu n'hésitez pas à me le dire.
+              </span>
+              <br />
+              Et si ça ne vous a pas plu dites-le moi quand même !
             </p>
           </aside>
         </div>
