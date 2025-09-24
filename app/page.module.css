@@ -134,7 +134,7 @@
     --title-offset-y: -50px;
   }
   .asideRight {
-    --aside-offset-x: -80px;
+    --aside-offset-x: 90px;
     --aside-offset-y: -12px;
   }
 }
@@ -163,13 +163,13 @@
   --about-title-offset-x: 0px;        /* Déplacement horizontal du h2 */
   --about-title-offset-y: 0px;        /* Déplacement vertical du h2 */
 
-  --about-line1-font-size: 14px;      /* Taille première ligne de texte */
+  --about-line1-font-size: 16px;      /* Taille première ligne de texte */
   --about-line1-color: #d7e7ff;       /* Couleur première ligne */
   --about-line1-weight: 400;          /* Graisse première ligne */
   --about-line1-offset-x: 0px;        /* Déplacement horizontal ligne 1 */
   --about-line1-offset-y: 0px;        /* Déplacement vertical ligne 1 */
 
-  --about-line2-font-size: 14px;      /* Taille deuxième ligne de texte */
+  --about-line2-font-size: 13px;      /*  Taille deuxième ligne de texte */
   --about-line2-color: #d7e7ff;       /* Couleur deuxième ligne */
   --about-line2-weight: 400;          /* Graisse deuxième ligne */
   --about-line2-offset-x: 0px;        /* Déplacement horizontal ligne 2 */
@@ -269,8 +269,12 @@
 
 /* Solution paragraphe final - contrôle strict */
 .lastParagraph {
-  font-size: 0.96em;         /* Légèrement plus petit pour tenir sur la ligne */
-  word-break: keep-all;      /* Évite de couper les mots */
-  word-spacing: -0.5px;      /* Compacte l'ensemble légèrement */
-  text-wrap: balance;        /* Équilibre les lignes */
+  font-size: 1.5em;         /* Taille modifiée pour les deux dernières lignes */
+  word-break: keep-all;
+  word-spacing: -0.5px;
+  text-wrap: balance;
+}
+
+.pasPluLine {
+  font-size: 1em; /* Modifie cette valeur pour la taille souhaitée */
 }

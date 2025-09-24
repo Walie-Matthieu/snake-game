@@ -10,7 +10,7 @@ export default function Home() {
           <div className={styles.gameLeft}>
             <SnakeGame />
           </div>
-          <aside className={styles.asideRight} style={{ maxWidth: '380px' }}>
+          <aside className={styles.asideRight}>
             <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 12px 0', textAlign: 'left' }}>À propos</h2>
             <p style={{ margin: '0 0 10px 0', textAlign: 'left' }}>
               Re salut, ici vous pouvez trouver le fameux jeu du Serpent aka The Snake Game.
@@ -27,20 +27,14 @@ export default function Home() {
               <li>En <span className={styles.colorMarron}>marron</span>, il peut traverser son corps sans se mordre.</li>
               <li>En <span className={styles.colorViolet}>violet</span>, il rétrécit de quelques cubes.</li>
             </ul>
-            <p
-              style={{
-                margin: '0',
-                textAlign: 'left',
-                fontSize: '0.85em',
-                lineHeight: 1.3,
-                letterSpacing: '0.2px'
-              }}
-            >
-              <span style={{ whiteSpace: 'nowrap' }}>
+            <p className={styles.lastParagraph}>
+              <span className={styles.noWrap}>
                 Si ça vous a plu n'hésitez pas à me le dire.
               </span>
               <br />
-              Et si ça ne vous a pas plu dites-le moi quand même !
+              <span className={`${styles.pasPluLine} ${styles.noWrap}`}>
+                Et si ça ne vous a pas plu dites-le moi quand même !
+              </span>
             </p>
           </aside>
         </div>
