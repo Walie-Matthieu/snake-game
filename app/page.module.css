@@ -269,10 +269,11 @@
 
 /* Solution paragraphe final - contrôle strict */
 .lastParagraph {
-  font-size: 1.5em;         /* Taille modifiée pour les deux dernières lignes */
+  font-size: 1.5em;
   word-break: keep-all;
   word-spacing: -0.5px;
   text-wrap: balance;
+  transform: translate(-500px, 10px); /* ← Combine X et Y */
 }
 
 .pasPluLine {
