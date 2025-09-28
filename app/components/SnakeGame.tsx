@@ -1,6 +1,5 @@
 'use client';
-
-import { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 type Position = {
   x: number;
@@ -66,7 +65,11 @@ function rgbToCss([r, g, b]: [number, number, number]) {
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
 function easeInOutQuad(t: number) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
 
-export default function SnakeGame() {
+export default function SnakeGame({
+  onStateChange,
+}: {
+  onStateChange?: (s: { abilityIndex: number; abilityShift: boolean; gameOver: boolean; started: boolean }) => void;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [food, setFood] = useState<Position>({ x: 5, y: 5 });
@@ -80,6 +83,12 @@ export default function SnakeGame() {
   const [previousSnake, setPreviousSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [animationProgress, setAnimationProgress] = useState(1);
   const animationRef = useRef<number | null>(null);
+  // ref pour éviter double-trigger du même shift + durée centralisée
+  const lastShiftKeyRef = useRef<string | null>(null);
+  const SHIFT_MS = 350; // durée du maintien du shift (ms)
+
+  // nouvel état pour le décalage transitoire (utilisé pour l'UI parent)
+  const [abilityShift, setAbilityShift] = useState<boolean>(false);
 
   // Couleurs affichées (interpolées)
   const [displayHeadColor, setDisplayHeadColor] = useState<string>(SNAKE_COLORS[0].head);
@@ -119,6 +128,9 @@ export default function SnakeGame() {
     setCollisionMarker(null); // reset croix
     setGoFlashVisible(true);
     setGoFlashDone(false);
+    // s'assurer que le shift et la clef de déduplication sont réinitialisés
+    setAbilityShift(false);
+    lastShiftKeyRef.current = null;
   }
 
   // Gestion des touches
@@ -338,6 +350,34 @@ export default function SnakeGame() {
     return () => { if (colorAnimFrameRef.current) cancelAnimationFrame(colorAnimFrameRef.current); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [abilityIndex]);
+
+  // notifie le parent à chaque changement pertinent
+  useEffect(() => {
+    onStateChange?.({ abilityIndex, abilityShift, gameOver, started });
+  }, [abilityIndex, abilityShift, gameOver, started, onStateChange]);
+
+  // Centralise le déclenchement du shift (évite double-trigger quand started et abilityIndex changent)
+  useEffect(() => {
+    if (!started || gameOver) return;
+    const key = `${abilityIndex}:${started}`;
+    if (lastShiftKeyRef.current === key) return;
+    lastShiftKeyRef.current = key;
+    setAbilityShift(true);
+    const id = window.setTimeout(() => {
+      setAbilityShift(false);
+      lastShiftKeyRef.current = null;
+    }, SHIFT_MS);
+    return () => {
+      window.clearTimeout(id);
+      lastShiftKeyRef.current = null;
+    };
+  }, [abilityIndex, started, gameOver]);
+  
+  // À l'inverse, si on entre en Game Over, on s'assure que le shift est retiré
+  // pour que la colonne "se range".
+  useEffect(() => {
+    if (gameOver) setAbilityShift(false);
+  }, [gameOver]);
 
   // Couleur de la pomme sans transition (immédiate)
   useEffect(() => {
@@ -748,7 +788,21 @@ export default function SnakeGame() {
   return (
     <div className="flex flex-col items-center gap-4 w-full">
       <div className="text-lg font-bold text-green-700">
-        Score : {score} | Pouvoir : {SNAKE_ABILITIES[abilityIndex].name}
+        Score : {score} | Pouvoir :{' '}
+        <span
+          style={{
+            display: 'inline-block',
+            padding: '0 6px',
+            borderRadius: 6,
+            color: gameOver ? 'red' : displayHeadColor,
+            // Ajuste -6px ici si tu veux que le label bouge plus/moins
+            transform: abilityShift ? 'translateX(-10px)' : 'translateX(0)',
+            transition: 'transform 220ms ease, color 160ms ease',
+            fontWeight: 700
+          }}
+        >
+          {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
+        </span>
       </div>
       <div className="text-sm text-gray-500 mb-2">
         {SNAKE_ABILITIES[abilityIndex].description}

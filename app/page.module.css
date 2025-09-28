@@ -273,7 +273,7 @@
   word-break: keep-all;
   word-spacing: -0.5px;
   text-wrap: balance;
-  transform: translate(-500px, 10px); /* ← Combine X et Y */
+  transform: translate(-500px, 30px); /* ← Combine X et Y */
 }
 
 .pasPluLine {
