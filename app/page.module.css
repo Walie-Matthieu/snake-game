@@ -279,3 +279,94 @@
 .pasPluLine {
   font-size: 1em; /* Modifie cette valeur pour la taille souhaitée */
 }
+
+/* --- Ajout : utilitaires & exemples pour SVG --- */
+
+/* Icône SVG inline ou importée comme composant (remplace width/height par CSS) */
+.svgIcon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.5rem;   /* ajuster selon besoin (ex: 1rem, 2rem) */
+  height: 1.5rem;
+  line-height: 0;  /* évite gaps */
+  fill: currentColor;    /* permet colorer via color: */
+  stroke: none;
+  flex-shrink: 0;
+}
+
+/* Variante plus grande */
+.svgIcon-lg { width: 2.25rem; height: 2.25rem; }
+
+/* Si le SVG a des traits (stroke) que l'on veut colorer */
+.svgIcon-stroke { stroke: currentColor; stroke-width: 1.5; }
+
+/* Icône décorative via <img src="/icons/..." /> */
+.imgSvg {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* SVG comme background décoratif */
+.svgBg {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* Exemple de background-image:
+   .hero { background-image: url('/icons/hero.svg'); } */
+
+/* Utiliser un SVG comme masque pour forme/coloration */
+.svgMask {
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  background-color: currentColor; /* la couleur visible à travers le masque */
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Accessibilité : cache visuel mais garde dans le DOM */
+.srOnly {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* --- Fin des utilitaires SVG --- */
+
+/*
+  Exemples d'utilisation (JSX / React) — collez dans votre composant :
+
+  1) Inline SVG (plein contrôle, animations CSS possibles)
+  <svg className="svgIcon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M..." fill="currentColor" />
+  </svg>
+
+  2) SVG placé dans public/ et utilisé avec <img>
+  <img src="/icons/food.svg" alt="food" className="imgSvg" />
+
+  3) SVG en background (décor)
+  <div className="svgBg" style={{ backgroundImage: "url('/icons/bg.svg')", width: 200, height: 120 }} />
+
+  4) SVG comme mask (forme colorée par CSS)
+  <div className="svgMask" style={{ WebkitMaskImage: "url('/icons/logo-mask.svg')", maskImage: "url('/icons/logo-mask.svg')", color: '#1e90ff' }} />
+
+  5) Importer comme composant React (SVGR) — nécessite config build:
+  // after adding SVGR loader/plugin:
+  import Logo from '/public/icons/logo.svg';
+  <Logo className="svgIcon" />
+
+  Remarques rapides :
+  - Pour colorer un SVG via CSS, utilisez fill="currentColor" dans le SVG et changez la propriété color sur le parent.
+  - Pour les animations CSS, préférez l'inline SVG ou SVGR (animable via classes).
+  - Placez les fichiers SVG statiques dans public/ pour les servir directement (pas besoin d'import).
+*/
