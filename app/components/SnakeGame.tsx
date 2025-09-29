@@ -785,8 +785,73 @@ export default function SnakeGame({
     return (score + 1) % 5 === 0;
   }
 
+  // largeur fixe du panneau de contrôles (px) et gap entre canvas / panneau
+  const CONTROL_WIDTH = 96;
+  const CONTAINER_GAP = 16;
+
+  // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
+  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  useEffect(() => {
+    function onResize() { setWindowWidth(window.innerWidth); }
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  // largeur minimale souhaitée pour le canvas quand la colonne est à droite
+  const MIN_CANVAS_WIDTH = 240;
+  // on place la colonne à droite seulement si la fenêtre peut contenir (canvas min + gap + control)
+  const controlsAbsolute = windowWidth >= (MIN_CANVAS_WIDTH + CONTROL_WIDTH + CONTAINER_GAP);
+
+  // container style: grid on desktop (fixed right column), column flow on mobile
+  const containerStyleDesktop: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: `1fr ${CONTROL_WIDTH}px`,
+    gap: CONTAINER_GAP,
+    width: '90vw',
+    maxWidth: 520,
+    boxSizing: 'border-box',
+    alignItems: 'start',
+    // prevent implicit min-width from children causing wrap
+    minWidth: 0,
+  };
+  const containerStyleMobile: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: CONTAINER_GAP,
+    width: '90vw',
+    maxWidth: 400,
+    boxSizing: 'border-box',
+  };
+
+  // wrapper canvas: always flexible, will be constrained by grid column on desktop
+  const canvasWrapperStyle: React.CSSProperties = {
+    width: '100%',
+    minWidth: 0,
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+  };
+
+  // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
+  function keyStyle() {
+    return {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: 34,
+      height: 28,
+      padding: '0 8px',
+      borderRadius: 6,
+      border: '1px solid rgba(255,105,180,0.18)', // pink border
+      background: 'rgba(255,182,193,0.08)', // light pink background
+      color: '#ff2d86', // pink text
+      fontWeight: 700,
+      fontSize: 14,
+      boxShadow: 'inset 0 -1px 0 rgba(0,0,0,0.08)'
+    } as React.CSSProperties;
+  }
+ 
   return (
-    <div className="flex flex-col items-center gap-4 w-full">
+     <div className="flex flex-col items-center gap-4 w-full">
       <div className="text-lg font-bold text-green-700">
         Score : {score} | Pouvoir :{' '}
         <span
@@ -795,7 +860,6 @@ export default function SnakeGame({
             padding: '0 6px',
             borderRadius: 6,
             color: gameOver ? 'red' : displayHeadColor,
-            // Ajuste -6px ici si tu veux que le label bouge plus/moins
             transform: abilityShift ? 'translateX(-10px)' : 'translateX(0)',
             transition: 'transform 220ms ease, color 160ms ease',
             fontWeight: 700
@@ -807,27 +871,80 @@ export default function SnakeGame({
       <div className="text-sm text-gray-500 mb-2">
         {SNAKE_ABILITIES[abilityIndex].description}
       </div>
-      <canvas
-        ref={canvasRef}
-        width={canvasSize}
-        height={canvasSize}
-        style={{ /* border: '2px solid black', */ width: '90vw', maxWidth: 400, height: 'auto', aspectRatio: '1/1' }}
-      />
-      {gameOver && (
-        <div className="flex flex-col items-center">
-          <div className="text-red-500">Game Over!</div>
-          <div className="text-gray-500 mt-2">Appuie sur <b>R</b> pour recommencer</div>
+
+      {/* Container: canvas + contrôle — grid desktop (fixed panel), stacked mobile */}
+      <div style={controlsAbsolute ? containerStyleDesktop : containerStyleMobile}>
+        {/* canvas prend la première colonne (1fr) */}
+        <div style={canvasWrapperStyle}>
+          <canvas
+            ref={canvasRef}
+            width={canvasSize}
+            height={canvasSize}
+            style={{
+              width: '100%',
+              height: 'auto',
+              aspectRatio: '1/1',
+              display: 'block',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
-      )}
-      {isPaused && !gameOver && (
-        <div className="flex flex-col items-center">
-          <div className="text-yellow-500 font-bold">PAUSE</div>
-          <div className="text-gray-500 mt-2">Appuie sur <b>T</b> pour continuer</div>
+
+        {/* ===================== CONTROLS PANEL START =====================
+            Bloc de la colonne contenant les indications de touches (↑ ← ↓ →, T, R).
+            Tu peux repérer / modifier ce bloc facilement entre les deux marqueurs.
+         =============================================================== */}
+        <div
+          aria-hidden={false}
+          style={{
+            width: controlsAbsolute ? CONTROL_WIDTH : '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 10,
+            padding: 8,
+            borderRadius: 8,
+            background: 'linear-gradient(180deg, rgba(255,215,235,0.06), rgba(255,192,203,0.04))',
+            border: '1px solid rgba(255,105,180,0.12)',
+            boxSizing: 'border-box',
+            justifyContent: 'start'
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+            <kbd style={keyStyle()}>↑</kbd>
+            <kbd style={keyStyle()}>←</kbd>
+            <kbd style={keyStyle()}>↓</kbd>
+            <kbd style={keyStyle()}>→</kbd>
+          </div>
+          <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <kbd style={keyStyle()}>T</kbd>
+              <span style={{ fontSize: 12 }}>Pause</span>
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <kbd style={keyStyle()}>R</kbd>
+              <span style={{ fontSize: 12 }}>Recommencer</span>
+            </div>
+          </div>
         </div>
-      )}
-      {!started && !gameOver && (
-        <div className="text-gray-500">Appuie sur une flèche pour commencer</div>
-      )}
+        {/* ====================== CONTROLS PANEL END ====================== */}
+      </div>  {/* <-- fermeture du container grid/flex */}
+ 
+       {gameOver && (
+         <div className="flex flex-col items-center">
+           <div className="text-red-500">Game Over!</div>
+           <div className="text-gray-500 mt-2">Appuie sur <b>R</b> pour recommencer</div>
+         </div>
+       )}
+       {isPaused && !gameOver && (
+         <div className="flex flex-col items-center">
+           <div className="text-yellow-500 font-bold">PAUSE</div>
+           <div className="text-gray-500 mt-2">Appuie sur <b>T</b> pour continuer</div>
+         </div>
+       )}
+       {!started && !gameOver && (
+         <div className="text-gray-500">Appuie sur une flèche pour commencer</div>
+       )}
     </div>
   );
 }
