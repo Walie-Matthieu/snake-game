@@ -79,20 +79,29 @@
 /* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
 .asideRight {
   position: static;
-  margin-top: 20px; /* ajuster verticalement (valeur + ou -) */
+  margin-top: 20px;
   left: auto;
 
   order: 2;
-  margin-left: 310px;    /* garder auto pour rester collé à droite */
+  /* laissez le flex gérer la position — pousse l'aside à droite */
+  margin-left: 200px;
+
   --aside-offset-x: 0px;
   --aside-offset-y: 0px;
   transform: translate(var(--aside-offset-x), var(--aside-offset-y));
   will-change: transform;
   align-self: flex-start;
-  flex: 1 1 260px;
-  min-width: 240px;
-  max-width: 360px;
+  /* colonne fixe/contrôlée pour éviter qu'elle écrase le canvas/les contrôles */
+  flex: 0 0 280px; /* largeur fixe souhaitée */
+  min-width: 220px;
+  max-width: 320px;
+
   line-height: 1.6;
+  outline: 2px dashed rgba(255,223,0,0.95);
+  box-shadow: 0 6px 18px rgba(255,223,0,0.12);
+  z-index: 50; /* assure que le contour reste au-dessus */
+  /* si tu veux un fond semi‑opaque temporaire : uncomment */
+  /* background: rgba(255, 249, 200, 0.03); */
 }
 
 /* Mobile ≤ 767px: empilement propre, centré */

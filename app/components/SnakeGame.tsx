@@ -786,9 +786,11 @@ export default function SnakeGame({
   }
 
   // largeur fixe du panneau de contrôles (px) et gap entre canvas / panneau
-  const CONTROL_WIDTH = 96;
-  const CONTAINER_GAP = 16;
-
+  const CONTROL_WIDTH = 200; // ← change cette valeur (px) pour élargir/réduire la colonne
+  const CONTAINER_GAP = 25;  // ← espace entre canvas et colonne (px)
+  // hauteur fixe du panneau de contrôles (px) — modifie cette valeur pour allonger le panneau
+  const CONTROL_HEIGHT = 260;
+  
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
   useEffect(() => {
@@ -805,13 +807,14 @@ export default function SnakeGame({
   // container style: grid on desktop (fixed right column), column flow on mobile
   const containerStyleDesktop: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: `1fr ${CONTROL_WIDTH}px`,
+    // première colonne = largeur actuelle du canvas (px), deuxième = panneau contrôles
+    gridTemplateColumns: `${Math.round(canvasSize)}px ${CONTROL_WIDTH}px`,
     gap: CONTAINER_GAP,
-    width: '90vw',
-    maxWidth: 520,
+    // largeur totale = canvas + gap + control ; allow it to grow up to viewport
+    width: `${Math.round(canvasSize + CONTROL_WIDTH + CONTAINER_GAP)}px`,
+    maxWidth: '100%',
     boxSizing: 'border-box',
     alignItems: 'start',
-    // prevent implicit min-width from children causing wrap
     minWidth: 0,
   };
   const containerStyleMobile: React.CSSProperties = {
@@ -841,8 +844,8 @@ export default function SnakeGame({
       height: 28,
       padding: '0 8px',
       borderRadius: 6,
-      border: '1px solid rgba(255,105,180,0.18)', // pink border
-      background: 'rgba(255,182,193,0.08)', // light pink background
+      border: '1px solid rgba(255, 158, 105, 0.18)', // pink border
+      background: 'rgba(18, 3, 5, 0)', // light pink background
       color: '#ff2d86', // pink text
       fontWeight: 700,
       fontSize: 14,
@@ -898,24 +901,56 @@ export default function SnakeGame({
           aria-hidden={false}
           style={{
             width: controlsAbsolute ? CONTROL_WIDTH : '100%',
+            /* hauteur configurable (desktop) — pas liée au canvas */
+            height: controlsAbsolute ? `${CONTROL_HEIGHT}px` : 'auto',
+            overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             gap: 10,
             padding: 8,
             borderRadius: 8,
-            background: 'linear-gradient(180deg, rgba(255,215,235,0.06), rgba(255,192,203,0.04))',
-            border: '1px solid rgba(255,105,180,0.12)',
+            background: 'linear-gradient(180deg, rgba(255,245,200,0.06), rgba(255,244,180,0.03))',
+            border: '1px solid rgba(255,223,0,0.18)', // jaune pâle
             boxSizing: 'border-box',
-            justifyContent: 'start'
+            justifyContent: 'start',
+            // debug / visible box: outline + stronger shadow + bring forward (jaune)
+            outline: '2px dashed rgba(255,223,0,0.95)',
+            boxShadow: '0 6px 22px rgba(255,223,0,0.16), inset 0 1px 0 rgba(255,255,255,0.02)',
+            zIndex: 20,
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-            <kbd style={keyStyle()}>↑</kbd>
-            <kbd style={keyStyle()}>←</kbd>
-            <kbd style={keyStyle()}>↓</kbd>
-            <kbd style={keyStyle()}>→</kbd>
+          {/* Flèches disposées comme sur un clavier :
+              ligne 1 : Up (centrée)
+              ligne 2 : Left  Down  Right */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateRows: 'auto auto',
+              gap: 6,
+              width: '100%',
+              alignItems: 'center',
+              justifyItems: 'center'
+            }}
+          >
+            {/* Up arrow spans all three columns and is centered */}
+            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche haut">↑</kbd>
+            </div>
+
+            {/* Second row: Left, Down, Right */}
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche gauche">←</kbd>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche bas">↓</kbd>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche droite">→</kbd>
+            </div>
           </div>
+
           <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <kbd style={keyStyle()}>T</kbd>
