@@ -44,6 +44,10 @@ export default function Home() {
               le fait de lui donner des pouvoirs à chaque pomme jaune mangée. Ainsi, chaque couleur possède une particularité :
             </p>
 
+            <h3 style={{ fontSize: 15, fontWeight: 700, margin: '8px 0', textAlign: 'left' }}>
+              {/* Pouvoir par couleur */}
+            </h3>
+
             <ul style={{ margin: '0 0 12px 0', padding: 0, textAlign: 'left', listStyle: 'none' }}>
               {lines.map((l, i) => {
                 const active = !gameOver && i === abilityIndex && started;

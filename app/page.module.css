@@ -84,7 +84,8 @@
 
   order: 2;
   /* laissez le flex gérer la position — pousse l'aside à droite */
-  margin-left: 200px;
+  /* réduit l'espace entre la boîte du jeu et l'aside */
+  margin-left: 24px;
 
   --aside-offset-x: 0px;
   --aside-offset-y: 0px;
