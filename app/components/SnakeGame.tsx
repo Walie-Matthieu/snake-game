@@ -790,6 +790,9 @@ export default function SnakeGame({
   const CONTAINER_GAP = 25;  // ← espace entre canvas et colonne (px)
   // hauteur fixe du panneau de contrôles (px) — modifie cette valeur pour allonger le panneau
   const CONTROL_HEIGHT = 260;
+  // Décalage (px) du groupe de touches (flèches + T/R) à l'intérieur du panneau 
+  const KEY_GROUP_OFFSET_X = 0; // ← modifier pour déplacer horizontalement 
+  const KEY_GROUP_OFFSET_Y = 21; // ← modifier pour déplacer verticalement 
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -901,7 +904,6 @@ export default function SnakeGame({
           aria-hidden={false}
           style={{
             width: controlsAbsolute ? CONTROL_WIDTH : '100%',
-            /* hauteur configurable (desktop) — pas liée au canvas */
             height: controlsAbsolute ? `${CONTROL_HEIGHT}px` : 'auto',
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
@@ -911,54 +913,60 @@ export default function SnakeGame({
             padding: 8,
             borderRadius: 8,
             background: 'linear-gradient(180deg, rgba(255,245,200,0.06), rgba(255,244,180,0.03))',
-            border: '1px solid rgba(255,223,0,0.18)', // jaune pâle
+            border: '1px solid rgba(255,223,0,0.18)',
             boxSizing: 'border-box',
             justifyContent: 'start',
-            // debug / visible box: outline + stronger shadow + bring forward (jaune)
             outline: '2px dashed rgba(255,223,0,0.95)',
             boxShadow: '0 6px 22px rgba(255,223,0,0.16), inset 0 1px 0 rgba(255,255,255,0.02)',
             zIndex: 20,
           }}
         >
-          {/* Flèches disposées comme sur un clavier :
-              ligne 1 : Up (centrée)
-              ligne 2 : Left  Down  Right */}
+          {/* Groupe complet des touches (déplacé via KEY_GROUP_OFFSET_X/Y) */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gridTemplateRows: 'auto auto',
-              gap: 6,
-              width: '100%',
+              position: 'relative',
+              transform: `translate(${KEY_GROUP_OFFSET_X}px, ${KEY_GROUP_OFFSET_Y}px)`,
+              display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              justifyItems: 'center'
+              gap: 14,
             }}
           >
-            {/* Up arrow spans all three columns and is centered */}
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
-              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche haut">↑</kbd>
+            {/* Flèches (layout clavier) */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateRows: 'auto auto',
+                gap: 6,
+                width: '100%',
+                alignItems: 'center',
+                justifyItems: 'center'
+              }}
+            >
+              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+                <kbd style={keyStyle()} aria-label="Flèche haut">↑</kbd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <kbd style={keyStyle()} aria-label="Flèche gauche">←</kbd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <kbd style={keyStyle()} aria-label="Flèche bas">↓</kbd>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <kbd style={keyStyle()} aria-label="Flèche droite">→</kbd>
+              </div>
             </div>
-
-            {/* Second row: Left, Down, Right */}
-            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche gauche">←</kbd>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche bas">↓</kbd>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <kbd style={keyStyle()} aria-hidden={false} aria-label="Flèche droite">→</kbd>
-            </div>
-          </div>
-
-          <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <kbd style={keyStyle()}>T</kbd>
-              <span style={{ fontSize: 12 }}>Pause</span>
-            </div>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <kbd style={keyStyle()}>R</kbd>
-              <span style={{ fontSize: 12 }}>Recommencer</span>
+            {/* T et R empilés */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <kbd style={keyStyle()}>T</kbd>
+                <span style={{ fontSize: 12 }}>Pause</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <kbd style={keyStyle()}>R</kbd>
+                <span style={{ fontSize: 12 }}>Recommencer</span>
+              </div>
             </div>
           </div>
         </div>

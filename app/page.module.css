@@ -228,7 +228,7 @@
 /* 3) Exemple: styles spécifiques PC uniquement (optionnel)
       Active ce bloc si tu veux des tailles différentes uniquement sur desktop. */
 @media (min-width: 1024px) {
-  .asideRight { /* placeholder: ajoute des variables custom ici si besoin */ }
+  .asideRight { /* placeholder: ajouter des variables custom ici si besoin */ }
 }
 
 /* 4) Exemple: override rapide tablette uniquement */
@@ -380,3 +380,52 @@
   - Pour les animations CSS, préférez l'inline SVG ou SVGR (animable via classes).
   - Placez les fichiers SVG statiques dans public/ pour les servir directement (pas besoin d'import).
 */
+
+/* Contrôles rapides pour le h3 "Pouvoirs par couleur" */
+:root {
+  --pouvoir-display: block;       /* block / none */
+  --pouvoir-font-size: 15px;
+  --pouvoir-font-weight: 700;
+  --pouvoir-margin: 8px 0;
+  --pouvoir-color: #ffffff;
+  --pouvoir-offset-x: 0px;        /* décalage horizontal (ex: -10px ou 10px) */
+  --pouvoir-offset-y: 0px;        /* décalage vertical (ex: -8px monte, 8px descend) */
+}
+
+.asideRight .pouvoirTitle {
+  display: var(--pouvoir-display);
+  font-size: var(--pouvoir-font-size);
+  font-weight: var(--pouvoir-font-weight);
+  margin: var(--pouvoir-margin);
+  color: var(--pouvoir-color);
+  transform: translate(var(--pouvoir-offset-x), var(--pouvoir-offset-y));
+  line-height: 1.2;
+}
+
+/* Contrôle spécifique pour le h3 "Pouvoir par couleur" */
+.asideRight h3 {
+  font-size: var(--pouvoir-font-size, 15px);
+  font-weight: var(--pouvoir-font-weight, 700);
+  margin: var(--pouvoir-margin, 8px 0);
+  text-align: left;
+  color: var(--pouvoir-color, #ffffff);
+  /* utiliser les variables pour permettre le déplacement via --pouvoir-offset-y / x */
+  transform: translate(var(--pouvoir-offset-x, 0px), var(--pouvoir-offset-y, 0px));
+  line-height: 1.2;
+}
+
+/* Contrôle des 5 lignes de couleur ensemble */
+:root {
+  --powerlines-offset-x: 0px;
+  --powerlines-offset-y: 0px;
+  --powerlines-margin-top: 0px;
+  --powerlines-margin-bottom: 12px;
+}
+
+.powerLinesWrapper {
+  display: block;
+  transform: translate(var(--powerlines-offset-x), var(--powerlines-offset-y));
+  margin-top: var(--powerlines-margin-top);
+  margin-bottom: var(--powerlines-margin-bottom);
+  will-change: transform;
+}

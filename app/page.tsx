@@ -44,31 +44,32 @@ export default function Home() {
               le fait de lui donner des pouvoirs à chaque pomme jaune mangée. Ainsi, chaque couleur possède une particularité :
             </p>
 
-            <h3 style={{ fontSize: 15, fontWeight: 700, margin: '8px 0', textAlign: 'left' }}>
-              {/* Pouvoir par couleur */}
-            </h3>
+            <h3 className={styles.pouvoirTitle}></h3>
 
-            <ul style={{ margin: '0 0 12px 0', padding: 0, textAlign: 'left', listStyle: 'none' }}>
-              {lines.map((l, i) => {
-                const active = !gameOver && i === abilityIndex && started;
-                const translate = active ? (abilityShift ? -12 : -8) : 0;
-                return (
-                  <li key={i} style={{ margin: '6px 0' }}>
-                    <div
-                      style={{
-                        display: 'inline-block',
-                        transform: `translateX(${translate}px)`,
-                        transition: 'transform 220ms ease',
-                      }}
-                    >
-                      <span>{l.text}</span>
-                      <span className={l.cls} style={{ fontWeight: 600 }}>{l.word}</span>
-                      <span>{l.rest}</span>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            {/* Wrapper avec classe pour contrôler toutes les lignes ensemble */}
+            <div className={styles.powerLinesWrapper}>
+              <ul style={{ margin: '0 0 12px 0', padding: 0, textAlign: 'left', listStyle: 'none' }}>
+                {lines.map((l, i) => {
+                  const active = !gameOver && i === abilityIndex && started;
+                  const translate = active ? (abilityShift ? -12 : -8) : 0;
+                  return (
+                    <li key={i} style={{ margin: '6px 0' }}>
+                      <div
+                        style={{
+                          display: 'inline-block',
+                          transform: `translateX(${translate}px)`,
+                          transition: 'transform 220ms ease',
+                        }}
+                      >
+                        <span>{l.text}</span>
+                        <span className={l.cls} style={{ fontWeight: 600 }}>{l.word}</span>
+                        <span>{l.rest}</span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
             <p className={styles.lastParagraph}>
               <span className={styles.noWrap}>
