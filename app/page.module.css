@@ -404,7 +404,7 @@
 
 /* Contrôle spécifique pour le h3 "Pouvoir par couleur" */
 .asideRight h3 {
-  
+  font-size: var(--pouvoir-font-size, 15px);
   font-weight: var(--pouvoir-font-weight, 700);
   margin: var(--pouvoir-margin, 8px 0);
   text-align: left;
