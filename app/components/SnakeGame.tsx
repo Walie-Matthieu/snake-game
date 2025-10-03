@@ -786,13 +786,15 @@ export default function SnakeGame({
   }
 
   // largeur fixe du panneau de contrôles (px) et gap entre canvas / panneau
-  const CONTROL_WIDTH = 200; // ← change cette valeur (px) pour élargir/réduire la colonne
-  const CONTAINER_GAP = 25;  // ← espace entre canvas et colonne (px)
-  // hauteur fixe du panneau de contrôles (px) — modifie cette valeur pour allonger le panneau
-  const CONTROL_HEIGHT = 260;
-  // Décalage (px) du groupe de touches (flèches + T/R) à l'intérieur du panneau 
-  const KEY_GROUP_OFFSET_X = 0; // ← modifier pour déplacer horizontalement 
-  const KEY_GROUP_OFFSET_Y = 21; // ← modifier pour déplacer verticalement 
+  const CONTROL_WIDTH = 150; // largeur fixe du panneau de contrôles (px)
+  const CONTAINER_GAP = 25; // espace entre canvas et panneau (px)
+  const CONTROL_HEIGHT = 210; // hauteur fixe du panneau de contrôles (px)
+  const KEY_GROUP_OFFSET_X = -0; // Déplace les touches horizontalement (+ droite / - gauche)
+  const KEY_GROUP_OFFSET_Y = 21; // Déplace les touches verticalement (+ bas / - haut)
+  
+  // Décalage du panneau entier (colonne des touches)
+  const PANEL_OFFSET_X = 0; // + droite / - gauche
+  const PANEL_OFFSET_Y = 35; // + bas / - haut
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -843,8 +845,8 @@ export default function SnakeGame({
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      minWidth: 34,
-      height: 28,
+      minWidth: 20,
+      height: 20,
       padding: '0 8px',
       borderRadius: 6,
       border: '1px solid rgba(255, 158, 105, 0.18)', // pink border
@@ -905,6 +907,7 @@ export default function SnakeGame({
           style={{
             width: controlsAbsolute ? CONTROL_WIDTH : '100%',
             height: controlsAbsolute ? `${CONTROL_HEIGHT}px` : 'auto',
+            transform: `translate(${PANEL_OFFSET_X}px, ${PANEL_OFFSET_Y}px)`,
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
             flexDirection: 'column',
