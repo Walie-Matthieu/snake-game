@@ -793,12 +793,8 @@ export default function SnakeGame({
   const KEY_GROUP_OFFSET_Y = 21; // Déplace les touches verticalement (+ bas / - haut)
   
   // Décalage du panneau entier (colonne des touches)
-  const PANEL_OFFSET_X = -17; // + droite / - gauche
+  const PANEL_OFFSET_X = 0; // + droite / - gauche
   const PANEL_OFFSET_Y = 35; // + bas / - haut
-
-  // Décalage du canvas (déplacer la "boîte" du Snake sans toucher au panneau)
-  const CANVAS_OFFSET_X = -40; // + droite / - gauche
-  const CANVAS_OFFSET_Y = 0; // + bas / - haut
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -835,14 +831,15 @@ export default function SnakeGame({
     boxSizing: 'border-box',
   };
 
-  // wrapper canvas: always flexible, will be constrained by grid column on desktop
+  const CANVAS_OFFSET_X = -50; // + droite / - gauche
+  const CANVAS_OFFSET_Y = -80; // + bas / - haut
+
   const canvasWrapperStyle: React.CSSProperties = {
     width: '100%',
     minWidth: 0,
     boxSizing: 'border-box',
     overflow: 'hidden',
     transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
-    position: 'relative', // permet un translate propre
   };
 
   // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
@@ -864,35 +861,84 @@ export default function SnakeGame({
     } as React.CSSProperties;
   }
  
+  // === Scoreboard minimal (MON | TON) ===
+  const SCOREBOARD_OFFSET_X = 280; // + droite / - gauche
+  const SCOREBOARD_OFFSET_Y = 0; // + bas / - haut
+  const SCOREBOARD_SCALE = 1;    // 1 = 100%
+
+  const [highScore, setHighScore] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    const v = localStorage.getItem('snakeHighScore');
+    return v ? Number(v) : 0;
+  });
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore(score);
+      localStorage.setItem('snakeHighScore', String(score));
+    }
+  }, [score, highScore]);
+
   return (
-    <div className="flex flex-col items-center gap-4 w-full">
-     <div
-       style={{
-         transform: 'translate(var(--score-offset-x), var(--score-offset-y))',
-         position: 'relative',
-         textAlign: 'center'
-       }}
-     >
-       <div className="text-lg font-bold text-green-700">
-         Score : {score} | Pouvoir :{' '}
-         <span
-           style={{
-             display: 'inline-block',
-             padding: '0 6px',
-             borderRadius: 6,
-             color: gameOver ? 'red' : displayHeadColor,
-             transform: abilityShift ? 'translateX(-10px)' : 'translateX(0)',
-             transition: 'transform 220ms ease, color 160ms ease',
-             fontWeight: 700
-           }}
-         >
-           {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
-         </span>
-       </div>
-       <div className="text-sm text-gray-500 mb-2">
-         {SNAKE_ABILITIES[abilityIndex].description}
-       </div>
-     </div>
+     <div className="flex flex-col items-center gap-4 w-full">
+      {/* Scoreboard NBA-style simple */}
+      <div
+        style={{
+          transform: `translate(${SCOREBOARD_OFFSET_X}px, ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          userSelect: 'none'
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MON SCORE</div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{score}</div>
+        </div>
+
+        <div style={{ fontSize: 28, fontWeight: 800, color: 'rgba(255,255,255,0.75)', padding: '0 8px' }}>|</div>
+
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>TON SCORE</div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
+        </div>
+      </div>
+      <div
+        style={{
+          transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+          fontSize: 12,
+          color: '#b9bcc4',
+          textAlign: 'center',
+          marginTop: 6
+        }}
+      >
+        {SNAKE_ABILITIES[abilityIndex].description}
+      </div>
+
+      {/* Nom du pouvoir au‑dessus du canvas */}
+      <div
+        style={{
+          transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: 8,
+          pointerEvents: 'none'
+        }}
+      >
+        <span
+          style={{
+            display: 'inline-block',
+            padding: '6px 12px',
+            borderRadius: 999,
+            background: 'rgba(255,255,255,0.04)',
+            color: gameOver ? 'red' : displayHeadColor,
+            fontWeight: 700,
+            fontFamily: 'inherit',
+          }}
+        >
+          {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
+        </span>
+      </div>
 
       {/* Container: canvas + contrôle — grid desktop (fixed panel), stacked mobile */}
       <div style={controlsAbsolute ? containerStyleDesktop : containerStyleMobile}>
