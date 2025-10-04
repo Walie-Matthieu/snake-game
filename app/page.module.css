@@ -429,3 +429,10 @@
   margin-bottom: var(--powerlines-margin-bottom);
   will-change: transform;
 }
+
+
+:root {
+  --score-offset-x: -124px; /* + = droite / - = gauche */
+  --score-offset-y: 0px; /* + = bas    / - = haut  */
+}
+

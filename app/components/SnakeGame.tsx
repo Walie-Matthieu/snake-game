@@ -107,7 +107,7 @@ export default function SnakeGame({
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
     function handleResize() {
-      const size = Math.min(window.innerWidth * 0.9, 400);
+      const size = Math.min(window.innerWidth * 0.9, 460); // taille du Canva, aka boite du Snake
       setCanvasSize(size);
     }
     handleResize();
@@ -793,8 +793,12 @@ export default function SnakeGame({
   const KEY_GROUP_OFFSET_Y = 21; // Déplace les touches verticalement (+ bas / - haut)
   
   // Décalage du panneau entier (colonne des touches)
-  const PANEL_OFFSET_X = 0; // + droite / - gauche
+  const PANEL_OFFSET_X = -17; // + droite / - gauche
   const PANEL_OFFSET_Y = 35; // + bas / - haut
+
+  // Décalage du canvas (déplacer la "boîte" du Snake sans toucher au panneau)
+  const CANVAS_OFFSET_X = -40; // + droite / - gauche
+  const CANVAS_OFFSET_Y = 0; // + bas / - haut
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -837,6 +841,8 @@ export default function SnakeGame({
     minWidth: 0,
     boxSizing: 'border-box',
     overflow: 'hidden',
+    transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+    position: 'relative', // permet un translate propre
   };
 
   // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
@@ -851,34 +857,42 @@ export default function SnakeGame({
       borderRadius: 6,
       border: '1px solid rgba(255, 158, 105, 0.18)', // pink border
       background: 'rgba(18, 3, 5, 0)', // light pink background
-      color: '#ff2d86', // pink text
+      color: '#fff9fcff', // pink text
       fontWeight: 700,
       fontSize: 14,
-      boxShadow: 'inset 0 -1px 0 rgba(0,0,0,0.08)'
+      boxShadow: 'inset 0 -1px 0 rgba(243, 237, 237, 0.08)'
     } as React.CSSProperties;
   }
  
   return (
-     <div className="flex flex-col items-center gap-4 w-full">
-      <div className="text-lg font-bold text-green-700">
-        Score : {score} | Pouvoir :{' '}
-        <span
-          style={{
-            display: 'inline-block',
-            padding: '0 6px',
-            borderRadius: 6,
-            color: gameOver ? 'red' : displayHeadColor,
-            transform: abilityShift ? 'translateX(-10px)' : 'translateX(0)',
-            transition: 'transform 220ms ease, color 160ms ease',
-            fontWeight: 700
-          }}
-        >
-          {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
-        </span>
-      </div>
-      <div className="text-sm text-gray-500 mb-2">
-        {SNAKE_ABILITIES[abilityIndex].description}
-      </div>
+    <div className="flex flex-col items-center gap-4 w-full">
+     <div
+       style={{
+         transform: 'translate(var(--score-offset-x), var(--score-offset-y))',
+         position: 'relative',
+         textAlign: 'center'
+       }}
+     >
+       <div className="text-lg font-bold text-green-700">
+         Score : {score} | Pouvoir :{' '}
+         <span
+           style={{
+             display: 'inline-block',
+             padding: '0 6px',
+             borderRadius: 6,
+             color: gameOver ? 'red' : displayHeadColor,
+             transform: abilityShift ? 'translateX(-10px)' : 'translateX(0)',
+             transition: 'transform 220ms ease, color 160ms ease',
+             fontWeight: 700
+           }}
+         >
+           {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
+         </span>
+       </div>
+       <div className="text-sm text-gray-500 mb-2">
+         {SNAKE_ABILITIES[abilityIndex].description}
+       </div>
+     </div>
 
       {/* Container: canvas + contrôle — grid desktop (fixed panel), stacked mobile */}
       <div style={controlsAbsolute ? containerStyleDesktop : containerStyleMobile}>
@@ -913,15 +927,21 @@ export default function SnakeGame({
             flexDirection: 'column',
             alignItems: 'center',
             gap: 10,
-            padding: 8,
-            borderRadius: 8,
-            background: 'linear-gradient(180deg, rgba(255,245,200,0.06), rgba(255,244,180,0.03))',
-            border: '1px solid rgba(255,223,0,0.18)',
+            padding: 10,
+            borderRadius: 14,
+            // Glassmorphism
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04))',
+            border: '1px solid rgba(255,255,255,0.25)',
             boxSizing: 'border-box',
             justifyContent: 'start',
-            outline: '2px dashed rgba(255,223,0,0.95)',
-            boxShadow: '0 6px 22px rgba(255,223,0,0.16), inset 0 1px 0 rgba(255,255,255,0.02)',
-            zIndex: 20,
+            backdropFilter: 'blur(14px) saturate(170%)',
+            WebkitBackdropFilter: 'blur(14px) saturate(170%)',
+            boxShadow:
+              '0 8px 28px -6px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 2px rgba(255,255,255,0.25)',
+            position: 'relative',
+            overflow: 'hidden',
+            // léger trait lumineux interne
+            outline: '1px solid rgba(255,255,255,0.04)',
           }}
         >
           {/* Groupe complet des touches (déplacé via KEY_GROUP_OFFSET_X/Y) */}
