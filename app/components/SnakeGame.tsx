@@ -794,7 +794,7 @@ export default function SnakeGame({
   
   // Décalage du panneau entier (colonne des touches)
   const PANEL_OFFSET_X = 0; // + droite / - gauche
-  const PANEL_OFFSET_Y = 35; // + bas / - haut
+  const PANEL_OFFSET_Y = -40; // + bas / - haut
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -833,6 +833,10 @@ export default function SnakeGame({
 
   const CANVAS_OFFSET_X = -50; // + droite / - gauche
   const CANVAS_OFFSET_Y = -80; // + bas / - haut
+
+  // Offset pour le message "Appuie sur une flèche pour commencer"
+  const START_HINT_OFFSET_X = 265; // + droite / - gauche
+  const START_HINT_OFFSET_Y = -220; // + bas / - haut
 
   const canvasWrapperStyle: React.CSSProperties = {
     width: '100%',
@@ -1055,7 +1059,15 @@ export default function SnakeGame({
          </div>
        )}
        {!started && !gameOver && (
-         <div className="text-gray-500">Appuie sur une flèche pour commencer</div>
+         <div
+           style={{
+             transform: `translate(${START_HINT_OFFSET_X}px, ${START_HINT_OFFSET_Y}px)`,
+             transition: 'transform 160ms ease',
+           }}
+           className="text-gray-500"
+         >
+           Appuie sur une flèche pour commencer
+         </div>
        )}
     </div>
   );
