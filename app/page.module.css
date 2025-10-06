@@ -142,8 +142,8 @@
     --title-offset-y: -50px;
   }
   .asideRight {
-    --aside-offset-x: 135px;  /* déplace l'aside (À propos) vers la droite */
-    --aside-offset-y: 12px; /* remonte un peu l'aside aka "À propos" */
+    --aside-offset-x: 140px;  /* déplace l'aside (À propos) vers la droite */
+    --aside-offset-y: 10px; /* remonte un peu l'aside aka "À propos" */
   }
 }
 
@@ -171,13 +171,13 @@
   --about-title-offset-x: 0px;        /* Déplacement horizontal du h2 */
   --about-title-offset-y: 0px;        /* Déplacement vertical du h2 */
 
-  --about-line1-font-size: 16px;      /* Taille première ligne de texte */
+  --about-line1-font-size: 18px;      /* Taille première ligne de texte */
   --about-line1-color: #d7e7ff;       /* Couleur première ligne */
   --about-line1-weight: 400;          /* Graisse première ligne */
   --about-line1-offset-x: 0px;        /* Déplacement horizontal ligne 1 */
   --about-line1-offset-y: 0px;        /* Déplacement vertical ligne 1 */
 
-  --about-line2-font-size: 13px;      /*  Taille deuxième ligne de texte */
+  --about-line2-font-size: 14px;      /*  Taille deuxième ligne de texte */
   --about-line2-color: #d7e7ff;       /* Couleur deuxième ligne */
   --about-line2-weight: 400;          /* Graisse deuxième ligne */
   --about-line2-offset-x: 0px;        /* Déplacement horizontal ligne 2 */
@@ -200,7 +200,7 @@
   /* Pour ajouter une ombre: text-shadow: 0 0 4px rgba(255,255,255,0.3); */
 }
 
-/* 2.b) Première ligne de paragraphe */
+/* 2.b) Première ligne de paragraphe */ 
 .asideRight > p:first-of-type {
   position: relative;
   margin: 0 0 var(--about-paragraph-spacing) 0;
@@ -210,6 +210,9 @@
   line-height: var(--about-shared-line-height);
   transform: translate(var(--about-line1-offset-x), var(--about-line1-offset-y));
   /* Pour souligner: text-decoration: underline; */
+  /* Premier paragraphe */
+  font-family: 'Poppins', system-ui, Arial, sans-serif; /* Même police que le titre */
+  color: #f5f6f7; /* couleur du texte */
 }
 
 /* 2.c) Deuxième ligne de paragraphe */
@@ -221,6 +224,9 @@
   color: var(--about-line2-color);
   line-height: var(--about-shared-line-height);
   transform: translate(var(--about-line2-offset-x), var(--about-line2-offset-y));
+  /* Deuxième paragraphe */
+  font-family: 'Poppins', system-ui, Arial, sans-serif; /* Même police que le titre */
+  color: #ebeef3; /* couleur du texte */
 }
 
 /* 3) Exemple: styles spécifiques PC uniquement (optionnel)
@@ -281,7 +287,7 @@
   word-break: keep-all;
   word-spacing: -0.5px;
   text-wrap: balance;
-  transform: translate(-500px, 30px); /* ← Combine X et Y */
+  transform: translate(-750px, 30px); /* ← Combine X et Y */
 }
 
 .pasPluLine {
@@ -415,9 +421,9 @@
 /* Contrôle des 5 qui indique les lignes de couleur ensemble */
 :root {
   --powerlines-offset-x: 0px;  /* + = droite / - = gauche */
-  --powerlines-offset-y: 40px; /* + = bas    / - = haut  */
+  --powerlines-offset-y: 2px; /* + = bas    / - = haut  */
   --powerlines-margin-top: 0px; /* Espace au-dessus du bloc */
-  --powerlines-margin-bottom: -30px; /* Espace en-dessous du bloc */
+  --powerlines-margin-bottom: -120px; /* Espace en-dessous du bloc */
 }
 
 .powerLinesWrapper {
@@ -432,5 +438,19 @@
 :root {
   --score-offset-x: -124px; /* + = droite / - = gauche */
   --score-offset-y: 0px; /* + = bas    / - = haut  */
+}
+
+@media (min-width: 1024px) {
+  .asideRight {
+    --about-line1-font-size: 18px;  /* Plus grand sur desktop */
+    --about-line2-font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .asideRight {
+    --about-line1-font-size: 15px;  /* Plus petit sur mobile */
+    --about-line2-font-size: 12px;
+  }
 }
 

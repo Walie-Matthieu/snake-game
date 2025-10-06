@@ -960,6 +960,13 @@ export default function SnakeGame({
               boxSizing: 'border-box',
             }}
           />
+          {isPaused && !gameOver && ( 
+            <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+               {/* texte de pause au milieux du canvas */} 
+              <strong>PAUSE</strong> 
+              <span>Appuie sur T pour continuer</span>
+            </div>
+          )}
         </div>
 
         {/* ===================== CONTROLS PANEL START =====================
@@ -1050,21 +1057,17 @@ export default function SnakeGame({
          <div className="flex flex-col items-center">
            <div className="text-red-500">Game Over!</div>
            <div className="text-gray-500 mt-2">Appuie sur <b>R</b> pour recommencer</div>
+           
          </div>
        )}
-       {isPaused && !gameOver && (
-         <div className="flex flex-col items-center">
-           <div className="text-yellow-500 font-bold">PAUSE</div>
-           <div className="text-gray-500 mt-2">Appuie sur <b>T</b> pour continuer</div>
-         </div>
-       )}
+       
        {!started && !gameOver && (
          <div
            style={{
              transform: `translate(${START_HINT_OFFSET_X}px, ${START_HINT_OFFSET_Y}px)`,
              transition: 'transform 160ms ease',
              textAlign: 'center',
-             color: '#e7ebf1ff', // équivalent text-gray-500
+             color: '#edeff3ff', // équivalent text-gray-500
              lineHeight: 1.2,
            }}
            
