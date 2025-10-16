@@ -1045,7 +1045,7 @@ export default function SnakeGame({
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <kbd style={keyStyle()}>R</kbd>
-                <span style={{ fontSize: 12 }}></span>
+                <span style={{ fontSize: 12 }}>Recommencer</span>
               </div>
             </div>
           </div>
