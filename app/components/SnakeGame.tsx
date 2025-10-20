@@ -844,6 +844,7 @@ export default function SnakeGame({
     boxSizing: 'border-box',
     overflow: 'hidden',
     transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+    position: 'relative', // <- permet aux overlays position:absolute d'être centrés sur le canvas
   };
 
   // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
@@ -961,12 +962,28 @@ export default function SnakeGame({
             }}
           />
           {isPaused && !gameOver && ( 
-            <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-               {/* texte de pause au milieux du canvas */} 
-              <strong>PAUSE</strong> 
-              <span>Appuie sur T pour continuer</span>
-            </div>
-          )}
+            <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', zIndex: 20 }}>
+               <strong>PAUSE</strong> 
+               <span>Appuie sur T pour continuer</span>
+             </div>
+           )}
+           
+           {/* Ajoute le message Game Over à l'intérieur du canvas wrapper */}
+          {gameOver && (
+            <div style={{ 
+              position:'absolute', 
+              inset:0, 
+              display:'flex', 
+              flexDirection:'column', 
+              alignItems:'center', 
+              justifyContent:'center',
+              pointerEvents: 'none',
+              zIndex: 20
+            }}>
+               <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
+               <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
+             </div>
+           )}
         </div>
 
         {/* ===================== CONTROLS PANEL START =====================
@@ -1053,14 +1070,6 @@ export default function SnakeGame({
         {/* ====================== CONTROLS PANEL END ====================== */}
       </div>  {/* <-- fermeture du container grid/flex */}
  
-       {gameOver && (
-         <div className="flex flex-col items-center">
-           <div className="text-red-500">Game Over!</div>
-           <div className="text-gray-500 mt-2">Appuie sur <b>R</b> pour recommencer</div>
-           
-         </div>
-       )}
-       
        {!started && !gameOver && (
          <div
            style={{
