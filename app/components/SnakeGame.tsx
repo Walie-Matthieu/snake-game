@@ -831,8 +831,13 @@ export default function SnakeGame({
     boxSizing: 'border-box',
   };
 
+  //  Déplace le Canvas
   const CANVAS_OFFSET_X = -50; // + droite / - gauche
   const CANVAS_OFFSET_Y = -80; // + bas / - haut
+
+  // Offset dédié pour le texte des capacités
+  const ABILITY_TEXT_OFFSET_X = 0; // + droite / - gauche 
+  const ABILITY_TEXT_OFFSET_Y = 0; // + bas / - haut
 
   // Offset pour le message "Appuie sur une flèche pour commencer"
   const START_HINT_OFFSET_X = 265; // + droite / - gauche
@@ -909,7 +914,7 @@ export default function SnakeGame({
       </div>
       <div
         style={{
-          transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+          transform: `translate(${CANVAS_OFFSET_X + ABILITY_TEXT_OFFSET_X}px, ${CANVAS_OFFSET_Y + ABILITY_TEXT_OFFSET_Y}px)`,
           fontSize: 12,
           color: '#b9bcc4',
           textAlign: 'center',
