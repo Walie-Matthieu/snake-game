@@ -961,14 +961,13 @@ export default function SnakeGame({
               boxSizing: 'border-box',
             }}
           />
+          {/* Messages centrés dans le canvas */}
           {isPaused && !gameOver && ( 
             <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', zIndex: 20 }}>
-               <strong>PAUSE</strong> 
-               <span>Appuie sur T pour continuer</span>
-             </div>
-           )}
-           
-           {/* Ajoute le message Game Over à l'intérieur du canvas wrapper */}
+              <strong>PAUSE</strong> 
+              <span>Appuie sur T pour continuer</span>
+            </div>
+          )}
           {gameOver && (
             <div style={{ 
               position:'absolute', 
@@ -978,12 +977,29 @@ export default function SnakeGame({
               alignItems:'center', 
               justifyContent:'center',
               pointerEvents: 'none',
-              zIndex: 20
+              zIndex: 20,
+              transform: 'translate(5px, -20px)'
             }}>
-               <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
-               <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
-             </div>
-           )}
+              <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
+              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
+            </div>
+          )}
+          {!started && !gameOver && (
+            <div style={{ 
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pointerEvents: 'none',
+              zIndex: 20,
+              transform: 'translate(0px, 0px)'  // Ajuste X,Y ici si besoin
+            }}>
+              <div>Appuie sur une flèche</div>
+              <div>pour commencer</div>
+            </div>
+          )}
         </div>
 
         {/* ===================== CONTROLS PANEL START =====================
@@ -1069,22 +1085,6 @@ export default function SnakeGame({
         </div>
         {/* ====================== CONTROLS PANEL END ====================== */}
       </div>  {/* <-- fermeture du container grid/flex */}
- 
-       {!started && !gameOver && (
-         <div
-           style={{
-             transform: `translate(${START_HINT_OFFSET_X}px, ${START_HINT_OFFSET_Y}px)`,
-             transition: 'transform 160ms ease',
-             textAlign: 'center',
-             color: '#edeff3ff', // équivalent text-gray-500
-             lineHeight: 1.2,
-           }}
-           
-         >
-           <div>Appuie sur une flèche</div>
-           <div>pour commencer</div>
-         </div>
-       )}
     </div>
   );
 }
