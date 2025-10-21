@@ -836,7 +836,7 @@ export default function SnakeGame({
   const CANVAS_OFFSET_Y = -80; // + bas / - haut
 
   // Offset dédié pour le texte des capacités
-  const ABILITY_TEXT_OFFSET_X = 0; // + droite / - gauche 
+  const ABILITY_TEXT_OFFSET_X = -70; // + droite / - gauche
   const ABILITY_TEXT_OFFSET_Y = 0; // + bas / - haut
 
   // Offset pour le message "Appuie sur une flèche pour commencer"
@@ -912,29 +912,13 @@ export default function SnakeGame({
           <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
         </div>
       </div>
-      <div
-        style={{
-          transform: `translate(${CANVAS_OFFSET_X + ABILITY_TEXT_OFFSET_X}px, ${CANVAS_OFFSET_Y + ABILITY_TEXT_OFFSET_Y}px)`,
-          fontSize: 12,
-          color: '#b9bcc4',
-          textAlign: 'center',
-          marginTop: 6
-        }}
-      >
-        {SNAKE_ABILITIES[abilityIndex].description}
-      </div>
-
-      {/* Nom du pouvoir au‑dessus du canvas */}
-      <div
-        style={{
-          transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 8,
-          pointerEvents: 'none'
-        }}
-      >
+      {/* Wrapper commun pour nom + description du pouvoir */}
+      <div style={{
+        transform: `translate(${CANVAS_OFFSET_X + ABILITY_TEXT_OFFSET_X}px, ${CANVAS_OFFSET_Y + ABILITY_TEXT_OFFSET_Y}px)`,
+        width: '100%',
+        textAlign: 'center'
+      }}>
+        {/* Nom du pouvoir */}
         <span
           style={{
             display: 'inline-block',
@@ -944,10 +928,20 @@ export default function SnakeGame({
             color: gameOver ? 'red' : displayHeadColor,
             fontWeight: 700,
             fontFamily: 'inherit',
+            marginBottom: 8
           }}
         >
           {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
         </span>
+
+        {/* Description du pouvoir */}
+        <div style={{
+          fontSize: 12,
+          color: '#b9bcc4',
+          marginTop: 6
+        }}>
+          {SNAKE_ABILITIES[abilityIndex].description}
+        </div>
       </div>
 
       {/* Container: canvas + contrôle — grid desktop (fixed panel), stacked mobile */}
@@ -986,7 +980,7 @@ export default function SnakeGame({
               transform: 'translate(5px, -20px)'
             }}>
               <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
-              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
+              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour</div>
             </div>
           )}
           {!started && !gameOver && (
