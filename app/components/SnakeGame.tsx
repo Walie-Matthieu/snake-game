@@ -833,7 +833,7 @@ export default function SnakeGame({
 
   //  Déplace le Canvas
   const CANVAS_OFFSET_X = -50; // + droite / - gauche
-  const CANVAS_OFFSET_Y = -80; // + bas / - haut
+  const CANVAS_OFFSET_Y = -170; // + bas / - haut
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = -70; // + droite / - gauche
@@ -871,8 +871,8 @@ export default function SnakeGame({
     } as React.CSSProperties;
   }
  
-  // === Scoreboard minimal (MON | TON) ===
-  const SCOREBOARD_OFFSET_X = 280; // + droite / - gauche
+  // === Tableau du Score (TON | MEILLEUR) ===
+  const SCOREBOARD_OFFSET_X = 340; // + droite / - gauche
   const SCOREBOARD_OFFSET_Y = 0; // + bas / - haut
   const SCOREBOARD_SCALE = 1;    // 1 = 100%
 
@@ -895,23 +895,33 @@ export default function SnakeGame({
         style={{
           transform: `translate(${SCOREBOARD_OFFSET_X}px, ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`,
           display: 'flex',
+          flexDirection: 'column',  // Change en colonne
           alignItems: 'center',
           gap: 12,
           userSelect: 'none'
         }}
       >
+        {/* Ligne du haut avec TON SCORE | MEILLEUR SCORE */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>TON SCORE</div>
+            <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{score}</div>
+          </div>
+
+          <div style={{ fontSize: 28, fontWeight: 800, color: 'rgba(255,255,255,0.75)', padding: '0 8px' }}>|</div>
+
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MEILLEUR SCORE</div>
+            <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
+          </div>
+        </div>
+
+        {/* MON SCORE en dessous */}
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MON SCORE</div>
-          <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{score}</div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>148</div>
         </div>
-
-        <div style={{ fontSize: 28, fontWeight: 800, color: 'rgba(255,255,255,0.75)', padding: '0 8px' }}>|</div>
-
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>TON SCORE</div>
-          <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
-        </div>
-      </div>
+      </div> 
       {/* Wrapper commun pour nom + description du pouvoir */}
       <div style={{
         transform: `translate(${CANVAS_OFFSET_X + ABILITY_TEXT_OFFSET_X}px, ${CANVAS_OFFSET_Y + ABILITY_TEXT_OFFSET_Y}px)`,
