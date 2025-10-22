@@ -897,7 +897,7 @@ export default function SnakeGame({
           display: 'flex',
           flexDirection: 'column',  // Change en colonne
           alignItems: 'center',
-          gap: 12,
+          gap: 1,                  // <- Espace entre la ligne du haut et "MON SCORE"
           userSelect: 'none'
         }}
       >
@@ -990,7 +990,7 @@ export default function SnakeGame({
               transform: 'translate(5px, -20px)'
             }}>
               <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
-              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
+              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour </div>
             </div>
           )}
           {!started && !gameOver && (
