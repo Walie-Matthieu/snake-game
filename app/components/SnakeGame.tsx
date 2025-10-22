@@ -990,7 +990,7 @@ export default function SnakeGame({
               transform: 'translate(5px, -20px)'
             }}>
               <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
-              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour </div>
+              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
             </div>
           )}
           {!started && !gameOver && (
