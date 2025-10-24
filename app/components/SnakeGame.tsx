@@ -793,8 +793,8 @@ export default function SnakeGame({
   const KEY_GROUP_OFFSET_Y = 21; // Déplace les touches verticalement (+ bas / - haut)
   
   // Décalage du panneau entier (colonne des touches)
-  const PANEL_OFFSET_X = 20; // + droite / - gauche
-  const PANEL_OFFSET_Y = 30; // + bas / - haut
+  const PANEL_OFFSET_X = 90; // + droite / - gauche
+  const PANEL_OFFSET_Y = 10; // + bas / - haut
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -833,7 +833,7 @@ export default function SnakeGame({
 
   //  Déplace le Canvas
   const CANVAS_OFFSET_X = -50; // + droite / - gauche
-  const CANVAS_OFFSET_Y = -170; // + bas / - haut
+  const CANVAS_OFFSET_Y = -150; // + bas / - haut
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = -70; // + droite / - gauche
@@ -872,9 +872,9 @@ export default function SnakeGame({
   }
  
   // === Tableau du Score (TON | MEILLEUR) ===
-  const SCOREBOARD_OFFSET_X = 340; // + droite / - gauche
+  const SCOREBOARD_OFFSET_X = 335; // + droite / - gauche
   const SCOREBOARD_OFFSET_Y = 0; // + bas / - haut
-  const SCOREBOARD_SCALE = 1;    // 1 = 100%
+  const SCOREBOARD_SCALE = 1;    // Taille (1 = 100%, 1.2 = 120%, etc.)
 
   const [highScore, setHighScore] = useState<number>(() => {
     if (typeof window === 'undefined') return 0;
