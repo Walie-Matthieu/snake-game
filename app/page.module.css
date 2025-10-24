@@ -139,7 +139,7 @@
     --game-offset-x: 0px;        /* 0 => ne bouge pas le bloc */
     --game-offset-y: 0px;
     --title-offset-x: -100px;    /* déplacer uniquement le titre */
-    --title-offset-y: -50px;
+    --title-offset-y: -20px;
   }
   .asideRight {
     --aside-offset-x: 140px;  /* déplace l'aside (À propos) vers la droite */
