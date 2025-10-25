@@ -1,4 +1,5 @@
 'use client';
+import { table } from 'console';
 import React, { useEffect, useRef, useState } from 'react';
 
 type Position = {
@@ -794,7 +795,7 @@ export default function SnakeGame({
   
   // Décalage du panneau entier (colonne des touches)
   const PANEL_OFFSET_X = 90; // + droite / - gauche
-  const PANEL_OFFSET_Y = 10; // + bas / - haut
+  const PANEL_OFFSET_Y = 120; // + bas / - haut
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -832,8 +833,8 @@ export default function SnakeGame({
   };
 
   //  Déplace le Canvas
-  const CANVAS_OFFSET_X = -50; // + droite / - gauche
-  const CANVAS_OFFSET_Y = -150; // + bas / - haut
+  const CANVAS_OFFSET_X = -40; // + droite / - gauche
+  const CANVAS_OFFSET_Y = 10; // + bas / - haut
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = -70; // + droite / - gauche
@@ -872,7 +873,7 @@ export default function SnakeGame({
   }
  
   // === Tableau du Score (TON | MEILLEUR) ===
-  const SCOREBOARD_OFFSET_X = 335; // + droite / - gauche
+  const SCOREBOARD_OFFSET_X = 935; // + droite / - gauche
   const SCOREBOARD_OFFSET_Y = 0; // + bas / - haut
   const SCOREBOARD_SCALE = 1;    // Taille (1 = 100%, 1.2 = 120%, etc.)
 
@@ -889,16 +890,21 @@ export default function SnakeGame({
   }, [score, highScore]);
 
   return (
-     <div className="flex flex-col items-center gap-4 w-full">
+     <div className="flex flex-col items-center gap-4 w-full" style={{ position: 'relative' }}>
       {/* Scoreboard NBA-style simple */}
       <div
         style={{
-          transform: `translate(${SCOREBOARD_OFFSET_X}px, ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`,
+         position: 'absolute',
+         left: '50%',
+         top: 8,
+         transform: `translate( 110%, ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`, // Déplacer le tableau des scores par la droite ou la gauche
           display: 'flex',
-          flexDirection: 'column',  // Change en colonne
+          flexDirection: 'column',
           alignItems: 'center',
-          gap: 1,                  // <- Espace entre la ligne du haut et "MON SCORE"
-          userSelect: 'none'
+          gap: 1,
+          userSelect: 'none',
+          zIndex: 9999,
+          pointerEvents: 'none'
         }}
       >
         {/* Ligne du haut avec TON SCORE | MEILLEUR SCORE */}
