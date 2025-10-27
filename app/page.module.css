@@ -147,6 +147,39 @@
   }
 }
 
+/* Petit écran PC (1024px - 1440px) */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  .gameLeft {
+    --game-offset-x: -20px;
+    --title-offset-x: -50px;
+  }
+  .asideRight {
+    --aside-offset-x: 80px;
+  }
+}
+
+/* Écran PC moyen (1441px - 1920px) */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  .gameLeft {
+    --game-offset-x: 0px;
+    --title-offset-x: -100px;
+  }
+  .asideRight {
+    --aside-offset-x: 140px;
+  }
+}
+
+/* Grand écran PC (>1920px) */
+@media (min-width: 1921px) {
+  .gameLeft {
+    --game-offset-x: 20px;
+    --title-offset-x: -120px;
+  }
+  .asideRight {
+    --aside-offset-x: 180px;
+  }
+}
+
 /* === CONTROLE INDIVIDUEL DES TEXTES (ajout) ================================
    Tu peux modifier chaque ligne via les variables ci‑dessous sans toucher au JSX.
    - Pour changer taille/couleur: modifie la variable correspondante.
@@ -284,10 +317,20 @@
 /* Solution paragraphe final - contrôle strict */
 .lastParagraph {
   font-size: 1.5em;
-  word-break: keep-all;
-  word-spacing: -0.5px;
+  word-break: normal;         /* autorise les retours */
+  overflow-wrap: anywhere;    /* casse si nécessaire */
   text-wrap: balance;
-  transform: translate(-750px, 30px); /* ← Combine X et Y */
+  transform: translate(var(--last-offset-x, 0px), var(--last-offset-y, 0px));
+  align-self: flex-start;     /* colle à gauche dans le flex .row */
+  max-width: 720px;           /* évite de trop s’étirer à droite */
+}
+
+/* PC: petit décalage contrôlé */
+@media (min-width: 1024px) {
+  .lastParagraph {
+    --last-offset-x: -700px;  /* ajuste gauche/droite */
+    --last-offset-y: 30px;   /* ajuste haut/bas */
+  }
 }
 
 .pasPluLine {
