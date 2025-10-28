@@ -804,11 +804,12 @@ export default function SnakeGame({
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+  const isDesktop = windowWidth >= 1024;
 
   // largeur minimale souhaitée pour le canvas quand la colonne est à droite
-  const MIN_CANVAS_WIDTH = 240;
+  // const MIN_CANVAS_WIDTH = 240;
   // on place la colonne à droite seulement si la fenêtre peut contenir (canvas min + gap + control)
-  const controlsAbsolute = windowWidth >= (MIN_CANVAS_WIDTH + CONTROL_WIDTH + CONTAINER_GAP);
+  const controlsAbsolute = isDesktop;
 
   // container style: grid on desktop (fixed right column), column flow on mobile
   const containerStyleDesktop: React.CSSProperties = {
@@ -816,9 +817,10 @@ export default function SnakeGame({
     // première colonne = largeur actuelle du canvas (px), deuxième = panneau contrôles
     gridTemplateColumns: `${Math.round(canvasSize)}px ${CONTROL_WIDTH}px`,
     gap: CONTAINER_GAP,
-    // largeur totale = canvas + gap + control ; allow it to grow up to viewport
-    width: `${Math.round(canvasSize + CONTROL_WIDTH + CONTAINER_GAP)}px`,
-    maxWidth: '100%',
+    // conteneur fluide et centré -> évite l'overflow en X
+    width: '100%',
+    maxWidth: '100vw',
+    justifyContent: 'center',
     boxSizing: 'border-box',
     alignItems: 'start',
     minWidth: 0,
@@ -873,9 +875,9 @@ export default function SnakeGame({
   }
  
   // === Tableau du Score (TON | MEILLEUR) ===
-  const SCOREBOARD_OFFSET_X = 935; // + droite / - gauche
   const SCOREBOARD_OFFSET_Y = 0; // + bas / - haut
-  const SCOREBOARD_SCALE = 1;    // Taille (1 = 100%, 1.2 = 120%, etc.)
+  const SCOREBOARD_SCALE = windowWidth >= 1440 ? 1 : windowWidth >= 1024 ? 0.9 : 1; // PC responsive
+  const SCOREBOARD_SHIFT_X = 0;   // + droite / - gauche
 
   const [highScore, setHighScore] = useState<number>(() => {
     if (typeof window === 'undefined') return 0;
@@ -889,45 +891,62 @@ export default function SnakeGame({
     }
   }, [score, highScore]);
 
+  // Click/touch sur le panneau -> envoie un faux keydown
+  const pressKey = (key: 'ArrowUp'|'ArrowDown'|'ArrowLeft'|'ArrowRight'|'t'|'r') => {
+    const codeMap: Record<string, string> = {
+      ArrowUp: 'ArrowUp',
+      ArrowDown: 'ArrowDown',
+      ArrowLeft: 'ArrowLeft',
+      ArrowRight: 'ArrowRight',
+      t: 'KeyT',
+      r: 'KeyR',
+    };
+    const ev = new KeyboardEvent('keydown', { key, code: codeMap[key], bubbles: true });
+    document.dispatchEvent(ev);
+  };
+
   return (
      <div className="flex flex-col items-center gap-4 w-full" style={{ position: 'relative' }}>
-      {/* Scoreboard NBA-style simple */}
-      <div
-        style={{
-         position: 'absolute',
-         left: '50%',
-         top: 8,
-         transform: `translate( 110%, ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`, // Déplacer le tableau des scores par la droite ou la gauche
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 1,
-          userSelect: 'none',
-          zIndex: 9999,
-          pointerEvents: 'none'
-        }}
-      >
-        {/* Ligne du haut avec TON SCORE | MEILLEUR SCORE */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>TON SCORE</div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{score}</div>
-          </div>
+      {/* Scoreboard — centré en absolute (pas d'overflow), visible seulement en PC */}
+      {isDesktop && (
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: 8,
+            transform: `translate(calc(115% + ${SCOREBOARD_SHIFT_X}px), ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 1,
+            userSelect: 'none',
+            zIndex: 9999,
+            pointerEvents: 'none'
+          }}
+        >
+         {/* Ligne du haut avec TON SCORE | MEILLEUR SCORE */}
+         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+           <div style={{ textAlign: 'center' }}>
+             <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>TON SCORE</div>
+             <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{score}</div>
+           </div>
 
-          <div style={{ fontSize: 28, fontWeight: 800, color: 'rgba(255,255,255,0.75)', padding: '0 8px' }}>|</div>
+           <div style={{ fontSize: 28, fontWeight: 800, color: 'rgba(255,255,255,0.75)', padding: '0 8px' }}>|</div>
 
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MEILLEUR SCORE</div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
-          </div>
+           <div style={{ textAlign: 'center' }}>
+             <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MEILLEUR SCORE</div>
+             <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
+           </div>
+         </div>
+
+         {/* MON SCORE en dessous */}
+         <div style={{ textAlign: 'center' }}>
+           <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MON SCORE</div>
+           <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>148</div>
+         </div>
         </div>
+      )}
 
-        {/* MON SCORE en dessous */}
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MON SCORE</div>
-          <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>148</div>
-        </div>
-      </div> 
       {/* Wrapper commun pour nom + description du pouvoir */}
       <div style={{
         transform: `translate(${CANVAS_OFFSET_X + ABILITY_TEXT_OFFSET_X}px, ${CANVAS_OFFSET_Y + ABILITY_TEXT_OFFSET_Y}px)`,
@@ -1026,7 +1045,7 @@ export default function SnakeGame({
           style={{
             width: controlsAbsolute ? CONTROL_WIDTH : '100%',
             height: controlsAbsolute ? `${CONTROL_HEIGHT}px` : 'auto',
-            transform: `translate(${PANEL_OFFSET_X}px, ${PANEL_OFFSET_Y}px)`,
+            transform: controlsAbsolute ? `translate(${PANEL_OFFSET_X}px, ${PANEL_OFFSET_Y}px)` : 'none',
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
             flexDirection: 'column',
@@ -1073,26 +1092,64 @@ export default function SnakeGame({
               }}
             >
               <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
-                <kbd style={keyStyle()} aria-label="Flèche haut">↑</kbd>
+                <kbd
+                  style={{ ...keyStyle(), cursor: 'pointer' }}
+                  aria-label="Flèche haut"
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('ArrowUp'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowUp'); }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowUp'); }
+                  }}
+                >↑</kbd>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <kbd style={keyStyle()} aria-label="Flèche gauche">←</kbd>
+                <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche gauche" role="button" tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('ArrowLeft'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowLeft'); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowLeft'); } }}
+                >←</kbd>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <kbd style={keyStyle()} aria-label="Flèche bas">↓</kbd>
+                <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche bas" role="button" tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('ArrowDown'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowDown'); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowDown'); } }}
+                >↓</kbd>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <kbd style={keyStyle()} aria-label="Flèche droite">→</kbd>
+                <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche droite" role="button" tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('ArrowRight'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowRight'); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowRight'); } }}
+                >→</kbd>
               </div>
             </div>
             {/* T et R empilés */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <kbd style={keyStyle()}>T</kbd>
+                <kbd
+                  style={{ ...keyStyle(), cursor: 'pointer' }}
+                  aria-label="Pause"
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('t'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('t'); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('t'); } }}
+                >T</kbd>
                 <span style={{ fontSize: 12 }}>Pause</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <kbd style={keyStyle()}>R</kbd>
+                <kbd
+                  style={{ ...keyStyle(), cursor: 'pointer' }}
+                  aria-label="Recommencer"
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('r'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('r'); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('r'); } }}
+                >R</kbd>
                 <span style={{ fontSize: 12 }}>Recommencer</span>
               </div>
             </div>
