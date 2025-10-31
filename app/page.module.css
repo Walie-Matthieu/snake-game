@@ -8,10 +8,9 @@
 }
 :global(body) {
   margin: 0;
-  overflow-x: hidden; /* empêche la barre horizontale quand on décale à gauche */
-  /* Police globale unifiée (même que le titre) */
+  /* overflow-x: hidden;  // ← retire-le: ça masque le contenu hors écran */
   font-family: 'Poppins', system-ui, Arial, sans-serif;
-  font-weight: 400; /* poids par défaut sans changer les tailles existantes */
+  
 }
 
 .row {
@@ -153,9 +152,8 @@
     --game-offset-x: -20px;
     --title-offset-x: -50px;
   }
-  .asideRight {
-    --aside-offset-x: 80px;
-  }
+  .asideRight { --aside-offset-x: 80px; }
+  .lastParagraph { --last-offset-x: -20px; --last-offset-y: 30px; }
 }
 
 /* Écran PC moyen (1441px - 1920px) */
@@ -164,9 +162,8 @@
     --game-offset-x: 0px;
     --title-offset-x: -100px;
   }
-  .asideRight {
-    --aside-offset-x: 140px;
-  }
+  .asideRight { --aside-offset-x: 140px; }
+  .lastParagraph { --last-offset-x: -10px; --last-offset-y: 30px; }
 }
 
 /* Grand écran PC (>1920px) */
@@ -175,9 +172,8 @@
     --game-offset-x: 20px;
     --title-offset-x: -120px;
   }
-  .asideRight {
-    --aside-offset-x: 180px;
-  }
+  .asideRight { --aside-offset-x: 180px; }
+  .lastParagraph { --last-offset-x: 0px; --last-offset-y: 30px; }
 }
 
 /* === CONTROLE INDIVIDUEL DES TEXTES (ajout) ================================
@@ -328,8 +324,8 @@
 /* PC: petit décalage contrôlé */
 @media (min-width: 1024px) {
   .lastParagraph {
-    --last-offset-x: -700px;  /* ajuste gauche/droite */
-    --last-offset-y: 30px;   /* ajuste haut/bas */
+    --last-offset-x: -20px; /* évite la sortie du viewport */
+    --last-offset-y: 30px;
   }
 }
 
@@ -495,5 +491,46 @@
     --about-line1-font-size: 15px;  /* Plus petit sur mobile */
     --about-line2-font-size: 12px;
   }
+}
+
+/* Base: applique les offsets via variables (fallback 0) */
+.gameLeft { transform: translate(var(--game-offset-x, 0), var(--game-offset-y, 0)); }
+.gameLeft::before { transform: translate(var(--title-offset-x, 0), var(--title-offset-y, 0)); }
+.asideRight { transform: translate(var(--aside-offset-x, 0), var(--aside-offset-y, 0)); }
+.lastParagraph {
+  transform: translate(var(--last-offset-x, 0), var(--last-offset-y, 0));
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+.row { overflow-x: visible; } /* ne pas couper horizontalement */
+
+/* Desktop petit (1024px - 1440px) */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  .gameLeft {
+    --game-offset-x: -20px;
+    --title-offset-x: -50px;
+  }
+  .asideRight { --aside-offset-x: 80px; }
+  .lastParagraph { --last-offset-x: -20px; --last-offset-y: 30px; }
+}
+
+/* Desktop moyen (1441px - 1920px) */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  .gameLeft {
+    --game-offset-x: 0px;
+    --title-offset-x: -100px;
+  }
+  .asideRight { --aside-offset-x: 140px; }
+  .lastParagraph { --last-offset-x: -700px; --last-offset-y: 30px; }
+}
+
+/* Grand écran (>1921px) */
+@media (min-width: 1921px) {
+  .gameLeft {
+    --game-offset-x: 20px;
+    --title-offset-x: -120px;
+  }
+  .asideRight { --aside-offset-x: 180px; }
+  .lastParagraph { --last-offset-x: 0px; --last-offset-y: 30px; }
 }
 
