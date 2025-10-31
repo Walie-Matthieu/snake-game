@@ -153,7 +153,14 @@
     --title-offset-x: -50px;
   }
   .asideRight { --aside-offset-x: 80px; }
-  .lastParagraph { --last-offset-x: -20px; --last-offset-y: 30px; }
+  .lastParagraph {
+    /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
+    flex: 1 1 100%;
+    align-self: stretch;
+    max-width: 100%;
+    --last-offset-x: -10px;
+    --last-offset-y: 30px;
+  }
 }
 
 /* Écran PC moyen (1441px - 1920px) */
@@ -511,7 +518,14 @@
     --title-offset-x: -50px;
   }
   .asideRight { --aside-offset-x: 80px; }
-  .lastParagraph { --last-offset-x: -20px; --last-offset-y: 30px; }
+  .lastParagraph {
+    /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
+    flex: 1 1 100%;
+    align-self: stretch;
+    max-width: 100%;
+    --last-offset-x: -700px;
+    --last-offset-y: 30px;
+  }
 }
 
 /* Desktop moyen (1441px - 1920px) */
