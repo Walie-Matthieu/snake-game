@@ -10,7 +10,7 @@
   margin: 0;
   /* overflow-x: hidden;  // ← retire-le: ça masque le contenu hors écran */
   font-family: 'Poppins', system-ui, Arial, sans-serif;
-  
+  font-weight: 400; /* poids par défaut sans changer les tailles existantes */
 }
 
 .row {
