@@ -50,8 +50,8 @@
 .gameLeft::before {
   content: 'Snake Game';
   position: absolute;
-  top: var(--title-offset-y);
-  left: var(--title-offset-x);
+  top: 40px;
+  left: 15px;
   font-size: var(--title-font-size);
   font-family: 'Poppins', system-ui, Arial, sans-serif;
   font-weight: 700;
@@ -146,22 +146,22 @@
   }
 }
 
-/* Petit écran PC (1024px - 1440px) */
-@media (min-width: 1024px) and (max-width: 1440px) {
+/* Petit écran PC, ligne probablement obsolète! (1024px - 1440px) */
+/* @media (min-width: 1024px) and (max-width: 1440px) {
   .gameLeft {
     --game-offset-x: -20px;
     --title-offset-x: -50px;
   }
   .asideRight { --aside-offset-x: 80px; }
-  .lastParagraph {
+  .lastParagraph { */
     /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
-    flex: 1 1 100%;
+    /* flex: 1 1 100%;
     align-self: stretch;
     max-width: 100%;
     --last-offset-x: -10px;
     --last-offset-y: 30px;
   }
-}
+} */
 
 /* Écran PC moyen (1441px - 1920px) */
 @media (min-width: 1441px) and (max-width: 1920px) {
@@ -514,17 +514,26 @@
 /* Desktop petit (1024px - 1440px) */
 @media (min-width: 1024px) and (max-width: 1440px) {
   .gameLeft {
-    --game-offset-x: -20px;
-    --title-offset-x: -50px;
+    --game-offset-x: 70px;       /* Pour déplacer le bloc jeu de gauche à droite */
+    --game-offset-y: 30px;      /* Pour déplacer le bloc jeu de haut en bas */
+    --title-offset-x: -50px;   /* chiffre grand = plus à gauche */
+    --title-offset-y: -70px;  /* chiffre grand = plus en bas */
+    --container-gap: -70px;  /* espace entre Canvas et panneau */
+
+    --scoreboard-offset-x: 250px;   /* + = droite, - = gauche */
+    --scoreboard-offset-y: 0px;    /* + = bas, - = haut */
+
+    --controls-offset-x: 30px;   /* déplace le panneau touches */
+    --controls-offset-y: 110px;    /* + = bas, - = haut */
   }
-  .asideRight { --aside-offset-x: 80px; }
+  .asideRight { --aside-offset-x: 25px; }   /* colonne "À propos" un peu plus à droite */
   .lastParagraph {
     /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
     flex: 1 1 100%;
     align-self: stretch;
     max-width: 100%;
     --last-offset-x: -700px;
-    --last-offset-y: 30px;
+    --last-offset-y: 90px;
   }
 }
 

@@ -793,10 +793,6 @@ export default function SnakeGame({
   const KEY_GROUP_OFFSET_X = -0; // Déplace les touches horizontalement (+ droite / - gauche)
   const KEY_GROUP_OFFSET_Y = 21; // Déplace les touches verticalement (+ bas / - haut)
   
-  // Décalage du panneau entier (colonne des touches)
-  const PANEL_OFFSET_X = 90; // + droite / - gauche
-  const PANEL_OFFSET_Y = 120; // + bas / - haut
-  
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
   useEffect(() => {
@@ -814,10 +810,8 @@ export default function SnakeGame({
   // container style: grid on desktop (fixed right column), column flow on mobile
   const containerStyleDesktop: React.CSSProperties = {
     display: 'grid',
-    // première colonne = largeur actuelle du canvas (px), deuxième = panneau contrôles
     gridTemplateColumns: `${Math.round(canvasSize)}px ${CONTROL_WIDTH}px`,
-    gap: CONTAINER_GAP,
-    // conteneur fluide et centré -> évite l'overflow en X
+    gap: 'var(--container-gap, 16px)',
     width: '100%',
     maxWidth: '100vw',
     justifyContent: 'center',
@@ -914,7 +908,9 @@ export default function SnakeGame({
             position: 'absolute',
             left: '50%',
             top: 8,
-            transform: `translate(calc(115% + ${SCOREBOARD_SHIFT_X}px), ${SCOREBOARD_OFFSET_Y}px) scale(${SCOREBOARD_SCALE})`,
+            // Permet de déplacer le tableau des scores
+            transform: `translate(calc(-50% + var(--scoreboard-offset-x, 315px)), 
+                                              var(--scoreboard-offset-y, 0px)) scale(${SCOREBOARD_SCALE})`,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -1045,7 +1041,9 @@ export default function SnakeGame({
           style={{
             width: controlsAbsolute ? CONTROL_WIDTH : '100%',
             height: controlsAbsolute ? `${CONTROL_HEIGHT}px` : 'auto',
-            transform: controlsAbsolute ? `translate(${PANEL_OFFSET_X}px, ${PANEL_OFFSET_Y}px)` : 'none',
+            // Permet déplacer le panneau des touches si besoin
+            transform: `translate(var(--controls-offset-x, 80px),
+                                   var(--controls-offset-y, 105px))`, 
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
             flexDirection: 'column',
