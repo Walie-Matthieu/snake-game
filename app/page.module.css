@@ -438,18 +438,19 @@
 
 /* Mobile spécifique (320px - 600px) : minimaliste, garde titre + canvas + contrôles */
 @media (min-width: 320px) and (max-width: 600px) {
-  /* cache les éléments non essentiels */
+
+  /* cacher les éléments non essentiels sur mobile */
   .asideRight,
   .lastParagraph,
   .powerLinesWrapper {
-    display: none;
+    display: none !important;
   }
 
   :root {
-    --control-width: 50px;
-    --control-height: 50px;
+    --control-width: 80px;  /* <- ajuste largeur panneau touches ici */
+    --control-height: 180px; /* <- ajuste hauteur panneau touches ici */
     --container-gap: 12px;
-    --canvas-size: 280px; /* <-- taille du canvas sur mobile : ajuste ici */
+    --canvas-size: 8 0px; /* <-- taille du canvas sur mobile : ajuste ici */
   }
 
   /* conteneur centré et scroll si besoin */
@@ -466,23 +467,23 @@
     align-items: center;
     padding-top: 16px;
 
-    --game-offset-x: 0;
-    --game-offset-y: 0;
+    --game-offset-x: 30px;   /* Déplacer le bloc jeu de gauche à droite */
+    --game-offset-y: 0;     /* Déplacer le bloc jeu de haut en bas */
 
-    --title-offset-x: 0;
-    --title-offset-y: -8px;
+    --title-offset-x: 0;      /* Déplacer le titre de gauche à droite */
+    --title-offset-y: -8px;  /* Déplacer le titre de haut en bas */
 
     --container-gap: 12px;
 
-    --scoreboard-offset-x: 0;
-    --scoreboard-offset-y: 0;
+    --scoreboard-offset-x: 0;  /* Déplacer le scoreboard de gauche à droite */
+    --scoreboard-offset-y: 0;  /* Déplacer le panneau touches de droite à gauche */
 
-    --controls-offset-x: 0;
-    --controls-offset-y: 0;
+    --controls-offset-x: -30px;   /* déplace le panneau touches de droite à gauche */
+    --controls-offset-y: 0;   /* + = bas, - = haut */
   }
 
-  /* titre centré et plus petit */
-  .gameLeft::before {
+  /* titre centré et plus petit */ 
+  .gameLeft::before {  
     width: 100%;
     text-align: center;
     font-size: 24px;
@@ -492,9 +493,5 @@
     transform: translateX(-50%) translateY(var(--title-offset-y, 0));
   }
 
-  /* autorise le scroll vertical sur mobile */
-  :global(body) {
-    overflow-y: auto;
-  }
 }
 

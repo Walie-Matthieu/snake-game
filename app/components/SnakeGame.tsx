@@ -108,12 +108,18 @@ export default function SnakeGame({
   // Met à jour la taille du canvas selon la taille de la fenêtre
   useEffect(() => {
     function handleResize() {
-      const size = Math.min(window.innerWidth * 0.9, 460); // taille du Canva, aka boite du Snake
+      const w = window.innerWidth;
+      const isMobile = w >= 320 && w <= 600;
+      const size = isMobile ? 280 : Math.min(Math.round(w * 0.9), 460); // 280px fixe sur mobile
       setCanvasSize(size);
     }
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('pageshow', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('pageshow', handleResize);
+    };
   }, []);
 
   function resetGame() {
