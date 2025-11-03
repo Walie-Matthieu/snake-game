@@ -8,11 +8,12 @@
 }
 :global(body) {
   margin: 0;
-  /* overflow-x: hidden;  // ← retire-le: ça masque le contenu hors écran */
   font-family: 'Poppins', system-ui, Arial, sans-serif;
-  font-weight: 400; /* poids par défaut sans changer les tailles existantes */
+  font-weight: 400;
+  overflow-y: hidden; /* ← Bloque uniquement le scroll vertical */
 }
 
+/* 2. Container principal - forcer overflow visible */
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -21,9 +22,11 @@
   width: 100%;
   max-width: 1024px;
   padding: 16px;
-  margin: 0 auto; /* centre le conteneur */
-  overflow: visible;     /* évite le clipping quand on décale le jeu */
+  margin: 0 auto;
+  overflow: visible; /* Force l'affichage du contenu qui déborde */
+ /* outline: 2px solid orange; Visualise la zone de débordement */
 }
+
 .gameLeft {
   order: 1;
   flex: 0 0 auto;
@@ -102,86 +105,9 @@
   /* background: rgba(255, 249, 200, 0.03); */
 }
 
-/* Mobile ≤ 767px: empilement propre, centré */
-@media (max-width: 767px) {
-  .row { gap: 16px; padding: 12px; }
-  .gameLeft { align-items: center; }
-  .gameLeft::before { text-align: center; margin-bottom: 8px; }
-  .asideRight {
-    margin-left: 0;
-    min-width: unset;
-    max-width: 100%;
-    align-self: stretch;
-    /* (Option) déplacer "À propos" sur mobile: ajouter transform: translate(x,y); ici */
-  }
-}
 
-/* Tablette 768–1023px: léger décalage fluide vers la gauche */
-/* === Ajuster le déplacement "À propos" tablette ici === */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .gameLeft {
-    --game-offset-x: clamp(-48px, -4vw, -24px); /* déplacer le bloc jeu */
-    --game-offset-y: -12px;
-    /* laisser le titre indépendant si besoin */
-    /* ex pour titre seul: --title-offset-x: -10px; */
-  }
-  .asideRight {
-    --aside-offset-x: -24px;
-    --aside-offset-y: -8px;
-  }
-}
 
-/* Desktop ≥ 1024px: décalage principal (gauche + haut) */
-/* === Ajuster le déplacement "À propos" desktop ici === */
-@media (min-width: 1024px) {
-  .gameLeft {
-    --game-offset-x: 0px;        /* 0 => ne bouge pas le bloc */
-    --game-offset-y: 0px;
-    --title-offset-x: -100px;    /* déplacer uniquement le titre */
-    --title-offset-y: -20px;
-  }
-  .asideRight {
-    --aside-offset-x: 140px;  /* déplace l'aside (À propos) vers la droite */
-    --aside-offset-y: 10px; /* remonte un peu l'aside aka "À propos" */
-  }
-}
 
-/* Petit écran PC, ligne probablement obsolète! (1024px - 1440px) */
-/* @media (min-width: 1024px) and (max-width: 1440px) {
-  .gameLeft {
-    --game-offset-x: -20px;
-    --title-offset-x: -50px;
-  }
-  .asideRight { --aside-offset-x: 80px; }
-  .lastParagraph { */
-    /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
-    /* flex: 1 1 100%;
-    align-self: stretch;
-    max-width: 100%;
-    --last-offset-x: -10px;
-    --last-offset-y: 30px;
-  }
-} */
-
-/* Écran PC moyen (1441px - 1920px) */
-@media (min-width: 1441px) and (max-width: 1920px) {
-  .gameLeft {
-    --game-offset-x: 0px;
-    --title-offset-x: -100px;
-  }
-  .asideRight { --aside-offset-x: 140px; }
-  .lastParagraph { --last-offset-x: -10px; --last-offset-y: 30px; }
-}
-
-/* Grand écran PC (>1920px) */
-@media (min-width: 1921px) {
-  .gameLeft {
-    --game-offset-x: 20px;
-    --title-offset-x: -120px;
-  }
-  .asideRight { --aside-offset-x: 180px; }
-  .lastParagraph { --last-offset-x: 0px; --last-offset-y: 30px; }
-}
 
 /* === CONTROLE INDIVIDUEL DES TEXTES (ajout) ================================
    Tu peux modifier chaque ligne via les variables ci‑dessous sans toucher au JSX.
@@ -265,21 +191,6 @@
   color: #ebeef3; /* couleur du texte */
 }
 
-/* 3) Exemple: styles spécifiques PC uniquement (optionnel)
-      Active ce bloc si tu veux des tailles différentes uniquement sur desktop. */
-@media (min-width: 1024px) {
-  .asideRight { /* placeholder: ajouter des variables custom ici si besoin */ }
-}
-
-/* 4) Exemple: override rapide tablette uniquement */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .asideRight { line-height: var(--about-shared-line-height); }
-}
-
-/* 5) Exemple: override mobile */
-@media (max-width: 767px) {
-  .asideRight { line-height: var(--about-shared-line-height); }
-}
 
 /* Utilitaires pour empêcher un retour à la ligne sur un groupe de mots */
 .noWrap,
@@ -326,14 +237,6 @@
   transform: translate(var(--last-offset-x, 0px), var(--last-offset-y, 0px));
   align-self: flex-start;     /* colle à gauche dans le flex .row */
   max-width: 720px;           /* évite de trop s’étirer à droite */
-}
-
-/* PC: petit décalage contrôlé */
-@media (min-width: 1024px) {
-  .lastParagraph {
-    --last-offset-x: -20px; /* évite la sortie du viewport */
-    --last-offset-y: 30px;
-  }
 }
 
 .pasPluLine {
@@ -401,36 +304,6 @@
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-/* --- Fin des utilitaires SVG --- */
-
-/*
-  Exemples d'utilisation (JSX / React) — collez dans votre composant :
-
-  1) Inline SVG (plein contrôle, animations CSS possibles)
-  <svg className="svgIcon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-    <path d="M..." fill="currentColor" />
-  </svg>
-
-  2) SVG placé dans public/ et utilisé avec <img>
-  <img src="/icons/food.svg" alt="food" className="imgSvg" />
-
-  3) SVG en background (décor)
-  <div className="svgBg" style={{ backgroundImage: "url('/icons/bg.svg')", width: 200, height: 120 }} />
-
-  4) SVG comme mask (forme colorée par CSS)
-  <div className="svgMask" style={{ WebkitMaskImage: "url('/icons/logo-mask.svg')", maskImage: "url('/icons/logo-mask.svg')", color: '#1e90ff' }} />
-
-  5) Importer comme composant React (SVGR) — nécessite config build:
-  // after adding SVGR loader/plugin:
-  import Logo from '/public/icons/logo.svg';
-  <Logo className="svgIcon" />
-
-  Remarques rapides :
-  - Pour colorer un SVG via CSS, utilisez fill="currentColor" dans le SVG et changez la propriété color sur le parent.
-  - Pour les animations CSS, préférez l'inline SVG ou SVGR (animable via classes).
-  - Placez les fichiers SVG statiques dans public/ pour les servir directement (pas besoin d'import).
-*/
-
 /* Contrôles rapides pour le h3 "Pouvoirs par couleur" */
 :root {
   --pouvoir-display: block;       /* block / none */
@@ -486,19 +359,7 @@
   --score-offset-y: 0px; /* + = bas    / - = haut  */
 }
 
-@media (min-width: 1024px) {
-  .asideRight {
-    --about-line1-font-size: 18px;  /* Plus grand sur desktop */
-    --about-line2-font-size: 16px;
-  }
-}
 
-@media (max-width: 767px) {
-  .asideRight {
-    --about-line1-font-size: 15px;  /* Plus petit sur mobile */
-    --about-line2-font-size: 12px;
-  }
-}
 
 /* Base: applique les offsets via variables (fallback 0) */
 .gameLeft { transform: translate(var(--game-offset-x, 0), var(--game-offset-y, 0)); }
@@ -511,8 +372,14 @@
 }
 .row { overflow-x: visible; } /* ne pas couper horizontalement */
 
-/* Desktop petit (1024px - 1440px) */
+/* Desktop petit (1024px - 1440px) À GARDER!!!! */
 @media (min-width: 1024px) and (max-width: 1440px) {
+
+  /* Censer bloquer le scroll vertical sur le body */
+  :global(body) {
+    overflow-y: hidden;
+  }
+  
   .gameLeft {
     --game-offset-x: 90px;       /* Pour déplacer le bloc jeu de gauche à droite */
     --game-offset-y: -50px;      /* Pour déplacer le bloc jeu de haut en bas */
@@ -522,33 +389,40 @@
 
     --scoreboard-offset-x: 230px;   /* + = droite, - = gauche */
     --scoreboard-offset-y: 40px;    /* + = bas, - = haut */
-    --scoreboard-offset-z: 70;     /* z-index pour superposer au canvas */
 
     --controls-offset-x: 1px;   /* déplace le panneau touches de droite à gauche */
     --controls-offset-y: 150px;    /* + = bas, - = haut */
   }
   .asideRight { 
     --aside-offset-x: 25px;
-    --aside-offset-y: -30px;    /* Ajout du décalage vertical de la colonne "À propos" */
+    --aside-offset-y: -0px;    /* Ajout du décalage vertical de la colonne "À propos" */
   }
   .lastParagraph {
     /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
     flex: 1 1 100%;
     align-self: stretch;
     max-width: 100%;
-    --last-offset-x: -700px;
-    --last-offset-y: 20px;
+    --last-offset-x: -700px; /* Déplace le texte de droite à gauche */
+    --last-offset-y: 50px; /* Déplace le texte de bas en haut */
   }
 }
 
 /* Desktop moyen (1441px - 1920px) */
 @media (min-width: 1441px) and (max-width: 1920px) {
+
   .gameLeft {
-    --game-offset-x: 0px;
-    --title-offset-x: -100px;
+    --game-offset-x: 0px;   /* Déplacer le Canvas de gauche à droite */
+    --game-offset-y: -47px; /* Déplacer le Canvas de haut en bas */
+
+    --title-offset-x: -100px; /* Déplacer le titre de gauche à droite */
+    --title-offset-y: -10px; /* Déplacer le titre de haut en bas */
+
   }
-  .asideRight { --aside-offset-x: 140px; }
-  .lastParagraph { --last-offset-x: -700px; --last-offset-y: 30px; }
+
+  .asideRight { --aside-offset-x: 140px; } /* Déplacer la colonne "À propos" de gauche à droite */
+
+  .lastParagraph { --last-offset-x: -700px; 
+                   --last-offset-y: 70px; } /* Déplacer le texte de droite à gauche et de bas en haut */
 }
 
 /* Grand écran (>1921px) */
@@ -559,5 +433,68 @@
   }
   .asideRight { --aside-offset-x: 180px; }
   .lastParagraph { --last-offset-x: 0px; --last-offset-y: 30px; }
+}
+
+
+/* Mobile spécifique (320px - 600px) : minimaliste, garde titre + canvas + contrôles */
+@media (min-width: 320px) and (max-width: 600px) {
+  /* cache les éléments non essentiels */
+  .asideRight,
+  .lastParagraph,
+  .powerLinesWrapper {
+    display: none;
+  }
+
+  :root {
+    --control-width: 50px;
+    --control-height: 50px;
+    --container-gap: 12px;
+    --canvas-size: 280px; /* <-- taille du canvas sur mobile : ajuste ici */
+  }
+
+  /* conteneur centré et scroll si besoin */
+  .row {
+    padding: 12px;
+    gap: 12px;
+    justify-content: center;
+    max-width: 100vw;
+    overflow-y: auto;
+  }
+
+  /* game block centré et offsets réinitialisés pour mobile */
+  .gameLeft {
+    align-items: center;
+    padding-top: 16px;
+
+    --game-offset-x: 0;
+    --game-offset-y: 0;
+
+    --title-offset-x: 0;
+    --title-offset-y: -8px;
+
+    --container-gap: 12px;
+
+    --scoreboard-offset-x: 0;
+    --scoreboard-offset-y: 0;
+
+    --controls-offset-x: 0;
+    --controls-offset-y: 0;
+  }
+
+  /* titre centré et plus petit */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.2;
+    left: 50%;
+    top: 8px;
+    transform: translateX(-50%) translateY(var(--title-offset-y, 0));
+  }
+
+  /* autorise le scroll vertical sur mobile */
+  :global(body) {
+    overflow-y: auto;
+  }
 }
 
