@@ -450,7 +450,7 @@
     --control-width: 80px;  /* <- ajuste largeur panneau touches ici */
     --control-height: 180px; /* <- ajuste hauteur panneau touches ici */
     --container-gap: 12px;
-    --canvas-size: 8 0px; /* <-- taille du canvas sur mobile : ajuste ici */
+    --canvas-size: 80px; /* <-- taille du canvas sur mobile : ajuste ici */
   }
 
   /* conteneur centré et scroll si besoin */
