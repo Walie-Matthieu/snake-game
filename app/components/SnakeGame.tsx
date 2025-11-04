@@ -1048,8 +1048,8 @@ export default function SnakeGame({
             width: controlsAbsolute ? CONTROL_WIDTH : '100%',
             height: controlsAbsolute ? `${CONTROL_HEIGHT}px` : 'auto',
             // Permet déplacer le panneau des touches si besoin
-            transform: `translate(var(--controls-offset-x, 80px),
-                                   var(--controls-offset-y, 105px))`, 
+            transform: `translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px)) scale(var(--control-scale, 1))`,
+            transformOrigin: 'top left',
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
             flexDirection: 'column',

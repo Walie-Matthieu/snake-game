@@ -447,9 +447,11 @@
   }
 
   :root {
-    --control-width: 80px;  /* <- ajuste largeur panneau touches ici */
+    --control-width: 10px;  /* <- ajuste largeur panneau touches ici */
     --control-height: 180px; /* <- ajuste hauteur panneau touches ici */
+
     --container-gap: 12px;
+    
     --canvas-size: 80px; /* <-- taille du canvas sur mobile : ajuste ici */
   }
 
@@ -492,6 +494,17 @@
     top: 8px;
     transform: translateX(-50%) translateY(var(--title-offset-y, 0));
   }
+}
 
+/* Mobile (320px - 600px) */
+@media (min-width: 320px) and (max-width: 600px) {
+  .gameLeft {
+    /* Déplacement si besoin */
+    --controls-offset-x: -30px;
+    --controls-offset-y: 0px;
+
+    /* Taille du panneau (1 = normal, <1 réduit, >1 agrandit) */
+    --control-scale: 0.9;
+  }
 }
 
