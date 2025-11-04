@@ -417,8 +417,14 @@
     --title-offset-x: -100px; /* Déplacer le titre de gauche à droite */
     --title-offset-y: -10px; /* Déplacer le titre de haut en bas */
 
-  }
+    /* Panneau de score */
+    --scoreboard-offset-x: 320px;  /* + = droite, - = gauche */
+    --scoreboard-offset-y: 20px;   /* + = bas, - = haut  */
 
+    /* Tableau des touches */
+    --controls-offset-x: 78px;     /* + = droite, - = gauche */
+    --controls-offset-y: 130px;    /* + = bas, - = haut  */
+  }
   .asideRight { --aside-offset-x: 140px; } /* Déplacer la colonne "À propos" de gauche à droite */
 
   .lastParagraph { --last-offset-x: -700px; 
@@ -460,8 +466,11 @@
     padding: 12px;
     gap: 12px;
     justify-content: center;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;   /* le padding ne dépasse plus */
     overflow-y: auto;
+    overflow-x: hidden;       /* supprime la barre horizontale */
   }
 
   /* game block centré et offsets réinitialisés pour mobile */
@@ -472,8 +481,8 @@
     --game-offset-x: 30px;   /* Déplacer le bloc jeu de gauche à droite */
     --game-offset-y: 0;     /* Déplacer le bloc jeu de haut en bas */
 
-    --title-offset-x: 0;      /* Déplacer le titre de gauche à droite */
-    --title-offset-y: -8px;  /* Déplacer le titre de haut en bas */
+    --title-offset-x: 12px;      /* Déplacer le titre de gauche à droite */
+    --title-offset-y: -20px;  /* Déplacer le titre de haut en bas */
 
     --container-gap: 12px;
 
@@ -482,6 +491,13 @@
 
     --controls-offset-x: -30px;   /* déplace le panneau touches de droite à gauche */
     --controls-offset-y: 0;   /* + = bas, - = haut */
+
+     /* Déplacement si besoin */
+    --controls-offset-x: -30px;
+    --controls-offset-y: 0px;
+
+    /* Taille du panneau (1 = normal, <1 réduit, >1 agrandit) */
+    --control-scale: 0.95;
   }
 
   /* titre centré et plus petit */ 
@@ -496,15 +512,5 @@
   }
 }
 
-/* Mobile (320px - 600px) */
-@media (min-width: 320px) and (max-width: 600px) {
-  .gameLeft {
-    /* Déplacement si besoin */
-    --controls-offset-x: -30px;
-    --controls-offset-y: 0px;
 
-    /* Taille du panneau (1 = normal, <1 réduit, >1 agrandit) */
-    --control-scale: 0.9;
-  }
-}
 
