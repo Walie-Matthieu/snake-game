@@ -816,7 +816,7 @@ export default function SnakeGame({
   // container style: grid on desktop (fixed right column), column flow on mobile
   const containerStyleDesktop: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: `${Math.round(canvasSize)}px ${CONTROL_WIDTH}px`,
+    gridTemplateColumns: `${Math.round(canvasSize)}px var(--control-width, 160px)`,
     gap: 'var(--container-gap, 16px)',
     width: '100%',
     maxWidth: '100vw',

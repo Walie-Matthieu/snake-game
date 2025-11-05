@@ -409,27 +409,28 @@
 
 /* Desktop moyen (1441px - 1920px) */
 @media (min-width: 1441px) and (max-width: 1920px) {
-
   .gameLeft {
-    --game-offset-x: 0px;   /* Déplacer le Canvas de gauche à droite */
-    --game-offset-y: -47px; /* Déplacer le Canvas de haut en bas */
+    --scoreboard-offset-x: 260px;  /* déplace le panneau de score */
+    --scoreboard-offset-y: 20px;   /* + = bas, - = haut */
 
-    --title-offset-x: -100px; /* Déplacer le titre de gauche à droite */
-    --title-offset-y: -10px; /* Déplacer le titre de haut en bas */
+    --controls-offset-x: 20px;     /* déplace le panneau des touches */
+    --controls-offset-y: 130px;   /* + = bas, - = haut */
 
-    /* Panneau de score */
-    --scoreboard-offset-x: 320px;  /* + = droite, - = gauche */
-    --scoreboard-offset-y: 20px;   /* + = bas, - = haut  */
-
-    /* Tableau des touches */
-    --controls-offset-x: 78px;     /* + = droite, - = gauche */
-    --controls-offset-y: 130px;    /* + = bas, - = haut  */
+    --title-offset-x: -150px;    /* Déplace le titre de gauche à droite */
+    --title-offset-y: -45px;    /* Déplace le titre de haut en bas */
   }
-  .asideRight { --aside-offset-x: 140px; } /* Déplacer la colonne "À propos" de gauche à droite */
+  .asideRight {
+    --aside-offset-x: 740px;    /* ajuste la colonne "À propos" si besoin */
+    --aside-offset-y: -550px;  /* Déplace la colonne "À propos" de haut en bas */
+  }
 
-  .lastParagraph { --last-offset-x: -700px; 
-                   --last-offset-y: 70px; } /* Déplacer le texte de droite à gauche et de bas en haut */
+  .lastParagraph {
+    --last-offset-x: -700px;  /* Déplace le texte de droite à gauche */
+    --last-offset-y: 55px;   /* Déplace le texte de bas en haut */
+  }
 }
+
+
 
 /* Grand écran (>1921px) */
 @media (min-width: 1921px) {
@@ -453,8 +454,8 @@
   }
 
   :root {
-    --control-width: 10px;  /* <- ajuste largeur panneau touches ici */
-    --control-height: 180px; /* <- ajuste hauteur panneau touches ici */
+    --control-width: -10px;  /* <- ajuste largeur panneau touches ici */
+    --control-height: 200px; /* <- ajuste hauteur panneau touches ici */
 
     --container-gap: 12px;
     
@@ -493,8 +494,8 @@
     --controls-offset-y: 0;   /* + = bas, - = haut */
 
      /* Déplacement si besoin */
-    --controls-offset-x: -30px;
-    --controls-offset-y: 0px;
+    --controls-offset-x: -30px; /* déplace le panneau touches de droite à gauche */
+    --controls-offset-y: 0px;   /* + = bas, - = haut */
 
     /* Taille du panneau (1 = normal, <1 réduit, >1 agrandit) */
     --control-scale: 0.95;
@@ -509,6 +510,16 @@
     left: 50%;
     top: 8px;
     transform: translateX(-50%) translateY(var(--title-offset-y, 0));
+  }
+
+  /* Réafficher et déplacer l’indication des pouvoirs en mobile */
+  .powerLinesWrapper {
+    display: block !important;
+    transform: translate(var(--powerlines-offset-x), var(--powerlines-offset-y));
+  }
+  :root {
+    --powerlines-offset-x: -12px; /* - gauche | + droite */
+    --powerlines-offset-y: -8px;  /* - haut   | + bas    */
   }
 }
 
