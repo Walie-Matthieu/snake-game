@@ -497,6 +497,9 @@
 
     /* Taille du panneau (1 = normal, <1 réduit, >1 agrandit) */
     --control-scale: 1;
+
+    --ability-text-offset-x: 7px; /* déplace le texte des capacités de droite à gauche */
+    --ability-text-offset-y: 0px;   /* + = bas, - = haut */
   }
 
   /* titre centré et plus petit */ 

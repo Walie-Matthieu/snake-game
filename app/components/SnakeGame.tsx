@@ -951,7 +951,10 @@ export default function SnakeGame({
 
       {/* Wrapper commun pour nom + description du pouvoir */}
       <div style={{
-        transform: `translate(${CANVAS_OFFSET_X + ABILITY_TEXT_OFFSET_X}px, ${CANVAS_OFFSET_Y + ABILITY_TEXT_OFFSET_Y}px)`,
+        transform: `translate(
+          calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)), 
+          calc(${CANVAS_OFFSET_Y}px + var(--ability-text-offset-y, ${ABILITY_TEXT_OFFSET_Y}px))
+        )`,
         width: '100%',
         textAlign: 'center'
       }}>
