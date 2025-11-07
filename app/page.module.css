@@ -426,7 +426,7 @@
 
   .lastParagraph {
     --last-offset-x: -700px;  /* Déplace le texte de droite à gauche */
-    --last-offset-y: 55px;   /* Déplace le texte de bas en haut */
+    --last-offset-y: 75px;   /* Déplace le texte de bas en haut */
   }
 }
 
@@ -460,6 +460,8 @@
     /* déplacement des power lines */
     --powerlines-offset-x: -72px; /* - gauche | + droite */
     --powerlines-offset-y: -8px;  /* - haut   | + bas    */
+
+    --ability-gap: 0px; /* ← espace entre “Normal” et “Aucune capacité spéciale */
   }
 
   /* conteneur centré et scroll si besoin */
@@ -500,6 +502,7 @@
 
     --ability-text-offset-x: 7px; /* déplace le texte des capacités de droite à gauche */
     --ability-text-offset-y: 0px;   /* + = bas, - = haut */
+    
   }
 
   /* titre centré et plus petit */ 
@@ -513,14 +516,8 @@
     transform: translateX(-60%) translateY(var(--title-offset-y, 0));
   }
 
-  /* Réafficher et déplacer l'indication des pouvoirs */
-  :global(.powerLinesWrapper) {
-    display: block !important;
-    /* Ajoute 0px comme fallback pour garantir la lecture */
-    transform: translate(var(--powerlines-offset-x, 0px), var(--powerlines-offset-y, 0px)) !important;
-    transform-origin: top left;
+  
+  :global([data-ui="ability-text"] > :first-child) {
+    margin-bottom: 8px !important; /* ajuste la valeur */
   }
 }
-
-
-

@@ -813,10 +813,37 @@ export default function SnakeGame({
   // on place la colonne à droite seulement si la fenêtre peut contenir (canvas min + gap + control)
   const controlsAbsolute = isDesktop;
 
-  // container style: grid on desktop (fixed right column), column flow on mobile
+  // Taille responsive du panneau des touches (comme le canvas)
+const computeControlWidth = (): number => {
+  const w = typeof window !== 'undefined' ? window.innerWidth : 1024;
+  const isMobile = w >= 320 && w <= 600;
+  if (isMobile) return 150; // largeur fixe en mobile (ajuste ici)
+  // sinon: largeur responsive bornée
+  return Math.min(280, Math.max(160, Math.round(w * 0.12)));
+};
+
+const [controlWidth, setControlWidth] = useState<number>(() => computeControlWidth());
+const [controlHeight, setControlHeight] = useState<number>(() => Math.round(computeControlWidth() * 1.2));
+
+useEffect(() => {
+  const onResize = () => {
+    const w = computeControlWidth();
+    setControlWidth(w);
+    setControlHeight(Math.round(w * 1.2)); // ratio simple; ajuste si besoin
+  };
+  onResize();
+  window.addEventListener('resize', onResize);
+  window.addEventListener('pageshow', onResize);
+  return () => {
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('pageshow', onResize);
+  };
+}, []);
+
+// container style: grid on desktop (fixed right column), column flow on mobile
   const containerStyleDesktop: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: `${Math.round(canvasSize)}px var(--control-width, 160px)`,
+    gridTemplateColumns: `${Math.round(canvasSize)}px ${controlWidth}px`, // ← comme le canvas
     gap: 'var(--container-gap, 16px)',
     width: '100%',
     maxWidth: '100vw',
@@ -950,14 +977,19 @@ export default function SnakeGame({
       )}
 
       {/* Wrapper commun pour nom + description du pouvoir */}
-      <div style={{
-        transform: `translate(
-          calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)), 
-          calc(${CANVAS_OFFSET_Y}px + var(--ability-text-offset-y, ${ABILITY_TEXT_OFFSET_Y}px))
-        )`,
-        width: '100%',
-        textAlign: 'center'
-      }}>
+      <div
+        data-ui="ability-text"
+        style={{
+          // ...existing code...
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: 'var(--ability-gap, 8px)', // ← lis depuis le CSS (fallback 8px)
+          transform: `translate(
+            calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
+            calc(${CANVAS_OFFSET_Y}px + var(--ability-text-offset-y, ${ABILITY_TEXT_OFFSET_Y}px))
+          )`,
+        }}
+      >
         {/* Nom du pouvoir */}
         <span
           style={{
@@ -1046,12 +1078,11 @@ export default function SnakeGame({
             Tu peux repérer / modifier ce bloc facilement entre les deux marqueurs.
          =============================================================== */}
         <div
-          aria-hidden={false}
+          data-ui="controls"
           style={{
-            width: 'var(--control-width, 160px)',
-            height: 'var(--control-height, 200px)',
-            // Permet déplacer le panneau des touches si besoin
-            transform: `translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px)) scale(var(--control-scale, 1))`,
+            width: `${controlWidth}px`,
+            height: `${controlHeight}px`,
+            transform: `translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px))`,
             transformOrigin: 'top left',
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
