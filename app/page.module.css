@@ -462,6 +462,15 @@
     --powerlines-offset-y: -8px;  /* - haut   | + bas    */
 
     --ability-gap: 0px; /* ← espace entre “Normal” et “Aucune capacité spéciale */
+
+    /* Variable unique pour déplacer TOUTES les touches ensemble */
+    --keys-group-offset-x: 0px;  /* - = gauche, + = droite */
+    --keys-group-offset-y: 17px;  /* - = haut,   + = bas    */
+  }
+
+  /* Applique le déplacement à tous les boutons du panneau */
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* conteneur centré et scroll si besoin */
@@ -494,7 +503,7 @@
 
    
      /* Déplacement si besoin */
-    --controls-offset-x: 30px; /* déplace le panneau touches de droite à gauche */
+    --controls-offset-x: -30px; /* déplace le panneau touches de droite à gauche */
     --controls-offset-y: 0px;   /* + = bas, - = haut */
 
     /* Taille du panneau (1 = normal, <1 réduit, >1 agrandit) */

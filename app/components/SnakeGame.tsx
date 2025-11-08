@@ -793,11 +793,7 @@ export default function SnakeGame({
   }
 
   // largeur fixe du panneau de contrôles (px) et gap entre canvas / panneau
-  const CONTROL_WIDTH = 150; // largeur fixe du panneau de contrôles (px)
   const CONTAINER_GAP = 25; // espace entre canvas et panneau (px)
-  const CONTROL_HEIGHT = 210; // hauteur fixe du panneau de contrôles (px)
-  const KEY_GROUP_OFFSET_X = -0; // Déplace les touches horizontalement (+ droite / - gauche)
-  const KEY_GROUP_OFFSET_Y = 21; // Déplace les touches verticalement (+ bas / - haut)
   
   // detecte la largeur de la fenêtre pour décider du layout (évite wrap inattendu)
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1024);
@@ -813,37 +809,10 @@ export default function SnakeGame({
   // on place la colonne à droite seulement si la fenêtre peut contenir (canvas min + gap + control)
   const controlsAbsolute = isDesktop;
 
-  // Taille responsive du panneau des touches (comme le canvas)
-const computeControlWidth = (): number => {
-  const w = typeof window !== 'undefined' ? window.innerWidth : 1024;
-  const isMobile = w >= 320 && w <= 600;
-  if (isMobile) return 150; // largeur fixe en mobile (ajuste ici)
-  // sinon: largeur responsive bornée
-  return Math.min(280, Math.max(160, Math.round(w * 0.12)));
-};
-
-const [controlWidth, setControlWidth] = useState<number>(() => computeControlWidth());
-const [controlHeight, setControlHeight] = useState<number>(() => Math.round(computeControlWidth() * 1.2));
-
-useEffect(() => {
-  const onResize = () => {
-    const w = computeControlWidth();
-    setControlWidth(w);
-    setControlHeight(Math.round(w * 1.2)); // ratio simple; ajuste si besoin
-  };
-  onResize();
-  window.addEventListener('resize', onResize);
-  window.addEventListener('pageshow', onResize);
-  return () => {
-    window.removeEventListener('resize', onResize);
-    window.removeEventListener('pageshow', onResize);
-  };
-}, []);
-
-// container style: grid on desktop (fixed right column), column flow on mobile
+  // container style: grid on desktop (fixed right column), column flow on mobile
   const containerStyleDesktop: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: `${Math.round(canvasSize)}px ${controlWidth}px`, // ← comme le canvas
+    gridTemplateColumns: `${Math.round(canvasSize)}px ${160}px`,
     gap: 'var(--container-gap, 16px)',
     width: '100%',
     maxWidth: '100vw',
@@ -861,13 +830,21 @@ useEffect(() => {
     boxSizing: 'border-box',
   };
 
-  //  Déplace le Canvas
-  const CANVAS_OFFSET_X = -40; // + droite / - gauche
-  const CANVAS_OFFSET_Y = 10; // + bas / - haut
+  /* ============================================================================
+     🎯 ZONE DE CONFIGURATION GLOBALE - Déplacements
+  ============================================================================ */
+
+  // Déplacement des TOUCHES À L'INTÉRIEUR du panneau (↑←↓→ + T + R ensemble)
+  const KEYS_GROUP_OFFSET_X = 0;       // + droite / - gauche
+  const KEYS_GROUP_OFFSET_Y = 4;      // + bas / - haut
+
+  // Déplace le Canvas
+  const CANVAS_OFFSET_X = -40;
+  const CANVAS_OFFSET_Y = 10;
 
   // Offset dédié pour le texte des capacités
-  const ABILITY_TEXT_OFFSET_X = -70; // + droite / - gauche
-  const ABILITY_TEXT_OFFSET_Y = 0; // + bas / - haut
+  const ABILITY_TEXT_OFFSET_X = -70;
+  const ABILITY_TEXT_OFFSET_Y = 0;
 
   // Offset pour le message "Appuie sur une flèche pour commencer"
   const START_HINT_OFFSET_X = 265; // + droite / - gauche
@@ -883,22 +860,37 @@ useEffect(() => {
   };
 
   // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
-  function keyStyle() {
+  function keyStyle(): React.CSSProperties {
+    const isMobileViewport =
+      typeof window !== 'undefined' &&
+      window.innerWidth >= 320 &&
+      window.innerWidth <= 600;
+
+    const btnSize = isMobileViewport
+      ? Math.max(16, Math.round(160 * 0.12))
+      : 20;
+
+    const fontSize = isMobileViewport
+      ? Math.max(10, Math.round(160 * 0.08))
+      : 14;
+
     return {
+      minWidth: btnSize,
+      height: btnSize,
+      padding: isMobileViewport ? '0 6px' : '0 8px',
+      fontSize,
+      lineHeight: 1,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      minWidth: 20,
-      height: 20,
-      padding: '0 8px',
       borderRadius: 6,
-      border: '1px solid rgba(255, 158, 105, 0.18)', // pink border
-      background: 'rgba(18, 3, 5, 0)', // light pink background
-      color: '#fff9fcff', // pink text
+      border: '1px solid rgba(255, 158, 105, 0.18)',
+      background: 'rgba(18, 3, 5, 0)',
+      color: '#fff9fcff',
       fontWeight: 700,
-      fontSize: 14,
-      boxShadow: 'inset 0 -1px 0 rgba(243, 237, 237, 0.08)'
-    } as React.CSSProperties;
+      boxShadow: 'inset 0 -1px 0 rgba(243, 237, 237, 0.08)',
+      cursor: 'pointer'
+    };
   }
  
   // === Tableau du Score (TON | MEILLEUR) ===
@@ -933,7 +925,7 @@ useEffect(() => {
   };
 
   return (
-     <div className="flex flex-col items-center gap-4 w-full" style={{ position: 'relative' }}>
+    <div className="flex flex-col items-center gap-4 w-full" style={{ position: 'relative' }}>
       {/* Scoreboard — centré en absolute (pas d'overflow), visible seulement en PC */}
       {isDesktop && (
         <div
@@ -1080,8 +1072,8 @@ useEffect(() => {
         <div
           data-ui="controls"
           style={{
-            width: `${controlWidth}px`,
-            height: `${controlHeight}px`,
+            width: controlsAbsolute ? `${160}px` : '100%',
+            height: controlsAbsolute ? 'auto' : 'visible',
             transform: `translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px))`,
             transformOrigin: 'top left',
             overflowY: controlsAbsolute ? 'auto' : 'visible',
@@ -1110,7 +1102,7 @@ useEffect(() => {
           <div
             style={{
               position: 'relative',
-              transform: `translate(${KEY_GROUP_OFFSET_X}px, ${KEY_GROUP_OFFSET_Y}px)`,
+              transform: `translate(${KEYS_GROUP_OFFSET_X}px, ${KEYS_GROUP_OFFSET_Y}px)`, // ← lit les constantes
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
