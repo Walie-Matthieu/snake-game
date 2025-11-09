@@ -1072,7 +1072,7 @@ export default function SnakeGame({
         <div
           data-ui="controls"
           style={{
-            width: controlsAbsolute ? `${160}px` : '100%',
+            width: 'var(--control-width, 160px)',  // ← doit lire la variable
             height: controlsAbsolute ? 'auto' : 'visible',
             transform: `translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px))`,
             transformOrigin: 'top left',
