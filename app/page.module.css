@@ -849,14 +849,20 @@
   }
 
   :root {
-    --control-width: clamp(140px, 42vw, 165px);
-    --control-height: clamp(180px, 29vh, 215px);
-    --container-gap: 1.8vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.1vh;
-    --ability-gap: 1.2vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.5vh;
+    --canvas-size: 340px; /* taille du canvas */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
   }
 
   :global([data-ui="controls"] button) {
@@ -881,18 +887,25 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    --game-offset-x: 37px;
-    --game-offset-y: -7px;
-    --title-offset-x: 0px;
-    --title-offset-y: -2.5vh;
-    --controls-offset-x: 20%;
-    --controls-offset-y: 0px;
-    --ability-text-offset-x: 0px;
-    --ability-text-offset-y: 0px;
-    --container-gap: 1.8vw;
-    --scoreboard-offset-x: 0px;
-    --scoreboard-offset-y: 0px;
-    --control-scale: 1;
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
   }
 
   .gameLeft::before {
