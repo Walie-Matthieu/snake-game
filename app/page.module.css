@@ -869,6 +869,7 @@
     transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
+  /* Permet de centrer le conteneur principal */
   .row {
     padding: 4px 8px;
     gap: 2vh;
@@ -907,7 +908,8 @@
 
     --control-scale: 1; /* échelle des contrôles des touches */
   }
-
+  
+   /* Permet de centrer le titre correctement */
   .gameLeft::before {
     width: 100%;
     text-align: center;
@@ -921,6 +923,7 @@
     );
   }
 
+    /* Sert à centrer le texte des capacités */
   :global([data-ui="ability-text"]) {
     display: flex;
     flex-direction: column;
@@ -930,6 +933,7 @@
     font-size: clamp(11.5px, 3.4vw, 14.5px);
   }
 
+  /* Sert à empêcher le scroll horizontal/vertical */
   :global(body) {
     overflow: hidden;
     max-width: 100vw;
