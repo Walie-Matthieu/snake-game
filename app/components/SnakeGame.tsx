@@ -110,9 +110,17 @@ export default function SnakeGame({
     function handleResize() {
       const w = window.innerWidth;
       const isMobile = w >= 320 && w <= 600;
-      const size = isMobile ? 280 : Math.min(Math.round(w * 0.9), 460); // 280px fixe sur mobile
-      setCanvasSize(size);
+      
+      if (isMobile) {
+        // Canvas fluide : 85% de la largeur disponible, min 240px, max 320px
+         const size = Math.min(320, Math.max(240, Math.round(w * 0.85)));
+        setCanvasSize(size);
+      } else {
+        const size = Math.min(window.innerWidth * 0.9, 460);
+        setCanvasSize(size);
+      }
     }
+    
     handleResize();
     window.addEventListener('resize', handleResize);
     window.addEventListener('pageshow', handleResize);
@@ -583,7 +591,7 @@ export default function SnakeGame({
             tip = [cx, cy - r - becLength / 2];
             base1 = [cx - becWidth / 2, cy - r / 2];
             base2 = [cx + becWidth / 2, cy - r / 2];
-            break;
+            break; 
           case 'down':
             tip = [cx, cy + r + becLength / 2];
             base1 = [cx - becWidth / 2, cy + r / 2];

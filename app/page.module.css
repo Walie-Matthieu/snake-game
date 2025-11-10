@@ -443,10 +443,10 @@
 }
 
 
-/* Mobile spécifique (320px - 600px) : layout responsive avec unités viewport */
-@media (min-width: 320px) and (max-width: 600px) {
+/* Mobile spécifique (320px - 340px) : pas de scroll, pas de coupure */
+@media (min-width: 320px) and (max-width: 340px) {
 
-  /* cacher UNIQUEMENT aside et lastParagraph */
+  /* Masquer aside et dernier paragraphe */
   .asideRight,
   .lastParagraph {
     display: none !important;
@@ -454,88 +454,804 @@
 
   :root {
     /* Taille du panneau responsive en vw/vh */
-    --control-width: clamp(35vw, 45vw, 50vw);   /* 35-50% de la largeur viewport */
-    --control-height: clamp(25vh, 30vh, 35vh);  /* 25-35% de la hauteur viewport */
-    --container-gap: 2vw;                       /* espace Canvas ↔ panneau (2% largeur) */
+    --control-width: clamp(35vw, 45vw, 50vw);  /* largeur du panneau des contrôles */
+    --control-height: clamp(25vh, 30vh, 35vh);  /* hauteur du panneau des contrôles */
+    --container-gap: 2vw;    /* espace entre Canvas et panneau */  
 
-    /* Power lines centré sous le canvas */
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1vh;                /* ajustement vertical (1% hauteur) */
+    /* Power lines centré */
+    --powerlines-offset-x: 0px;   /* centré horizontalement */
+    --powerlines-offset-y: -1vh;  /* déplace légèrement vers le haut */
 
     /* Espacement texte capacités */
-    --ability-gap: 1.2vh;                       /* 1.2% de la hauteur viewport */
+    --ability-gap: 1.2vh;
 
     /* Touches centrées dans le panneau */
-    --keys-group-offset-x: 0px;
-    --keys-group-offset-y: 2.5vh;               /* 2.5% de la hauteur viewport */
+    --keys-group-offset-x: 35px;    /* déplace les touches horizontalement */
+    --keys-group-offset-y: 2.5vh;  /* déplace les touches verticalement */
   }
 
-  /* Applique le déplacement à tous les boutons du panneau */
+  /* Applique le déplacement aux boutons */
   :global([data-ui="controls"] button) {
     transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
-  /* Conteneur parfaitement centré */
+  /* Conteneur centré : pas de scroll, débordement visible */
   .row {
-    padding: 1.5vw;                             /* 1.5% de la largeur viewport */
-    gap: 2vh;                                   /* 2% de la hauteur viewport */
+    padding: 4px 8px;
+    gap: 2vh;
     justify-content: center;
     align-items: center;
     width: 100%;
     max-width: 100vw;
     box-sizing: border-box;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;       /* ← Pas de scroll, pas de coupure */
+    min-height: 100vh;       /* ← Assure espace vertical */
   }
 
-  /* Bloc jeu centré, offsets en vh/vw */
+  /* Bloc jeu centré */
   .gameLeft {
     align-items: center;
-    padding-top: 2vh;                           /* 2% de la hauteur viewport */
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;  /* ← Empêche débordement du padding */
 
-    --game-offset-x: 0px;
-    --title-offset-x: 0px;
-    --controls-offset-x: 0px;
-    --ability-text-offset-x: 0px;
+     
 
-    --game-offset-y: 0px;
-    --title-offset-y: -2.5vh;                   /* -2.5% de la hauteur viewport */
-    --controls-offset-y: 0px;
-    --ability-text-offset-y: 0px;
+    --game-offset-y: 70px;  /* Déplace le bloc jeu de haut en bas */
+    --game-offset-x: 65px;  /* Déplace le bloc jeu de gauche à droite */
 
-    --container-gap: 2vw;                       /* cohérence avec :root */
-    --scoreboard-offset-x: 0px;
-    --scoreboard-offset-y: 0px;
-    --control-scale: 1;
+    --title-offset-y: -5.5vh; /* Déplace le titre de haut en bas */
+    --title-offset-x: -35px;   /* Déplace le titre de gauche à droite */
+
+    --controls-offset-y: 0px;   /* déplace le panneau des touches */
+    --controls-offset-x: 20%;  /* déplace le panneau de score */
+
+    --ability-text-offset-y: 0px; /* centre le texte capacités verticalement */
+    --ability-text-offset-x: 0px; /* centre le texte capacités horizontalement */
+
+    --container-gap: 2vw;  /* espace entre Canvas et panneau */
+
+    --scoreboard-offset-x: 0px;  /* déplace le panneau de score */
+    --scoreboard-offset-y: 0px;  /* déplace le panneau de score */
+
+    --control-scale: 1;  /* échelle des contrôles des touches */
   }
 
-  /* Titre parfaitement centré */
-  .gameLeft::before {  
+  /* Titre centré */
+  .gameLeft::before {
     width: 100%;
     text-align: center;
-    font-size: clamp(20px, 6vw, 28px);          /* 6% de la largeur viewport (min 20px, max 28px) */
+    font-size: clamp(20px, 6vw, 28px);
     line-height: 1.2;
     left: 50%;
-    top: 1vh;                                   /* 1% de la hauteur viewport */
+    top: 1vh;
     transform: translate(
       calc(-50% + var(--title-offset-x, 0px)),
       var(--title-offset-y, 0px)
     );
   }
 
-  /* Espacement texte capacités */
+  /* Texte capacités centré */
   :global([data-ui="ability-text"]) {
     display: flex;
     flex-direction: column;
-    row-gap: var(--ability-gap, 1.2vh);         /* utilise la variable vh */
+    row-gap: var(--ability-gap, 1.2vh);
     align-items: center;
     text-align: center;
-    font-size: clamp(12px, 3.5vw, 16px);        /* texte responsive (3.5% largeur) */
+    font-size: clamp(12px, 3.5vw, 16px);
   }
 
-  /* Empêche tout débordement horizontal */
+  /* Empêche scroll horizontal, autorise débordement visible */
   :global(body) {
-    overflow-x: hidden;
+    overflow: hidden;        /* ← Pas de scroll horizontal/vertical */
     max-width: 100vw;
+    min-height: 100vh;       /* ← Garde espace vertical */
+  }
+}
+
+/* ============================================================================
+   MOBILE RESPONSIVE : 8 BREAKPOINTS ADDITIONNELS (341px - 600px)
+   ============================================================================
+   Chaque bloc est COMPLET et INDÉPENDANT (pas de cascade entre breakpoints).
+   Le breakpoint 320-340px existant est CONSERVÉ intact.
+============================================================================ */
+
+/* 2️⃣ Petits Android : 341-360px (Galaxy S8/S9) */
+@media (min-width: 341px) and (max-width: 360px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(125px, 39vw, 140px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(160px, 27vh, 190px); /* hauteur du panneau des contrôles */
+    --container-gap: 1.4vw;     /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;  
+    --powerlines-offset-y: -0.9vh;
+
+    --ability-gap: 1vh;  
+
+    --keys-group-offset-x: 35px;  
+    --keys-group-offset-y: 2.2vh;  
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+ 
+  .row { 
+    padding: 3px 7px;
+    gap: 1.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 7px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+
+
+    --game-offset-x: 60px;   /* Déplace le jeu de gauche à droite */
+    --game-offset-y: 37px;  /* Déplace le jeu de haut en bas */
+
+    --title-offset-x: -40px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.2vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 30%;  /* Déplace le panneau des touches horizontalement */
+    --controls-offset-y: 20px;  /* Déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;    /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;   /* centre le texte capacités verticalement */
+
+    --container-gap: 2.4vw;     /* espace entre Canvas et panneau */
+
+    --scoreboard-offset-x: 0px;  
+    --scoreboard-offset-y: 0px; 
+
+    --control-scale: 0.93; /* échelle des contrôles des touches */
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(18px, 5.4vw, 23px);
+    line-height: 1.2;
+    left: 50%;
+    top: 0.6vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(10.5px, 3.1vw, 13.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+
+
+/* 3️⃣ iPhone SE 2020, iPhone 6/7/8 : 361-375px */
+@media (min-width: 361px) and (max-width: 375px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(130px, 40vw, 150px);  /* largeur du panneau des contrôles */
+    --control-height: clamp(170px, 28vh, 200px);  /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.6vw;   /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px; 
+    --powerlines-offset-y: -1vh;
+
+    --ability-gap: 1.1vh;
+
+    --keys-group-offset-x: 35px;  
+    --keys-group-offset-y: 2.3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 4px 7px;
+    gap: 1.8vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 7px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    
+    --game-offset-x: 70px;   /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: 57px;  /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: -30px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -6.3vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 40%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;   /* centre le texte capacités verticalement */
+
+    --container-gap: 1.6vw;  /* espace entre Canvas et panneau */
+
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px;  /* déplace le tableau des scores verticalement */
+
+    --control-scale: 0.95; /* échelle des contrôles des touches */
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(19px, 5.6vw, 24px);
+    line-height: 1.2;
+    left: 50%;
+    top: 0.8vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11px, 3.2vw, 14px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 4️⃣ iPhone 12 Mini, Galaxy S20 : 376-390px */
+@media (min-width: 376px) and (max-width: 390px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(135px, 41vw, 155px); /* largeur du panneau des contrôles */
+    --control-height: clamp(175px, 28.5vh, 205px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.7vw;  /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px; 
+    --powerlines-offset-y: -1vh;  /* décalage des lignes de puissance */
+
+    --ability-gap: 1.15vh;
+
+    --keys-group-offset-x: 35px;    /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.4vh;  /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 4px 8px;
+    gap: 1.9vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    --game-offset-x: 60px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: 40px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: -30px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -4.10vh;   /* Déplace le titre de haut en bas */  
+
+    --controls-offset-x: 40%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.7vw;  /* espace entre Canvas et panneau */
+
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 0.97; /* échelle des contrôles des touches */
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(19.5px, 5.7vw, 25px);
+    line-height: 1.2;
+    left: 50%;
+    top: 0.9vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.3px, 3.3vw, 14.3px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(140px, 42vw, 165px);
+    --control-height: clamp(180px, 29vh, 215px);
+    --container-gap: 1.8vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.1vh;
+    --ability-gap: 1.2vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.5vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.5vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 1.8vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
   }
 }
