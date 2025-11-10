@@ -106,21 +106,29 @@ export default function SnakeGame({
   // const colorAnimAppleRef = useRef<number | null>(null);
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
-  useEffect(() => {
-    function handleResize() {
-      const w = window.innerWidth;
-      const isMobile = w >= 320 && w <= 600;
-      
-      if (isMobile) {
-        // Canvas fluide : 85% de la largeur disponible, min 240px, max 320px
-         const size = Math.min(320, Math.max(240, Math.round(w * 0.85)));
-        setCanvasSize(size);
-      } else {
-        const size = Math.min(window.innerWidth * 0.9, 460);
-        setCanvasSize(size);
-      }
+  function getCanvasSizeForWidth(w: number): number {
+    // Desktop
+    if (w > 600) {
+      return Math.min(Math.round(w * 0.9), 460);
     }
     
+    // Mobile breakpoints
+    if (w >= 541) return 450;  // Paysage grands mobiles
+    if (w >= 481) return 420;  // Paysage petits mobiles
+    if (w >= 431) return 380;  // iPhone Pro Max
+    if (w >= 415) return 360;  // iPhone XR/11
+    if (w >= 391) return 360;  // ← iPhone 12/13/14 : 360px
+    if (w >= 376) return 340;  // iPhone 12 Mini
+    if (w >= 361) return 320;  // iPhone SE 2020
+    if (w >= 341) return 300;  // Galaxy S8/S9
+    return 280;                // Très petits (320-340px)
+  }
+
+  useEffect(() => {
+    function handleResize() {
+      setCanvasSize(getCanvasSizeForWidth(window.innerWidth));
+    }
+
     handleResize();
     window.addEventListener('resize', handleResize);
     window.addEventListener('pageshow', handleResize);
