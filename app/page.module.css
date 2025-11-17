@@ -748,7 +748,7 @@
 }
 
 /* 4️⃣ iPhone 12 Mini, Galaxy S20 : 376-390px */
-@media (min-width: 376px) and (max-width: 390px) {
+@media (min-width: 376px) and (max-width: 391px) {
   .asideRight,
   .lastParagraph {
     display: none !important;
@@ -849,7 +849,7 @@
   }
 
   :root {
-    --canvas-size: 360px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
      
     --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
     --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
