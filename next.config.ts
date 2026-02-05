@@ -9,3 +9,6 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// This file is intentionally left blank to allow for custom scripts to be added.
+// The custom scripts are defined in the package.json file.
