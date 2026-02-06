@@ -1,19 +1,8 @@
-/* Import Google Font (ajout du poids 400 pour les paragraphes) */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
-
-/* reset global pour éviter la barre liée à la marge UA du body */
-/* fix: pas de liste dans :global(...) */
-:global(html) {
-  margin: 0;
-}
-:global(body) {
-  margin: 0;
-  font-family: 'Poppins', system-ui, Arial, sans-serif;
-  font-weight: 400;
-  overflow-y: hidden; /* ← Bloque uniquement le scroll vertical */
+/* Container principal - forcer overflow visible */
+.page {
+  min-height: 100vh;
 }
 
-/* 2. Container principal - forcer overflow visible */
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -63,19 +52,6 @@
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
   line-height: 3;
   margin: 0;
-}
-
-/* Masque visuel du h1 original (garde l’accessibilité) */
-:global(main > h1) {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 /* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
@@ -376,7 +352,7 @@
 @media (min-width: 1024px) and (max-width: 1440px) {
 
   /* Censer bloquer le scroll vertical sur le body */
-  :global(body) {
+  .page {
     overflow-y: hidden;
   }
   
@@ -471,7 +447,7 @@
   }
 
   /* Applique le déplacement aux boutons */
-  :global([data-ui="controls"] button) {
+  .page :global([data-ui="controls"] button) {
     transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
@@ -533,7 +509,7 @@
   }
 
   /* Texte capacités centré */
-  :global([data-ui="ability-text"]) {
+  .page :global([data-ui="ability-text"]) {
     display: flex;
     flex-direction: column;
     row-gap: var(--ability-gap, 1.2vh);
@@ -543,7 +519,7 @@
   }
 
   /* Empêche scroll horizontal, autorise débordement visible */
-  :global(body) {
+  .page {
     overflow: hidden;        /* ← Pas de scroll horizontal/vertical */
     max-width: 100vw;
     min-height: 100vh;       /* ← Garde espace vertical */
@@ -578,7 +554,7 @@
     --keys-group-offset-y: 2.2vh;  
   }
 
-  :global([data-ui="controls"] button) {
+  .page :global([data-ui="controls"] button) {
     transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
  
@@ -635,7 +611,7 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
+  .page :global([data-ui="ability-text"]) {
     display: flex;
     flex-direction: column;
     row-gap: var(--ability-gap);
@@ -644,7 +620,7 @@
     font-size: clamp(10.5px, 3.1vw, 13.5px);
   }
 
-  :global(body) {
+  .page {
     overflow: hidden;
     max-width: 100vw;
     min-height: 100vh;
@@ -667,15 +643,15 @@
     --container-gap: 1.6vw;   /* espace entre Canvas et panneau */
 
     --powerlines-offset-x: 0px; 
-    --powerlines-offset-y: -1vh;
+    --powerlines-offset-y: -1vh;  /* décalage des lignes de puissance */
 
     --ability-gap: 1.1vh;
 
     --keys-group-offset-x: 35px;  
-    --keys-group-offset-y: 2.3vh;
+    --keys-group-offset-y: 2.3vh;  
   }
 
-  :global([data-ui="controls"] button) {
+  .page :global([data-ui="controls"] button) {
     transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
@@ -731,7 +707,7 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
+  .page :global([data-ui="ability-text"]) {
     display: flex;
     flex-direction: column;
     row-gap: var(--ability-gap);
@@ -740,7 +716,7 @@
     font-size: clamp(11px, 3.2vw, 14px);
   }
 
-  :global(body) {
+  .page {
     overflow: hidden;
     max-width: 100vw;
     min-height: 100vh;
@@ -769,7 +745,7 @@
     --keys-group-offset-y: 2.4vh;  /* décalage vertical du groupe de touches */
   }
 
-  :global([data-ui="controls"] button) {
+  .page :global([data-ui="controls"] button) {
     transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
@@ -825,13 +801,446 @@
     );
   }
 
+  .page :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.4vw, 15px);
+  }
+
+  .page {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
   :global([data-ui="ability-text"]) {
     display: flex;
     flex-direction: column;
     row-gap: var(--ability-gap);
     align-items: center;
     text-align: center;
-    font-size: clamp(11.3px, 3.3vw, 14.3px);
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
   }
 
   :global(body) {
@@ -1282,7 +1691,7 @@
   }
 
   :root {
-   
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
      
     --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
     --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
@@ -1715,7 +2124,7 @@
   }
 
   :root {
-    --canvas-size: 360px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
      
     --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
     --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
@@ -1888,5 +2297,5292 @@
     overflow: hidden;
     max-width: 100vw;
     min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(170px, 45vw, 210px);
+    --control-height: clamp(210px, 32vh, 260px);
+    --container-gap: 2.4vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.4vh;
+    --ability-gap: 1.4vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 11px;
+    gap: 2.5vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 11px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.4vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.06;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(23px, 6.4vw, 31px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.3vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13px, 3.7vw, 16px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
+@media (min-width: 541px) and (max-width: 600px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(180px, 46vw, 230px);
+    --control-height: clamp(220px, 33vh, 280px);
+    --container-gap: 2.6vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.5vh;
+    --ability-gap: 1.5vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 3.2vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 6px 12px;
+    gap: 2.7vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -3.2vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.6vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.08;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(24px, 6.6vw, 33px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.4vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(13.5px, 3.8vw, 17px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
+@media (min-width: 391px) and (max-width: 414px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
+     
+    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
+    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
+
+    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
+
+    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
+    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
+
+    --ability-gap: 1.2vh; /* espace entre les capacités */
+
+    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
+    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  /* Permet de centrer le conteneur principal */
+  .row {
+    padding: 4px 8px;
+    gap: 2vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box; 
+    
+
+    --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
+    --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
+
+    --title-offset-x: 0px;     /* Déplace le titre de gauche à droite */
+    --title-offset-y: -2.5vh; /* Déplace le titre de haut en bas */
+
+    --controls-offset-x: 20%;  /* déplace le panneau des touches horizontalement */
+    --controls-offset-y: 0px; /* déplace le panneau des touches verticalement */
+
+    --ability-text-offset-x: 0px;   /* centre le texte capacités horizontalement */
+    --ability-text-offset-y: 0px;  /* centre le texte capacités verticalement */
+
+    --container-gap: 1.8vw;  /* espace entre Canvas et panneau */
+    
+    --scoreboard-offset-x: 0px;  /* déplace le tableau des scores horizontalement */
+    --scoreboard-offset-y: 0px; /* déplace le tableau des scores verticalement */
+
+    --control-scale: 1; /* échelle des contrôles des touches */
+  }
+  
+   /* Permet de centrer le titre correctement */
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(20px, 5.8vw, 26px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+    /* Sert à centrer le texte des capacités */
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(11.5px, 3.4vw, 14.5px);
+  }
+
+  /* Sert à empêcher le scroll horizontal/vertical */
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
+@media (min-width: 415px) and (max-width: 430px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(150px, 43vw, 175px);
+    --control-height: clamp(190px, 30vh, 225px);
+    --container-gap: 2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.2vh;
+    --ability-gap: 1.25vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.6vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 9px;
+    gap: 2.1vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 9px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.6vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.02;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(21px, 6vw, 27px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.1vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12px, 3.5vw, 15px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
+@media (min-width: 431px) and (max-width: 480px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  :root {
+    --control-width: clamp(160px, 44vw, 190px);
+    --control-height: clamp(200px, 31vh, 240px);
+    --container-gap: 2.2vw;
+    --powerlines-offset-x: 0px;
+    --powerlines-offset-y: -1.3vh;
+    --ability-gap: 1.3vh;
+    --keys-group-offset-x: 35px;
+    --keys-group-offset-y: 2.8vh;
+  }
+
+  :global([data-ui="controls"] button) {
+    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
+  }
+
+  .row {
+    padding: 5px 10px;
+    gap: 2.3vh;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .gameLeft {
+    align-items: center;
+    padding-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    --game-offset-x: 37px;
+    --game-offset-y: -7px;
+    --title-offset-x: 0px;
+    --title-offset-y: -2.8vh;
+    --controls-offset-x: 20%;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 2.2vw;
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --control-scale: 1.04;
+  }
+
+  .gameLeft::before {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 6.2vw, 29px);
+    line-height: 1.2;
+    left: 50%;
+    top: 1.2vh;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  :global([data-ui="ability-text"]) {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--ability-gap);
+    align-items: center;
+    text-align: center;
+    font-size: clamp(12.5px, 3.6vw, 15.5px);
+  }
+
+  :global(body) {
+    overflow: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+/* 8️⃣ Paysage petits mobiles : 481-540px */
+@media (min-width: 481px) and (max-width: 540px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
   }
 }

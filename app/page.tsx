@@ -26,7 +26,7 @@ export default function Home() {
   ];
 
   return (
-    <section className="min-h-screen flex items-center justify-center text-center px-4 bg-blue-900">
+    <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
       <main>
         <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 12px 0' }}>Snake Game</h1>
         <div className={styles.row}>
