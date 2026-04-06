@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
   basePath: "/snake-game",
   assetPrefix: "/snake-game/",
   reactStrictMode: false,

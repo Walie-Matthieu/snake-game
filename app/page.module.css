@@ -1,7 +1,27 @@
-/* Container principal - forcer overflow visible */
-.page {
-  min-height: 100vh;
+﻿/* Mobile hard-centering override for game block/canvas */
+@media (max-width: 1023px) {
+  .row {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .gameLeft {
+    --game-offset-x: 0px !important;
+    --game-offset-y: 0px !important;
+    transform: translate(0, 0) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .gameLeft > * {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
+/* Container principal - forcer overflow visible */
 
 .row {
   display: flex;
@@ -80,10 +100,6 @@
   /* si tu veux un fond semi‑opaque temporaire : uncomment */
   /* background: rgba(255, 249, 200, 0.03); */
 }
-
-
-
-
 
 /* === CONTROLE INDIVIDUEL DES TEXTES (ajout) ================================
    Tu peux modifier chaque ligne via les variables ci‑dessous sans toucher au JSX.
@@ -166,7 +182,6 @@
   font-family: 'Poppins', system-ui, Arial, sans-serif; /* Même police que le titre */
   color: #ebeef3; /* couleur du texte */
 }
-
 
 /* Utilitaires pour empêcher un retour à la ligne sur un groupe de mots */
 .noWrap,
@@ -281,15 +296,6 @@
 }
 
 /* Contrôles rapides pour le h3 "Pouvoirs par couleur" */
-:root {
-  --pouvoir-display: block;       /* block / none */
-  --pouvoir-font-size: 15px;
-  --pouvoir-font-weight: 700;
-  --pouvoir-margin: 8px 0;
-  --pouvoir-color: #ffffff;
-  --pouvoir-offset-x: 0px;        /* décalage horizontal (ex: -10px ou 10px) */
-  --pouvoir-offset-y: 0px;        /* décalage vertical (ex: -8px monte, 8px descend) */
-}
 
 .asideRight .pouvoirTitle {
   display: var(--pouvoir-display);
@@ -314,12 +320,6 @@
 }
 
 /* Contrôle des 5 qui indique les lignes de couleur ensemble */
-:root {
-  --powerlines-offset-x: 0px;  /* + = droite / - = gauche */
-  --powerlines-offset-y: 2px; /* + = bas    / - = haut  */
-  --powerlines-margin-top: 0px; /* Espace au-dessus du bloc */
-  --powerlines-margin-bottom: -120px; /* Espace en-dessous du bloc */
-}
 
 .powerLinesWrapper {
   display: block;
@@ -328,14 +328,6 @@
   margin-bottom: var(--powerlines-margin-bottom);
   will-change: transform;
 }
-
-
-:root {
-  --score-offset-x: -124px; /* + = droite / - = gauche */
-  --score-offset-y: 0px; /* + = bas    / - = haut  */
-}
-
-
 
 /* Base: applique les offsets via variables (fallback 0) */
 .gameLeft { transform: translate(var(--game-offset-x, 0), var(--game-offset-y, 0)); }
@@ -352,9 +344,6 @@
 @media (min-width: 1024px) and (max-width: 1440px) {
 
   /* Censer bloquer le scroll vertical sur le body */
-  .page {
-    overflow-y: hidden;
-  }
   
   .gameLeft {
     --game-offset-x: 90px;       /* Pour déplacer le bloc jeu de gauche à droite */
@@ -379,7 +368,7 @@
     align-self: stretch;
     max-width: 100%;
     --last-offset-x: -700px; /* Déplace le texte de droite à gauche */
-    --last-offset-y: 50px; /* Déplace le texte de bas en haut */
+    --last-offset-y: -50px; /* Déplace le texte de bas en haut */
   }
 }
 
@@ -402,11 +391,9 @@
 
   .lastParagraph {
     --last-offset-x: -700px;  /* Déplace le texte de droite à gauche */
-    --last-offset-y: 75px;   /* Déplace le texte de bas en haut */
+    --last-offset-y: -25px;   /* Déplace le texte de bas en haut */
   }
 }
-
-
 
 /* Grand écran (>1921px) */
 @media (min-width: 1921px) {
@@ -415,9 +402,8 @@
     --title-offset-x: -120px;
   }
   .asideRight { --aside-offset-x: 180px; }
-  .lastParagraph { --last-offset-x: 0px; --last-offset-y: 30px; }
+  .lastParagraph { --last-offset-x: 0px; --last-offset-y: -30px; }
 }
-
 
 /* Mobile spécifique (320px - 340px) : pas de scroll, pas de coupure */
 @media (min-width: 320px) and (max-width: 340px) {
@@ -428,28 +414,7 @@
     display: none !important;
   }
 
-  :root {
-    /* Taille du panneau responsive en vw/vh */
-    --control-width: clamp(35vw, 45vw, 50vw);  /* largeur du panneau des contrôles */
-    --control-height: clamp(25vh, 30vh, 35vh);  /* hauteur du panneau des contrôles */
-    --container-gap: 2vw;    /* espace entre Canvas et panneau */  
-
-    /* Power lines centré */
-    --powerlines-offset-x: 0px;   /* centré horizontalement */
-    --powerlines-offset-y: -1vh;  /* déplace légèrement vers le haut */
-
-    /* Espacement texte capacités */
-    --ability-gap: 1.2vh;
-
-    /* Touches centrées dans le panneau */
-    --keys-group-offset-x: 35px;    /* déplace les touches horizontalement */
-    --keys-group-offset-y: 2.5vh;  /* déplace les touches verticalement */
-  }
-
   /* Applique le déplacement aux boutons */
-  .page :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
-  }
 
   /* Conteneur centré : pas de scroll, débordement visible */
   .row {
@@ -472,7 +437,6 @@
     max-width: 100%;
     box-sizing: border-box;  /* ← Empêche débordement du padding */
 
-     
 
     --game-offset-y: 70px;  /* Déplace le bloc jeu de haut en bas */
     --game-offset-x: 65px;  /* Déplace le bloc jeu de gauche à droite */
@@ -509,21 +473,8 @@
   }
 
   /* Texte capacités centré */
-  .page :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap, 1.2vh);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 16px);
-  }
 
   /* Empêche scroll horizontal, autorise débordement visible */
-  .page {
-    overflow: hidden;        /* ← Pas de scroll horizontal/vertical */
-    max-width: 100vw;
-    min-height: 100vh;       /* ← Garde espace vertical */
-  }
 }
 
 /* ============================================================================
@@ -540,23 +491,6 @@
     display: none !important;
   }
 
-  :root {
-    --control-width: clamp(125px, 39vw, 140px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(160px, 27vh, 190px); /* hauteur du panneau des contrôles */
-    --container-gap: 1.4vw;     /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;  
-    --powerlines-offset-y: -0.9vh;
-
-    --ability-gap: 1vh;  
-
-    --keys-group-offset-x: 35px;  
-    --keys-group-offset-y: 2.2vh;  
-  }
-
-  .page :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
-  }
  
   .row { 
     padding: 3px 7px;
@@ -576,7 +510,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-
 
     --game-offset-x: 60px;   /* Déplace le jeu de gauche à droite */
     --game-offset-y: 37px;  /* Déplace le jeu de haut en bas */
@@ -611,48 +544,13 @@
     );
   }
 
-  .page :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(10.5px, 3.1vw, 13.5px);
-  }
-
-  .page {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
-
-
 
 /* 3️⃣ iPhone SE 2020, iPhone 6/7/8 : 361-375px */
 @media (min-width: 361px) and (max-width: 375px) {
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(130px, 40vw, 150px);  /* largeur du panneau des contrôles */
-    --control-height: clamp(170px, 28vh, 200px);  /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.6vw;   /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px; 
-    --powerlines-offset-y: -1vh;  /* décalage des lignes de puissance */
-
-    --ability-gap: 1.1vh;
-
-    --keys-group-offset-x: 35px;  
-    --keys-group-offset-y: 2.3vh;  
-  }
-
-  .page :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -707,20 +605,6 @@
     );
   }
 
-  .page :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11px, 3.2vw, 14px);
-  }
-
-  .page {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 4️⃣ iPhone 12 Mini, Galaxy S20 : 376-390px */
@@ -728,25 +612,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(135px, 41vw, 155px); /* largeur du panneau des contrôles */
-    --control-height: clamp(175px, 28.5vh, 205px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.7vw;  /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px; 
-    --powerlines-offset-y: -1vh;  /* décalage des lignes de puissance */
-
-    --ability-gap: 1.15vh;
-
-    --keys-group-offset-x: 35px;    /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.4vh;  /* décalage vertical du groupe de touches */
-  }
-
-  .page :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -801,20 +666,6 @@
     );
   }
 
-  .page :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.4vw, 15px);
-  }
-
-  .page {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -822,27 +673,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -864,7 +694,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -901,21 +730,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -923,21 +739,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -985,20 +786,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -1006,21 +793,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1068,20 +840,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -1089,21 +847,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1151,20 +894,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -1172,21 +901,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1234,20 +948,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -1255,27 +955,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -1297,7 +976,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -1334,21 +1012,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -1356,21 +1021,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1418,20 +1068,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -1439,21 +1075,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1501,20 +1122,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -1522,21 +1129,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1584,20 +1176,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -1605,21 +1183,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1667,20 +1230,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -1688,27 +1237,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -1730,7 +1258,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -1767,21 +1294,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -1789,21 +1303,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1851,20 +1350,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -1872,21 +1357,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -1934,20 +1404,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -1955,21 +1411,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2017,20 +1458,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -2038,21 +1465,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2100,20 +1512,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -2121,27 +1519,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -2163,7 +1540,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -2200,21 +1576,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -2222,21 +1585,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2284,20 +1632,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -2305,21 +1639,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2367,20 +1686,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -2388,21 +1693,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2450,20 +1740,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -2471,21 +1747,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2533,20 +1794,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -2554,27 +1801,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -2596,7 +1822,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -2633,21 +1858,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -2655,21 +1867,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2717,20 +1914,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -2738,21 +1921,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2800,20 +1968,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -2821,21 +1975,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2883,20 +2022,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -2904,21 +2029,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -2966,20 +2076,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -2987,27 +2083,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -3029,7 +2104,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -3066,21 +2140,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -3088,21 +2149,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3150,20 +2196,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -3171,21 +2203,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3233,20 +2250,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -3254,21 +2257,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3316,20 +2304,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -3337,21 +2311,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3399,20 +2358,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -3420,27 +2365,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -3462,7 +2386,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -3499,21 +2422,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -3521,21 +2431,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3583,20 +2478,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -3604,21 +2485,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3666,20 +2532,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -3687,21 +2539,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3749,20 +2586,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -3770,21 +2593,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -3832,20 +2640,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -3853,27 +2647,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -3895,7 +2668,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -3932,21 +2704,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -3954,21 +2713,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4016,20 +2760,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -4037,21 +2767,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4099,20 +2814,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -4120,21 +2821,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4182,20 +2868,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -4203,21 +2875,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4265,20 +2922,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -4286,27 +2929,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -4328,7 +2950,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -4365,21 +2986,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -4387,21 +2995,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4449,20 +3042,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -4470,21 +3049,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4532,20 +3096,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -4553,21 +3103,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4615,20 +3150,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -4636,21 +3157,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4698,20 +3204,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -4719,27 +3211,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -4761,7 +3232,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -4798,21 +3268,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -4820,21 +3277,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4882,20 +3324,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -4903,21 +3331,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -4965,20 +3378,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -4986,21 +3385,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5048,20 +3432,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -5069,21 +3439,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5131,20 +3486,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -5152,27 +3493,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -5194,7 +3514,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -5231,21 +3550,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -5253,21 +3559,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5315,20 +3606,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -5336,21 +3613,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5398,20 +3660,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -5419,21 +3667,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5481,20 +3714,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -5502,21 +3721,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5564,20 +3768,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -5585,27 +3775,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -5627,7 +3796,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -5664,21 +3832,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -5686,21 +3841,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5748,20 +3888,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -5769,21 +3895,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5831,20 +3942,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -5852,21 +3949,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5914,20 +3996,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -5935,21 +4003,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -5997,20 +4050,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -6018,27 +4057,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -6060,7 +4078,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -6097,21 +4114,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -6119,21 +4123,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6181,20 +4170,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -6202,21 +4177,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6264,20 +4224,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -6285,21 +4231,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6347,20 +4278,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -6368,21 +4285,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6430,20 +4332,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -6451,27 +4339,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -6493,7 +4360,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -6530,21 +4396,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -6552,21 +4405,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6614,20 +4452,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -6635,21 +4459,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6697,20 +4506,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -6718,21 +4513,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6780,20 +4560,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -6801,21 +4567,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -6863,20 +4614,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -6884,27 +4621,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -6926,7 +4642,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -6963,21 +4678,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -6985,21 +4687,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -7047,20 +4734,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -7068,21 +4741,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -7130,20 +4788,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
@@ -7151,21 +4795,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(170px, 45vw, 210px);
-    --control-height: clamp(210px, 32vh, 260px);
-    --container-gap: 2.4vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.4vh;
-    --ability-gap: 1.4vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -7213,20 +4842,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13px, 3.7vw, 16px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
@@ -7234,21 +4849,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(180px, 46vw, 230px);
-    --control-height: clamp(220px, 33vh, 280px);
-    --container-gap: 2.6vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.5vh;
-    --ability-gap: 1.5vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 3.2vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -7296,20 +4896,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(13.5px, 3.8vw, 17px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
@@ -7317,27 +4903,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --canvas-size: 160px;  /* Taille fixe canvas (au lieu de ~320px fluide) */
-     
-    --control-width: clamp(140px, 42vw, 165px);   /* largeur du panneau des contrôles */
-    --control-height: clamp(180px, 29vh, 215px); /* hauteur du panneau des contrôles */
-
-    --container-gap: 1.8vw; /* espace entre Canvas et panneau */
-
-    --powerlines-offset-x: 0px;     /* décalage des lignes de puissance */
-    --powerlines-offset-y: -1.1vh; /* décalage des lignes de puissance */
-
-    --ability-gap: 1.2vh; /* espace entre les capacités */
-
-    --keys-group-offset-x: 35px;   /* décalage horizontal du groupe de touches */
-    --keys-group-offset-y: 2.5vh; /* décalage vertical du groupe de touches */
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   /* Permet de centrer le conteneur principal */
@@ -7359,7 +4924,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box; 
-    
 
     --game-offset-x: 37px;  /* Déplace le bloc jeu de gauche à droite */
     --game-offset-y: -7px; /* Déplace le bloc jeu de haut en bas */
@@ -7396,21 +4960,8 @@
   }
 
     /* Sert à centrer le texte des capacités */
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(11.5px, 3.4vw, 14.5px);
-  }
 
   /* Sert à empêcher le scroll horizontal/vertical */
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
@@ -7418,21 +4969,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(150px, 43vw, 175px);
-    --control-height: clamp(190px, 30vh, 225px);
-    --container-gap: 2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.2vh;
-    --ability-gap: 1.25vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.6vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -7480,20 +5016,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12px, 3.5vw, 15px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
@@ -7501,21 +5023,6 @@
   .asideRight,
   .lastParagraph {
     display: none !important;
-  }
-
-  :root {
-    --control-width: clamp(160px, 44vw, 190px);
-    --control-height: clamp(200px, 31vh, 240px);
-    --container-gap: 2.2vw;
-    --powerlines-offset-x: 0px;
-    --powerlines-offset-y: -1.3vh;
-    --ability-gap: 1.3vh;
-    --keys-group-offset-x: 35px;
-    --keys-group-offset-y: 2.8vh;
-  }
-
-  :global([data-ui="controls"] button) {
-    transform: translate(var(--keys-group-offset-x), var(--keys-group-offset-y)) !important;
   }
 
   .row {
@@ -7563,20 +5070,6 @@
     );
   }
 
-  :global([data-ui="ability-text"]) {
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--ability-gap);
-    align-items: center;
-    text-align: center;
-    font-size: clamp(12.5px, 3.6vw, 15.5px);
-  }
-
-  :global(body) {
-    overflow: hidden;
-    max-width: 100vw;
-    min-height: 100vh;
-  }
 }
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */

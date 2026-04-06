@@ -1,6 +1,5 @@
 'use client';
-import { table } from 'console';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 type Position = {
   x: number;
@@ -8,6 +7,7 @@ type Position = {
 };
 
 const GRID_SIZE = 20; // 20x20 cases
+const TICK_MS = 100;
 // const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal (désactivé)
 const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
@@ -82,8 +82,28 @@ export default function SnakeGame({
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [abilityIndex, setAbilityIndex] = useState<number>(0);
   const [previousSnake, setPreviousSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
-  const [animationProgress, setAnimationProgress] = useState(1);
-  const animationRef = useRef<number | null>(null);
+  const animationProgressRef = useRef(1);
+  const renderLoopRef = useRef<number | null>(null);
+  const previousFrameTimeRef = useRef<number | null>(null);
+  const accumulatedTimeRef = useRef(0);
+  const snakeRef = useRef<Position[]>([{ x: 10, y: 10 }]);
+  const foodRef = useRef<Position>({ x: 5, y: 5 });
+  const directionRef = useRef<string>('right');
+  const gameOverRef = useRef(false);
+  const startedRef = useRef(false);
+  const isPausedRef = useRef(false);
+  const abilityIndexRef = useRef(0);
+  const previousSnakeRef = useRef<Position[]>([{ x: 10, y: 10 }]);
+  const scoreRef = useRef(0);
+  const canvasSizeRef = useRef(400);
+  const displayHeadColorRef = useRef<string>(SNAKE_COLORS[0].head);
+  const displayBodyColorRef = useRef<string>(SNAKE_COLORS[0].body);
+  const displayTraitColorRef = useRef<string>('orange');
+  const displayAppleColorRef = useRef<string>('red');
+  const displayFrameColorRef = useRef<string>(SNAKE_COLORS[0].head);
+  const collisionMarkerRef = useRef<Position | null>(null);
+  const goFlashVisibleRef = useRef(true);
+  const goFlashDoneRef = useRef(false);
   // ref pour éviter double-trigger du même shift + durée centralisée
   const lastShiftKeyRef = useRef<string | null>(null);
   const SHIFT_MS = 350; // durée du maintien du shift (ms)
@@ -104,6 +124,46 @@ export default function SnakeGame({
   const [goFlashDone, setGoFlashDone] = useState(false);
   const colorAnimFrameRef = useRef<number | null>(null); // ← nouveau
   // const colorAnimAppleRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    snakeRef.current = snake;
+    foodRef.current = food;
+    directionRef.current = direction;
+    gameOverRef.current = gameOver;
+    startedRef.current = started;
+    isPausedRef.current = isPaused;
+    abilityIndexRef.current = abilityIndex;
+    previousSnakeRef.current = previousSnake;
+    scoreRef.current = score;
+    canvasSizeRef.current = canvasSize;
+    displayHeadColorRef.current = displayHeadColor;
+    displayBodyColorRef.current = displayBodyColor;
+    displayTraitColorRef.current = displayTraitColor;
+    displayAppleColorRef.current = displayAppleColor;
+    displayFrameColorRef.current = displayFrameColor;
+    collisionMarkerRef.current = collisionMarker;
+    goFlashVisibleRef.current = goFlashVisible;
+    goFlashDoneRef.current = goFlashDone;
+  }, [
+    snake,
+    food,
+    direction,
+    gameOver,
+    started,
+    isPaused,
+    abilityIndex,
+    previousSnake,
+    score,
+    canvasSize,
+    displayHeadColor,
+    displayBodyColor,
+    displayTraitColor,
+    displayAppleColor,
+    displayFrameColor,
+    collisionMarker,
+    goFlashVisible,
+    goFlashDone,
+  ]);
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   function getCanvasSizeForWidth(w: number): number {
@@ -138,14 +198,33 @@ export default function SnakeGame({
     };
   }, []);
 
-  function resetGame() {
-    setSnake([{ x: 10, y: 10 }]);
-    setPreviousSnake([{ x: 10, y: 10 }]); // reset interp
-    setAnimationProgress(1);               // animation terminée
-    setFood({ x: 5, y: 5 });
+  const resetGame = useCallback(() => {
+    const initialSnake = [{ x: 10, y: 10 }];
+    const initialFood = { x: 5, y: 5 };
+
+    snakeRef.current = initialSnake;
+    previousSnakeRef.current = initialSnake;
+    foodRef.current = initialFood;
+    directionRef.current = 'right';
+    gameOverRef.current = false;
+    startedRef.current = false;
+    isPausedRef.current = false;
+    scoreRef.current = 0;
+    abilityIndexRef.current = 0;
+    collisionMarkerRef.current = null;
+    goFlashVisibleRef.current = true;
+    goFlashDoneRef.current = false;
+    animationProgressRef.current = 1;
+    previousFrameTimeRef.current = null;
+    accumulatedTimeRef.current = 0;
+
+    setSnake(initialSnake);
+    setPreviousSnake(initialSnake); // reset interp
+    setFood(initialFood);
     setDirection('right');
     setGameOver(false);
     setStarted(false);
+    setIsPaused(false);
     setScore(0);
     setAbilityIndex(0);
     setCollisionMarker(null); // reset croix
@@ -154,7 +233,7 @@ export default function SnakeGame({
     // s'assurer que le shift et la clef de déduplication sont réinitialisés
     setAbilityShift(false);
     lastShiftKeyRef.current = null;
-  }
+  }, []);
 
   // Gestion des touches
   useEffect(() => {
@@ -171,18 +250,26 @@ export default function SnakeGame({
       if (!started) {
         switch (e.key) {
           case 'ArrowUp':
+            directionRef.current = 'up';
+            startedRef.current = true;
             setDirection('up');
             setStarted(true);
             break;
           case 'ArrowDown':
+            directionRef.current = 'down';
+            startedRef.current = true;
             setDirection('down');
             setStarted(true);
             break;
           case 'ArrowLeft':
+            directionRef.current = 'left';
+            startedRef.current = true;
             setDirection('left');
             setStarted(true);
             break;
           case 'ArrowRight':
+            directionRef.current = 'right';
+            startedRef.current = true;
             setDirection('right');
             setStarted(true);
             break;
@@ -194,23 +281,15 @@ export default function SnakeGame({
       }
       // Si le jeu est déjà démarré, on gère les flèches normalement
       switch (e.key) {
-        case 'ArrowUp': setDirection('up'); break;
-        case 'ArrowDown': setDirection('down'); break;
-        case 'ArrowLeft': setDirection('left'); break;
-        case 'ArrowRight': setDirection('right'); break;
+        case 'ArrowUp': directionRef.current = 'up'; setDirection('up'); break;
+        case 'ArrowDown': directionRef.current = 'down'; setDirection('down'); break;
+        case 'ArrowLeft': directionRef.current = 'left'; setDirection('left'); break;
+        case 'ArrowRight': directionRef.current = 'right'; setDirection('right'); break;
       }
     };
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [started, snake.length, abilityIndex]);
-
-  // Boucle du jeu
-  useEffect(() => {
-    if (!started || gameOver || isPaused) return;
-    const speed = 100;
-    const gameLoop = setInterval(updateGame, speed);
-    return () => clearInterval(gameLoop);
-  }, [snake, direction, started, gameOver, isPaused]);
+  }, [started, resetGame]);
 
   // Rétrécit automatiquement le serpent quand on passe en mode Rétrécissement
   useEffect(() => {
@@ -232,14 +311,20 @@ export default function SnakeGame({
     });
   }
 
-  function updateGame() {
-    if (gameOver) return;
+  const updateGame = useCallback(() => {
+    if (gameOverRef.current) return;
 
-    const newSnake = [...snake];
+    const currentSnake = snakeRef.current;
+    const currentFood = foodRef.current;
+    const currentDirection = directionRef.current;
+    const currentAbilityIndex = abilityIndexRef.current;
+    const currentScore = scoreRef.current;
+    const currentCanvasSize = canvasSizeRef.current;
+    const newSnake = [...currentSnake];
     const head = { ...newSnake[0] };
 
     // Calcule la nouvelle position de la tête
-    switch (direction) {
+    switch (currentDirection) {
       case 'up': head.y--; break;
       case 'down': head.y++; break;
       case 'left': head.x--; break;
@@ -247,7 +332,7 @@ export default function SnakeGame({
     }
 
     // Collision avec les murs (hitbox circulaire)
-    const cellSize = canvasSize / GRID_SIZE;
+    const cellSize = currentCanvasSize / GRID_SIZE;
     const radius = (cellSize - 2) / 2 * 0.7; // Réduit la zone de collision à 70%
     const headPx = {
       x: head.x * cellSize + cellSize / 2,
@@ -256,19 +341,21 @@ export default function SnakeGame({
     // Collision avec les murs plus précise
     if (
       headPx.x - radius < 0 ||
-      headPx.x + radius > canvasSize ||
+      headPx.x + radius > currentCanvasSize ||
       headPx.y - radius < 0 ||
-      headPx.y + radius > canvasSize
+      headPx.y + radius > currentCanvasSize
     ) {
-      if (abilityIndex === 1) {
+      if (currentAbilityIndex === 1) {
         // Traverseur : wrap-around
         if (head.x < 0) head.x = GRID_SIZE - 1;
         else if (head.x >= GRID_SIZE) head.x = 0;
         if (head.y < 0) head.y = GRID_SIZE - 1;
         else if (head.y >= GRID_SIZE) head.y = 0;
       } else {
+        collisionMarkerRef.current = head;
+        gameOverRef.current = true;
+        animationProgressRef.current = 1;
         setCollisionMarker(head); // mémorise position pour croix
-        setAnimationProgress(1);
         setGameOver(true);
         return;
       }
@@ -277,24 +364,23 @@ export default function SnakeGame({
     newSnake.unshift(head);
 
     // === Collision avec la pomme (rouge ou jaune)
-    const yellow = isYellowApple(score);
-    if (head.x === food.x && head.y === food.y) {
-      setFood(getRandomFoodPosition(newSnake));
+    const yellow = isYellowApple(currentScore);
+    if (head.x === currentFood.x && head.y === currentFood.y) {
+      const nextFood = getRandomFoodPosition(newSnake);
+      foodRef.current = nextFood;
+      setFood(nextFood);
       // Si c'est une pomme jaune, change le pouvoir
       if (yellow) {
-        const nextAbility = (abilityIndex + 1) % SNAKE_ABILITIES.length;
+        const nextAbility = (currentAbilityIndex + 1) % SNAKE_ABILITIES.length;
+        abilityIndexRef.current = nextAbility;
         setAbilityIndex(nextAbility);
-        if (abilityIndex === 2) { // Double Score
-          setScore(prev => prev + 4); // 2 points × 2
-        } else {
-          setScore(prev => prev + 2); // 2 points normal
-        }
+        const nextScore = currentScore + (currentAbilityIndex === 2 ? 4 : 2);
+        scoreRef.current = nextScore;
+        setScore(nextScore);
       } else {
-        if (abilityIndex === 2) { // Double Score
-          setScore(prev => prev + 2); // 1 point × 2
-        } else {
-          setScore(prev => prev + 1); // 1 point normal
-        }
+        const nextScore = currentScore + (currentAbilityIndex === 2 ? 2 : 1);
+        scoreRef.current = nextScore;
+        setScore(nextScore);
       }
     } else {
       newSnake.pop();
@@ -302,37 +388,26 @@ export default function SnakeGame({
 
     // === Collision avec soi-même (après éventuel pop), sauf si Invincible
     if (
-      abilityIndex !== 3 &&
-      isHeadCollidingWithBody(head, newSnake.slice(1), canvasSize / GRID_SIZE)
+      currentAbilityIndex !== 3 &&
+      isHeadCollidingWithBody(head, newSnake.slice(1), currentCanvasSize / GRID_SIZE)
     ) {
+      collisionMarkerRef.current = head;
+      gameOverRef.current = true;
+      animationProgressRef.current = 1;
       setCollisionMarker(head); // croix
       setGameOver(true);
       return;
     }
 
-    setPreviousSnake(snake);
-    setSnake(newSnake);
-    setAnimationProgress(0);
-    drawGame(newSnake, food);
-  }
+    previousSnakeRef.current = currentSnake;
+    snakeRef.current = newSnake;
+    collisionMarkerRef.current = null;
+    animationProgressRef.current = 0;
 
-  useEffect(() => {
-    if (animationProgress < 1) {
-      const animate = () => {
-        setAnimationProgress(prev => {
-          const next = Math.min(prev + 0.15, 1);
-          if (next < 1) {
-            animationRef.current = requestAnimationFrame(animate);
-          }
-          return next;
-        });
-      };
-      animationRef.current = requestAnimationFrame(animate);
-      return () => {
-        if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      };
-    }
-  }, [animationProgress]);
+    setPreviousSnake(currentSnake);
+    setSnake(newSnake);
+    setCollisionMarker(null);
+  }, []);
 
   // Transition douce des couleurs tête/corps quand le pouvoir change
   // [TRANSITION SERPENT DÉSACTIVÉE] — Animation commentée ci-dessus.
@@ -341,6 +416,8 @@ export default function SnakeGame({
     const target = SNAKE_COLORS[abilityIndex];
     setDisplayHeadColor(target.head);
     setDisplayBodyColor(target.body);
+    displayHeadColorRef.current = target.head;
+    displayBodyColorRef.current = target.body;
   }, [abilityIndex]);
 
   // Transition douce du trait dorsal (orange <-> jaune) selon le pouvoir
@@ -348,6 +425,7 @@ export default function SnakeGame({
   // Mise à jour immédiate du trait dorsal (pas de transition)
   useEffect(() => {
     setDisplayTraitColor(abilityIndex === 0 ? 'orange' : 'yellow');
+    displayTraitColorRef.current = abilityIndex === 0 ? 'orange' : 'yellow';
   }, [abilityIndex]);
 
   // Transition douce du cadre (indépendante du serpent)
@@ -367,6 +445,11 @@ export default function SnakeGame({
         lerp(from[1], toHead[1], e),
         lerp(from[2], toHead[2], e),
       ] as [number, number, number]));
+      displayFrameColorRef.current = rgbToCss([
+        lerp(from[0], toHead[0], e),
+        lerp(from[1], toHead[1], e),
+        lerp(from[2], toHead[2], e),
+      ] as [number, number, number]);
       if (t < 1) colorAnimFrameRef.current = requestAnimationFrame(step);
     };
     colorAnimFrameRef.current = requestAnimationFrame(step);
@@ -404,25 +487,17 @@ export default function SnakeGame({
 
   // Couleur de la pomme sans transition (immédiate)
   useEffect(() => {
-    setDisplayAppleColor(isYellowApple(score) ? 'yellow' : 'red');
+    const nextAppleColor = isYellowApple(score) ? 'yellow' : 'red';
+    displayAppleColorRef.current = nextAppleColor;
+    setDisplayAppleColor(nextAppleColor);
   }, [score]);
-
-  // Redessine après collision pour afficher la croix
-  useEffect(() => {
-    if (collisionMarker) {
-      drawGame(snake, food);
-    }
-  }, [collisionMarker, gameOver]); 
-
-  // Dessine aussi quand on passe en état gameOver (même sans collisionMarker futur)
-  useEffect(() => {
-    if (gameOver) drawGame(snake, food);
-  }, [gameOver, snake, food]);
 
   // === Séquence clignotement cadre Game Over ===
   useEffect(() => {
     if (!gameOver) {
       // réinitialise si on relance une partie
+      goFlashVisibleRef.current = true;
+      goFlashDoneRef.current = false;
       setGoFlashVisible(true);
       setGoFlashDone(false);
       return;
@@ -438,16 +513,20 @@ export default function SnakeGame({
       if (goFlashDone) return;             // séquence terminée
 
       if (phase === 'on') {
-        if (!goFlashVisible) setGoFlashVisible(true);
+        goFlashVisibleRef.current = true;
+        setGoFlashVisible(true);
         if (now - last >= GO_FLASH_ON_MS) {
           if (flashIndex === GO_FLASH_COUNT - 1) {
             // dernier flash -> on fige allumé
+            goFlashDoneRef.current = true;
+            goFlashVisibleRef.current = true;
             setGoFlashDone(true);
             setGoFlashVisible(true);
             return;
           } else {
             phase = 'pause';
             last = now;
+            goFlashVisibleRef.current = false;
             setGoFlashVisible(false);
           }
         }
@@ -456,6 +535,7 @@ export default function SnakeGame({
           flashIndex++;
             phase = 'on';
             last = now;
+            goFlashVisibleRef.current = true;
             setGoFlashVisible(true);
         }
       }
@@ -466,37 +546,53 @@ export default function SnakeGame({
     return () => cancelAnimationFrame(raf);
   }, [gameOver, goFlashDone]);
 
-  function drawGame(snakeToDraw = snake, foodToDraw = food) {
+  const drawGame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const cellSize = canvasSize / GRID_SIZE;
-    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    const currentCanvasSize = canvasSizeRef.current;
+    const snakeToDraw = snakeRef.current;
+    const foodToDraw = foodRef.current;
+    const currentPreviousSnake = previousSnakeRef.current;
+    const currentAnimationProgress = animationProgressRef.current;
+    const currentDirection = directionRef.current;
+    const currentDisplayHeadColor = displayHeadColorRef.current;
+    const currentDisplayBodyColor = displayBodyColorRef.current;
+    const currentDisplayTraitColor = displayTraitColorRef.current;
+    const currentDisplayAppleColor = displayAppleColorRef.current;
+    const currentDisplayFrameColor = displayFrameColorRef.current;
+    const currentCollisionMarker = collisionMarkerRef.current;
+    const currentGameOver = gameOverRef.current;
+    const currentGoFlashVisible = goFlashVisibleRef.current;
+    const currentGoFlashDone = goFlashDoneRef.current;
+
+    const cellSize = currentCanvasSize / GRID_SIZE;
+    ctx.clearRect(0, 0, currentCanvasSize, currentCanvasSize);
 
     // Fond dégradé néon
     ctx.save();
     const gradient = ctx.createRadialGradient(
-      canvasSize / 2, canvasSize / 2, canvasSize * 0.05, // centre lumineux plus petit
-      canvasSize / 2, canvasSize / 2, canvasSize / 1.1
+      currentCanvasSize / 2, currentCanvasSize / 2, currentCanvasSize * 0.05, // centre lumineux plus petit
+      currentCanvasSize / 2, currentCanvasSize / 2, currentCanvasSize / 1.1
     );
     gradient.addColorStop(0, '#282842ff'); // centre violet lumineux
     gradient.addColorStop(0.2, '#020207ff'); // sombre intermédiaire plus tôt
     gradient.addColorStop(1, '#0a0a1a'); // bord très sombre
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvasSize, canvasSize);
+    ctx.fillRect(0, 0, currentCanvasSize, currentCanvasSize);
     ctx.restore();
 
     // Utilise les couleurs interpolées (pouvoir actif)
     const snakeColor = {
-      head: displayHeadColor,
-      body: displayBodyColor,
+      head: currentDisplayHeadColor,
+      body: currentDisplayBodyColor,
     };
 
     // === Cadre (normal ou Game Over clignotant) ===
-    if (gameOver) {
-      if (goFlashVisible || goFlashDone) {
+    if (currentGameOver) {
+      if (currentGoFlashVisible || currentGoFlashDone) {
         // même épaisseur que le cadre normal
         const outerLW = Math.max(3.0, cellSize * 0.75);
         const midLW   = Math.max(2.4, cellSize * 0.24);
@@ -516,17 +612,17 @@ export default function SnakeGame({
         ctx.shadowColor = glow;
         ctx.shadowBlur = 18;
         ctx.globalAlpha = 0.35;
-        ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+        ctx.strokeRect(inset, inset, currentCanvasSize - inset * 2, currentCanvasSize - inset * 2);
 
         ctx.lineWidth = midLW;
         ctx.shadowBlur = 10;
         ctx.globalAlpha = 0.6;
-        ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+        ctx.strokeRect(inset, inset, currentCanvasSize - inset * 2, currentCanvasSize - inset * 2);
 
         ctx.lineWidth = coreLW;
         ctx.shadowBlur = 3;
         ctx.globalAlpha = 1;
-        ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+        ctx.strokeRect(inset, inset, currentCanvasSize - inset * 2, currentCanvasSize - inset * 2);
 
         ctx.restore();
       }
@@ -542,33 +638,33 @@ export default function SnakeGame({
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
 
-      ctx.strokeStyle = displayFrameColor;
+      ctx.strokeStyle = currentDisplayFrameColor;
       ctx.lineWidth = outerLW;
       ctx.lineJoin = 'round';
-      ctx.shadowColor = displayFrameColor;
+      ctx.shadowColor = currentDisplayFrameColor;
       ctx.shadowBlur = 18;
       ctx.globalAlpha = 0.35;
-      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+      ctx.strokeRect(inset, inset, currentCanvasSize - inset * 2, currentCanvasSize - inset * 2);
 
       ctx.lineWidth = midLW;
       ctx.shadowBlur = 10;
       ctx.globalAlpha = 0.6;
-      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+      ctx.strokeRect(inset, inset, currentCanvasSize - inset * 2, currentCanvasSize - inset * 2);
 
       ctx.lineWidth = coreLW;
       ctx.shadowBlur = 3;
       ctx.globalAlpha = 1;
-      ctx.strokeRect(inset, inset, canvasSize - inset * 2, canvasSize - inset * 2);
+      ctx.strokeRect(inset, inset, currentCanvasSize - inset * 2, currentCanvasSize - inset * 2);
 
       ctx.restore();
     }
 
     // Interpolation pour animation fluide
     const interpolatedSnake = snakeToDraw.map((segment, i) => {
-      if (previousSnake.length <= i || animationProgress === 1) return segment;
+      if (currentPreviousSnake.length <= i || currentAnimationProgress === 1) return segment;
       return {
-        x: previousSnake[i].x + (segment.x - previousSnake[i].x) * animationProgress,
-        y: previousSnake[i].y + (segment.y - previousSnake[i].y) * animationProgress
+        x: currentPreviousSnake[i].x + (segment.x - currentPreviousSnake[i].x) * currentAnimationProgress,
+        y: currentPreviousSnake[i].y + (segment.y - currentPreviousSnake[i].y) * currentAnimationProgress
       };
     });
 
@@ -594,7 +690,7 @@ export default function SnakeGame({
         let tip: [number, number], base1: [number, number], base2: [number, number];
         const becLength = r * 1.70;
         const becWidth = r * 1.70;
-        switch (direction) {
+        switch (currentDirection) {
           case 'up':
             tip = [cx, cy - r - becLength / 2];
             base1 = [cx - becWidth / 2, cy - r / 2];
@@ -689,7 +785,7 @@ export default function SnakeGame({
     });
 
     // === TRAIT ORANGE OU JAUNE SUR LE DOS DU SERPENT (interpolé) ===
-    const traitColor = displayTraitColor; // ← remplace la logique conditionnelle
+    const traitColor = currentDisplayTraitColor; // ← remplace la logique conditionnelle
     if (interpolatedSnake.length > 1) {
       ctx.save();
       ctx.strokeStyle = traitColor;
@@ -734,7 +830,7 @@ export default function SnakeGame({
 
     // Draw apple (couleur interpolée rouge/jaune) en rond avec effet néon
     ctx.save();
-    ctx.shadowColor = displayAppleColor; // ← interpolé
+    ctx.shadowColor = currentDisplayAppleColor; // ← interpolé
     ctx.shadowBlur = 18;
     ctx.beginPath();
     ctx.arc(
@@ -744,15 +840,15 @@ export default function SnakeGame({
       0,
       Math.PI * 2
     );
-    ctx.fillStyle = displayAppleColor; // ← interpolé
+    ctx.fillStyle = currentDisplayAppleColor; // ← interpolé
     ctx.fill();
     ctx.restore();
 
     // Croix rouge (collision)
-    if (collisionMarker) {
-      const cellSize = canvasSize / GRID_SIZE;
-      const cx = collisionMarker.x * cellSize + cellSize / 2;
-      const cy = collisionMarker.y * cellSize + cellSize / 2;
+    if (currentCollisionMarker) {
+      const cellSize = currentCanvasSize / GRID_SIZE;
+      const cx = currentCollisionMarker.x * cellSize + cellSize / 2;
+      const cy = currentCollisionMarker.y * cellSize + cellSize / 2;
       const size = cellSize * 0.7; // taille de la croix
       const half = size / 2;
 
@@ -774,24 +870,40 @@ export default function SnakeGame({
       ctx.stroke();
       ctx.restore();
     }
-  }
+  }, []);
 
-  // Redessine à chaque changement de taille ou d'état (+ couleurs affichées)
-  // Redessine à chaque changement y compris clignotement
   useEffect(() => {
-    drawGame(snake, food);
-  }, [
-    canvasSize,
-    snake,
-    food,
-    displayHeadColor,
-    displayBodyColor,
-    displayTraitColor,
-    displayAppleColor,
-    displayFrameColor,
-    goFlashVisible,
-    goFlashDone
-  ]);
+    const renderFrame = (now: number) => {
+      if (previousFrameTimeRef.current === null) {
+        previousFrameTimeRef.current = now;
+      }
+
+      const delta = now - previousFrameTimeRef.current;
+      previousFrameTimeRef.current = now;
+
+      if (startedRef.current && !gameOverRef.current && !isPausedRef.current) {
+        accumulatedTimeRef.current += delta;
+        while (accumulatedTimeRef.current >= TICK_MS) {
+          updateGame();
+          accumulatedTimeRef.current -= TICK_MS;
+        }
+        animationProgressRef.current = Math.min(accumulatedTimeRef.current / TICK_MS, 1);
+      } else {
+        accumulatedTimeRef.current = 0;
+        animationProgressRef.current = 1;
+      }
+
+      drawGame();
+      renderLoopRef.current = requestAnimationFrame(renderFrame);
+    };
+
+    renderLoopRef.current = requestAnimationFrame(renderFrame);
+    return () => {
+      if (renderLoopRef.current !== null) {
+        cancelAnimationFrame(renderLoopRef.current);
+      }
+    };
+  }, [drawGame, updateGame]);
 
   function getRandomFoodPosition(snake: Position[]): Position {
     let newPos: Position;
@@ -819,6 +931,7 @@ export default function SnakeGame({
     return () => window.removeEventListener('resize', onResize);
   }, []);
   const isDesktop = windowWidth >= 1024;
+  const isMobileLayout = !isDesktop;
 
   // largeur minimale souhaitée pour le canvas quand la colonne est à droite
   // const MIN_CANVAS_WIDTH = 240;
@@ -840,9 +953,11 @@ export default function SnakeGame({
   const containerStyleMobile: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     gap: CONTAINER_GAP,
-    width: '90vw',
-    maxWidth: 400,
+    width: '100%',
+    maxWidth: 420,
+    margin: '0 auto',
     boxSizing: 'border-box',
   };
 
@@ -855,23 +970,19 @@ export default function SnakeGame({
   const KEYS_GROUP_OFFSET_Y = 4;      // + bas / - haut
 
   // Déplace le Canvas
-  const CANVAS_OFFSET_X = -40;
-  const CANVAS_OFFSET_Y = 10;
+  const CANVAS_OFFSET_X = isDesktop ? -40 : 0;
+  const CANVAS_OFFSET_Y = isDesktop ? 10 : 0;
 
   // Offset dédié pour le texte des capacités
-  const ABILITY_TEXT_OFFSET_X = -70;
+  const ABILITY_TEXT_OFFSET_X = isDesktop ? -70 : 0;
   const ABILITY_TEXT_OFFSET_Y = 0;
-
-  // Offset pour le message "Appuie sur une flèche pour commencer"
-  const START_HINT_OFFSET_X = 265; // + droite / - gauche
-  const START_HINT_OFFSET_Y = -200; // + bas / - haut
 
   const canvasWrapperStyle: React.CSSProperties = {
     width: '100%',
     minWidth: 0,
     boxSizing: 'border-box',
     overflow: 'hidden',
-    transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+      transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
     position: 'relative', // <- permet aux overlays position:absolute d'être centrés sur le canvas
   };
 
@@ -910,9 +1021,7 @@ export default function SnakeGame({
   }
  
   // === Tableau du Score (TON | MEILLEUR) ===
-  const SCOREBOARD_OFFSET_Y = 0; // + bas / - haut
   const SCOREBOARD_SCALE = windowWidth >= 1440 ? 1 : windowWidth >= 1024 ? 0.9 : 1; // PC responsive
-  const SCOREBOARD_SHIFT_X = 0;   // + droite / - gauche
 
   const [highScore, setHighScore] = useState<number>(() => {
     if (typeof window === 'undefined') return 0;
@@ -991,6 +1100,8 @@ export default function SnakeGame({
           // ...existing code...
           display: 'flex',
           flexDirection: 'column',
+          alignItems: isMobileLayout ? 'center' : 'flex-start',
+          textAlign: isMobileLayout ? 'center' : 'left',
           rowGap: 'var(--ability-gap, 8px)', // ← lis depuis le CSS (fallback 8px)
           transform: `translate(
             calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
@@ -1089,13 +1200,18 @@ export default function SnakeGame({
           data-ui="controls"
           style={{
             width: 'var(--control-width, 160px)',  // ← doit lire la variable
-            height: controlsAbsolute ? 'auto' : 'visible',
-            transform: `translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px))`,
+            height: 'auto',
+            transform: isMobileLayout
+              ? 'translate(0px, 0px)'
+              : 'translate(var(--controls-offset-x, 0px), var(--controls-offset-y, 0px))',
             transformOrigin: 'top left',
             overflowY: controlsAbsolute ? 'auto' : 'visible',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            alignSelf: isMobileLayout ? 'center' : 'auto',
+            marginLeft: isMobileLayout ? 'auto' : 0,
+            marginRight: isMobileLayout ? 'auto' : 0,
             gap: 10,
             padding: 10,
             borderRadius: 14,

@@ -9,12 +9,12 @@ export default function Home() {
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [started, setStarted] = useState<boolean>(false);
 
-  const handleSnakeState = useCallback((s: { abilityIndex: number; abilityShift: boolean; gameOver: boolean }) => {
+  const handleSnakeState = useCallback((s: { abilityIndex: number; abilityShift: boolean; gameOver: boolean; started?: boolean }) => {
     setAbilityIndex(s.abilityIndex);
     setAbilityShift(s.abilityShift);
     setGameOver(s.gameOver);
     // mettre à jour démarrage du jeu
-    if (typeof (s as any).started === 'boolean') setStarted((s as any).started);
+    if (typeof s.started === 'boolean') setStarted(s.started);
   }, []);
 
   const lines = [
@@ -28,7 +28,6 @@ export default function Home() {
   return (
     <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
       <main>
-        <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 12px 0' }}>Snake Game</h1>
         <div className={styles.row}>
           <div className={styles.gameLeft}>
             <SnakeGame onStateChange={handleSnakeState} />
@@ -39,8 +38,8 @@ export default function Home() {
               Re salut, ici vous pouvez trouver le fameux jeu du Serpent aka The Snake Game.
             </p>
             <p style={{ margin: '0 0 10px 0', textAlign: 'left' }}>
-              J'ai codé ce jeu en React mais d'une manière légèrement différente du reste du portfolio, pour m'entraîner
-              et aussi pour éveiller ma curiosité. J'ai essayé d'être original en ajoutant des particularités telles que
+              J&apos;ai codé ce jeu en React mais d&apos;une manière légèrement différente du reste du portfolio, pour m&apos;entraîner
+              et aussi pour éveiller ma curiosité. J&apos;ai essayé d&apos;être original en ajoutant des particularités telles que
               le fait de lui donner des pouvoirs à chaque pomme jaune mangée. Ainsi, chaque couleur possède une particularité :
             </p>
 
@@ -73,7 +72,7 @@ export default function Home() {
 
             <p className={styles.lastParagraph}>
               <span className={styles.noWrap}>
-                Si ça vous a plu n'hésitez pas à me le dire.
+                Si ça vous a plu n&apos;hésitez pas à me le dire.
               </span>
               <br />
               <span className={`${styles.pasPluLine} ${styles.noWrap}`}>
