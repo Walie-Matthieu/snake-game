@@ -1,32 +1,4 @@
-﻿/* Mobile hard-centering override for game block/canvas */
-@media (max-width: 1023px) {
-  .row {
-    justify-content: center !important;
-    align-items: center !important;
-  }
-
-  .gameLeft {
-    --game-offset-x: 0px !important;
-    --game-offset-y: 0px !important;
-    transform: translate(0, 0) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-
-  .gameLeft > * {
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  .gameLeft::before {
-    font-size: clamp(34px, 8.6vw, 55px) !important;
-    --title-offset-y: -7.8vh !important;
-  }
-}
-/* Container principal - forcer overflow visible */
+﻿/* Container principal - forcer overflow visible */
 
 .row {
   display: flex;
@@ -99,8 +71,10 @@
   max-width: 320px;
 
   line-height: 1.6;
-  outline: 2px dashed rgba(255,223,0,0.95);
-  box-shadow: 0 6px 18px rgba(255,223,0,0.12);
+  border-radius: 18px;
+  outline: 2px solid rgba(255,255,255,0.95);
+  outline-offset: 8px;
+  box-shadow: 0 6px 18px rgba(255,255,255,0.12);
   z-index: 50; /* assure que le contour reste au-dessus */
   /* si tu veux un fond semi‑opaque temporaire : uncomment */
   /* background: rgba(255, 249, 200, 0.03); */

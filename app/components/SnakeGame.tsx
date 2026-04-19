@@ -167,9 +167,20 @@ export default function SnakeGame({
 
   // Met à jour la taille du canvas selon la taille de la fenêtre
   function getCanvasSizeForWidth(w: number): number {
-    // Desktop
+    if (w >= 1024) {
+      return Math.min(Math.round(w * 0.42), 460);
+    }
+
+    if (w >= 900) {
+      return Math.min(Math.round(w * 0.5), 460);
+    }
+
+    if (w >= 768) {
+      return Math.min(Math.round(w * 0.62), 560);
+    }
+
     if (w > 600) {
-      return Math.min(Math.round(w * 0.9), 460);
+      return Math.min(Math.round(w * 0.72), 500);
     }
     
     // Mobile breakpoints
@@ -931,6 +942,7 @@ export default function SnakeGame({
     return () => window.removeEventListener('resize', onResize);
   }, []);
   const isDesktop = windowWidth >= 1024;
+  const isTablet = windowWidth >= 768 && windowWidth < 1024;
   const isMobileLayout = !isDesktop;
 
   // largeur minimale souhaitée pour le canvas quand la colonne est à droite
@@ -954,9 +966,9 @@ export default function SnakeGame({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: CONTAINER_GAP,
+    gap: isTablet ? 18 : CONTAINER_GAP,
     width: '100%',
-    maxWidth: 420,
+    maxWidth: isTablet ? 620 : 420,
     margin: '0 auto',
     boxSizing: 'border-box',
   };
