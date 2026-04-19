@@ -76,8 +76,6 @@
   outline-offset: 8px;
   box-shadow: 0 6px 18px rgba(255,255,255,0.12);
   z-index: 50; /* assure que le contour reste au-dessus */
-  /* si tu veux un fond semi‑opaque temporaire : uncomment */
-  /* background: rgba(255, 249, 200, 0.03); */
 }
 
 /* === CONTROLE INDIVIDUEL DES TEXTES (ajout) ================================
