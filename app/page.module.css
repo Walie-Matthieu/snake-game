@@ -5056,3 +5056,84 @@
     display: none !important;
   }
 }
+
+/* Correctif global mobile/tablette: neutralise les offsets agressifs et stabilise la mise en page */
+@media (max-width: 1023px) {
+  .row {
+    max-width: 100%;
+    padding: 12px;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: hidden;
+  }
+
+  .gameLeft {
+    width: 100%;
+    max-width: 460px;
+    align-items: center;
+    padding-top: 56px;
+
+    --game-offset-x: 0px;
+    --game-offset-y: 0px;
+    --title-offset-x: 0px;
+    --title-offset-y: 0px;
+
+    --scoreboard-offset-x: 0px;
+    --scoreboard-offset-y: 0px;
+    --controls-offset-x: 0px;
+    --controls-offset-y: 0px;
+    --ability-text-offset-x: 0px;
+    --ability-text-offset-y: 0px;
+    --container-gap: 16px;
+    --control-scale: 1;
+  }
+
+  .gameLeft::before {
+    left: 50%;
+    top: 8px;
+    width: 100%;
+    text-align: center;
+    font-size: clamp(22px, 5vw, 30px);
+    line-height: 1.2;
+    transform: translate(
+      calc(-50% + var(--title-offset-x, 0px)),
+      var(--title-offset-y, 0px)
+    );
+  }
+
+  .asideRight {
+    display: none !important;
+    margin-left: 0;
+    margin-top: 14px;
+    width: min(92vw, 520px);
+    min-width: 0;
+    max-width: 520px;
+    flex: 1 1 auto;
+    --aside-offset-x: 0px;
+    --aside-offset-y: 0px;
+    outline-offset: 4px;
+  }
+
+  .lastParagraph {
+    --last-offset-x: 0px;
+    --last-offset-y: 0px;
+    max-width: 100%;
+  }
+}
+
+/* Petit mobile: priorité au jeu, les textes longs passent sous silence */
+@media (max-width: 768px) {
+  .asideRight,
+  .lastParagraph {
+    display: none !important;
+  }
+
+  .row {
+    align-items: center;
+  }
+
+  .gameLeft {
+    max-width: 420px;
+  }
+}
