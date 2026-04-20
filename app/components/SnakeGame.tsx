@@ -1302,7 +1302,6 @@ export default function SnakeGame({
                   role="button"
                   tabIndex={0}
                   onClick={(e) => { e.preventDefault(); pressKey('t'); }}
-                  onTouchStart={(e) => { e.preventDefault(); pressKey('t'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('t'); } }}
                 >T</kbd>
                 <span style={{ fontSize: controlLabelFontSize }}>Pause</span>
@@ -1314,7 +1313,6 @@ export default function SnakeGame({
                   role="button"
                   tabIndex={0}
                   onClick={(e) => { e.preventDefault(); pressKey('r'); }}
-                  onTouchStart={(e) => { e.preventDefault(); pressKey('r'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('r'); } }}
                 >R</kbd>
                 <span style={{ fontSize: controlLabelFontSize }}>Recommencer</span>
