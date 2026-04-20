@@ -943,7 +943,10 @@ export default function SnakeGame({
   }, []);
   const isDesktop = windowWidth >= 1024;
   const isTablet = windowWidth >= 768 && windowWidth < 1024;
+  const isPhone = windowWidth < 768;
   const isMobileLayout = !isDesktop;
+  const controlPanelWidth = isTablet ? 240 : isPhone ? 200 : 160;
+  const controlLabelFontSize = isTablet ? 15 : isPhone ? 13 : 12;
 
   // largeur minimale souhaitée pour le canvas quand la colonne est à droite
   // const MIN_CANVAS_WIDTH = 240;
@@ -1000,30 +1003,20 @@ export default function SnakeGame({
 
   // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
   function keyStyle(): React.CSSProperties {
-    const isMobileViewport =
-      typeof window !== 'undefined' &&
-      window.innerWidth >= 320 &&
-      window.innerWidth <= 600;
-
-    const btnSize = isMobileViewport
-      ? Math.max(16, Math.round(160 * 0.12))
-      : 20;
-
-    const fontSize = isMobileViewport
-      ? Math.max(10, Math.round(160 * 0.08))
-      : 14;
+    const btnSize = isTablet ? 38 : isPhone ? 30 : 20;
+    const fontSize = isTablet ? 22 : isPhone ? 18 : 14;
 
     return {
       minWidth: btnSize,
       height: btnSize,
-      padding: isMobileViewport ? '0 6px' : '0 8px',
+      padding: isTablet ? '0 12px' : isPhone ? '0 10px' : '0 8px',
       fontSize,
       lineHeight: 1,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 6,
-      border: '1px solid rgba(255, 158, 105, 0.18)',
+      borderRadius: 8,
+      border: '1px solid rgba(255, 158, 105, 0.22)',
       background: 'rgba(18, 3, 5, 0)',
       color: '#fff9fcff',
       fontWeight: 700,
@@ -1211,7 +1204,7 @@ export default function SnakeGame({
         <div
           data-ui="controls"
           style={{
-            width: 'var(--control-width, 160px)',  // ← doit lire la variable
+            width: isDesktop ? 'var(--control-width, 160px)' : `${controlPanelWidth}px`,
             height: 'auto',
             transform: isMobileLayout
               ? 'translate(0px, 0px)'
@@ -1312,7 +1305,7 @@ export default function SnakeGame({
                   onTouchStart={(e) => { e.preventDefault(); pressKey('t'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('t'); } }}
                 >T</kbd>
-                <span style={{ fontSize: 12 }}>Pause</span>
+                <span style={{ fontSize: controlLabelFontSize }}>Pause</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <kbd
@@ -1324,7 +1317,7 @@ export default function SnakeGame({
                   onTouchStart={(e) => { e.preventDefault(); pressKey('r'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('r'); } }}
                 >R</kbd>
-                <span style={{ fontSize: 12 }}>Recommencer</span>
+                <span style={{ fontSize: controlLabelFontSize }}>Recommencer</span>
               </div>
             </div>
           </div>
