@@ -345,7 +345,7 @@
     align-self: stretch;
     max-width: 100%;
     --last-offset-x: -700px; /* Déplace le texte de droite à gauche */
-    --last-offset-y: -50px; /* Déplace le texte de bas en haut */
+    --last-offset-y: 20px; /* Déplace le texte de bas en haut */
   }
 }
 
@@ -368,7 +368,7 @@
 
   .lastParagraph {
     --last-offset-x: -700px;  /* Déplace le texte de droite à gauche */
-    --last-offset-y: -25px;   /* Déplace le texte de bas en haut */
+    --last-offset-y: 45px;   /* Déplace le texte vers le bas */
   }
 }
 

@@ -986,7 +986,7 @@ export default function SnakeGame({
 
   // Déplace le Canvas
   const CANVAS_OFFSET_X = isDesktop ? -40 : 0;
-  const CANVAS_OFFSET_Y = isDesktop ? 10 : 0;
+  const CANVAS_OFFSET_Y = isDesktop ? 55 : 0;
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = isDesktop ? -70 : 0;
@@ -1105,8 +1105,8 @@ export default function SnakeGame({
           // ...existing code...
           display: 'flex',
           flexDirection: 'column',
-          alignItems: isMobileLayout ? 'center' : 'flex-start',
-          textAlign: isMobileLayout ? 'center' : 'left',
+          alignItems: 'center',
+          textAlign: 'center',
           rowGap: 'var(--ability-gap, 8px)', // ← lis depuis le CSS (fallback 8px)
           transform: `translate(
             calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
@@ -1124,7 +1124,7 @@ export default function SnakeGame({
             color: gameOver ? 'red' : displayHeadColor,
             fontWeight: 700,
             fontFamily: 'inherit',
-            marginBottom: 8
+            marginBottom: isMobileLayout ? 8 : 0
           }}
         >
           {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
