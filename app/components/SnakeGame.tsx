@@ -7,18 +7,14 @@ type Position = {
 };
 
 const GRID_SIZE = 20; // 20x20 cases
-const TICK_MS = 100;
+const TICK_MS = 120;  // vitesse du serpent 
 // const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal (désactivé)
 const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
-/* === Clignotement cadre Game Over (uniquement) ===
-   - GO_FLASH_COUNT : nombre de clignotements (ON rapides)
-   - GO_FLASH_ON_MS : durée visible de chaque flash
-   - GO_FLASH_PAUSE_MS : pause (cadre éteint) entre deux flash
-   Après le dernier flash le cadre reste allumé définitivement. */
-const GO_FLASH_COUNT = 3;
-const GO_FLASH_ON_MS = 180;
-const GO_FLASH_PAUSE_MS = 500;
+/* === Clignotement cadre Game Over (uniquement) ===*/
+const GO_FLASH_COUNT = 3;   // nombre de clignotements (ON rapides)
+const GO_FLASH_ON_MS = 180; // durée visible de chaque flash
+const GO_FLASH_PAUSE_MS = 500; // durée de la pause entre les flashs (cadre éteint)
 
 const SNAKE_COLORS = [
   { head: 'green', body: '#3eb53eff' },        // Normal (vert)
