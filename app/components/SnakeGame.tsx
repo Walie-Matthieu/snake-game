@@ -7,14 +7,18 @@ type Position = {
 };
 
 const GRID_SIZE = 20; // 20x20 cases
-const TICK_MS = 120;  // vitesse du serpent 
+const TICK_MS = 100;
 // const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal (désactivé)
 const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
-/* === Clignotement cadre Game Over (uniquement) ===*/
-const GO_FLASH_COUNT = 3;   // nombre de clignotements (ON rapides)
-const GO_FLASH_ON_MS = 180; // durée visible de chaque flash
-const GO_FLASH_PAUSE_MS = 500; // durée de la pause entre les flashs (cadre éteint)
+/* === Clignotement cadre Game Over (uniquement) ===
+   - GO_FLASH_COUNT : nombre de clignotements (ON rapides)
+   - GO_FLASH_ON_MS : durée visible de chaque flash
+   - GO_FLASH_PAUSE_MS : pause (cadre éteint) entre deux flash
+   Après le dernier flash le cadre reste allumé définitivement. */
+const GO_FLASH_COUNT = 3;
+const GO_FLASH_ON_MS = 180;
+const GO_FLASH_PAUSE_MS = 500;
 
 const SNAKE_COLORS = [
   { head: 'green', body: '#3eb53eff' },        // Normal (vert)
@@ -982,7 +986,7 @@ export default function SnakeGame({
 
   // Déplace le Canvas
   const CANVAS_OFFSET_X = isDesktop ? -40 : 0;
-  const CANVAS_OFFSET_Y = isDesktop ? 55 : 0;
+  const CANVAS_OFFSET_Y = isDesktop ? 10 : 0;
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = isDesktop ? -70 : 0;
@@ -999,8 +1003,8 @@ export default function SnakeGame({
 
   // helper inline pour style des touches (défini avant le return pour éviter les erreurs)
   function keyStyle(): React.CSSProperties {
-    const btnSize = isTablet ? 38 : isPhone ? 30 : 20;
-    const fontSize = isTablet ? 22 : isPhone ? 18 : 14;
+    const btnSize = isTablet ? 42 : isPhone ? 34 : 20;
+    const fontSize = isTablet ? 24 : isPhone ? 20 : 14;
 
     return {
       minWidth: btnSize,
@@ -1101,8 +1105,8 @@ export default function SnakeGame({
           // ...existing code...
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
+          alignItems: isMobileLayout ? 'center' : 'flex-start',
+          textAlign: isMobileLayout ? 'center' : 'left',
           rowGap: 'var(--ability-gap, 8px)', // ← lis depuis le CSS (fallback 8px)
           transform: `translate(
             calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
@@ -1120,7 +1124,7 @@ export default function SnakeGame({
             color: gameOver ? 'red' : displayHeadColor,
             fontWeight: 700,
             fontFamily: 'inherit',
-            marginBottom: isMobileLayout ? 8 : 0
+            marginBottom: 8
           }}
         >
           {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
@@ -1247,14 +1251,14 @@ export default function SnakeGame({
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
-                gridTemplateRows: 'auto auto',
-                gap: 6,
+                gridTemplateRows: 'auto auto auto',
+                gap: 1, // séparation entre les touches
                 width: '100%',
                 alignItems: 'center',
                 justifyItems: 'center'
               }}
             >
-              <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center' }}>
+              <div style={{ gridColumn: '2', gridRow: '1', display: 'flex', justifyContent: 'center' }}>
                 <kbd
                   style={{ ...keyStyle(), cursor: 'pointer' }}
                   aria-label="Flèche haut"
@@ -1267,26 +1271,27 @@ export default function SnakeGame({
                   }}
                 >↑</kbd>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ gridColumn: '1', gridRow: '2', display: 'flex', justifyContent: 'center' }}>
                 <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche gauche" role="button" tabIndex={0}
                   onClick={(e) => { e.preventDefault(); pressKey('ArrowLeft'); }}
                   onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowLeft'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowLeft'); } }}
                 >←</kbd>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche bas" role="button" tabIndex={0}
-                  onClick={(e) => { e.preventDefault(); pressKey('ArrowDown'); }}
-                  onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowDown'); }}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowDown'); } }}
-                >↓</kbd>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ gridColumn: '2', gridRow: '2' }} />
+              <div style={{ gridColumn: '3', gridRow: '2', display: 'flex', justifyContent: 'center' }}>
                 <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche droite" role="button" tabIndex={0}
                   onClick={(e) => { e.preventDefault(); pressKey('ArrowRight'); }}
                   onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowRight'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowRight'); } }}
                 >→</kbd>
+              </div>
+              <div style={{ gridColumn: '2', gridRow: '3', display: 'flex', justifyContent: 'center' }}>
+                <kbd style={{ ...keyStyle(), cursor: 'pointer' }} aria-label="Flèche bas" role="button" tabIndex={0}
+                  onClick={(e) => { e.preventDefault(); pressKey('ArrowDown'); }}
+                  onTouchStart={(e) => { e.preventDefault(); pressKey('ArrowDown'); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('ArrowDown'); } }}
+                >↓</kbd>
               </div>
             </div>
             {/* T et R empilés */}
