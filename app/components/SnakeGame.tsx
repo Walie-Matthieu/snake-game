@@ -7,7 +7,6 @@ type Position = {
 };
 
 const GRID_SIZE = 20; // 20x20 cases
-const TICK_MS = 100;
 // const COLOR_TRANSITION_MS = 2500; // serpent (tête/corps) + trait dorsal (désactivé)
 const FRAME_TRANSITION_MS = 3000;  // cadre (rebord néon) — ajustable séparément
 
@@ -894,11 +893,11 @@ export default function SnakeGame({
 
       if (startedRef.current && !gameOverRef.current && !isPausedRef.current) {
         accumulatedTimeRef.current += delta;
-        while (accumulatedTimeRef.current >= TICK_MS) {
+        while (accumulatedTimeRef.current >= CURRENT_TICK_MS) {
           updateGame();
-          accumulatedTimeRef.current -= TICK_MS;
+          accumulatedTimeRef.current -= CURRENT_TICK_MS;
         }
-        animationProgressRef.current = Math.min(accumulatedTimeRef.current / TICK_MS, 1);
+        animationProgressRef.current = Math.min(accumulatedTimeRef.current / CURRENT_TICK_MS, 1);
       } else {
         accumulatedTimeRef.current = 0;
         animationProgressRef.current = 1;
@@ -945,6 +944,7 @@ export default function SnakeGame({
   const isTablet = windowWidth >= 768 && windowWidth < 1024;
   const isPhone = windowWidth < 768;
   const isMobileLayout = !isDesktop;
+  const CURRENT_TICK_MS = isPhone ? 180 : isTablet ? 180 : 100;   //Vitesses du serpent (mobile,tablette,PC)
   const controlPanelWidth = isTablet ? 240 : isPhone ? 200 : 160;
   const controlLabelFontSize = isTablet ? 15 : isPhone ? 13 : 12;
 
