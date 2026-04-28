@@ -1294,8 +1294,8 @@ export default function SnakeGame({
                 >↓</kbd>
               </div>
             </div>
-            {/* T et R empilés */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
+            {/* T et R: côte à côte en mobile/tablette, empilés en desktop */}
+             <div style={{ display: 'flex', flexDirection: isMobileLayout ? 'row' : 'column', gap: 10, alignItems: 'center', marginTop: isPhone ? 40 : 0 }}>  {/* Pour changer l'espace entre les flèches et T/R en mobile */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <kbd
                   style={{ ...keyStyle(), cursor: 'pointer' }}
