@@ -1,9 +1,11 @@
 'use client';
 import React, { useState, useCallback } from 'react';
 import SnakeGame from './components/SnakeGame';
+import LoadingScreen from './components/LoadingScreen';
 import styles from './page.module.css';
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [abilityIndex, setAbilityIndex] = useState<number>(0);
   const [abilityShift, setAbilityShift] = useState<boolean>(false);
   const [gameOver, setGameOver] = useState<boolean>(false);
@@ -26,6 +28,8 @@ export default function Home() {
   ];
 
   return (
+    <>
+      {isLoading && <LoadingScreen onDone={() => setIsLoading(false)} />}
     <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
       <main>
         <div className={styles.row}>
@@ -82,6 +86,7 @@ export default function Home() {
           </aside>
         </div>
       </main>
-    </section>
+      </section>
+    </>
   );
 }

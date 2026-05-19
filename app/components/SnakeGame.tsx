@@ -1105,8 +1105,8 @@ export default function SnakeGame({
           // ...existing code...
           display: 'flex',
           flexDirection: 'column',
-          alignItems: isMobileLayout ? 'center' : 'flex-start',
-          textAlign: isMobileLayout ? 'center' : 'left',
+          alignItems: 'center',
+          textAlign: 'center',
           rowGap: 'var(--ability-gap, 8px)', // ← lis depuis le CSS (fallback 8px)
           transform: `translate(
             calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
