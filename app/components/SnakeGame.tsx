@@ -27,14 +27,6 @@ const SNAKE_COLORS = [
   { head: '#800080', body: '#da70d6' },        // Rétrécissement (violet)
 ];
 
-const SNAKE_ABILITIES = [
-  { name: "Normal", description: "Aucune capacité spéciale" },
-  { name: "Traverseur", description: "Peut traverser les murs" },
-  { name: "Double Score", description: "Chaque pomme vaut 2 points" },
-  { name: "Invincible", description: "Peut traverser son corps" },
-  { name: "Rétrécissement", description: "Se rétrécit automatiquement de moitié" },
-];
-
 // Helpers couleurs (parse + lerp + easing)
 function hexToRgb(hex: string): [number, number, number] {
   let h = hex.replace('#', '').trim();
@@ -67,8 +59,12 @@ function easeInOutQuad(t: number) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2
 
 export default function SnakeGame({
   onStateChange,
+  language: languageProp,
+  onLanguageChange,
 }: {
   onStateChange?: (s: { abilityIndex: number; abilityShift: boolean; gameOver: boolean; started: boolean }) => void;
+  language?: 'fr' | 'en';
+  onLanguageChange?: (lang: 'fr' | 'en') => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
@@ -381,7 +377,7 @@ export default function SnakeGame({
       setFood(nextFood);
       // Si c'est une pomme jaune, change le pouvoir
       if (yellow) {
-        const nextAbility = (currentAbilityIndex + 1) % SNAKE_ABILITIES.length;
+        const nextAbility = (currentAbilityIndex + 1) % SNAKE_COLORS.length;
         abilityIndexRef.current = nextAbility;
         setAbilityIndex(nextAbility);
         const nextScore = currentScore + (currentAbilityIndex === 2 ? 4 : 2);
@@ -1054,8 +1050,105 @@ export default function SnakeGame({
     document.dispatchEvent(ev);
   };
 
+  const [languageInternal, setLanguageInternal] = useState<'fr' | 'en'>('fr');
+  const language = languageProp ?? languageInternal;
+  const setLanguage = onLanguageChange ?? setLanguageInternal;
+
+  const translations = {
+    fr: {
+      pressArrow: "Appuie sur une flèche",
+      toStart: "pour commencer",
+      pause: "PAUSE",
+      pressTContinue: "Appuie sur T pour continuer",
+      gameOver: "Game Over!",
+      pressR: "Appuie sur R pour recommencer",
+      lost: "Perdu",
+      yourScore: "TON SCORE",
+      bestScore: "MEILLEUR SCORE",
+      myScore: "MON SCORE",
+      pauseLabel: "Pause",
+      restartLabel: "Recommencer",
+      abilities: [
+        { name: "Normal", description: "Aucune capacité spéciale" },
+        { name: "Traverseur", description: "Peut traverser les murs" },
+        { name: "Double Score", description: "Chaque pomme vaut 2 points" },
+        { name: "Invincible", description: "Peut traverser son corps" },
+        { name: "Rétrécissement", description: "Se rétrécit automatiquement de moitié" },
+      ],
+    },
+    en: {
+      pressArrow: "Press an arrow key",
+      toStart: "to start",
+      pause: "PAUSE",
+      pressTContinue: "Press T to continue",
+      gameOver: "Game Over!",
+      pressR: "Press R to restart",
+      lost: "Lost",
+      yourScore: "YOUR SCORE",
+      bestScore: "BEST SCORE",
+      myScore: "MY SCORE",
+      pauseLabel: "Pause",
+      restartLabel: "Restart",
+      abilities: [
+        { name: "Base", description: "No special ability" },
+        { name: "Wall Pass", description: "Can pass through walls" },
+        { name: "Double Points", description: "Each apple is worth 2 points" },
+        { name: "Self-Phasing", description: "Can pass through its own body" },
+        { name: "Shrink", description: "Automatically shrinks by half" },
+      ],
+    },
+  };
+
+  const t = translations[language];
+
   return (
     <div className="flex flex-col items-center gap-4 w-full" style={{ position: 'relative' }}>
+      {isDesktop && (
+        <div
+          style={{
+            position: 'absolute',
+            top: -40,      // Déplacer le sélecteur de langue en haut à droite
+            right: -400,  // Déplacer le sélecteur de langue à droite
+            zIndex: 10001,
+            display: 'flex',
+            gap: 8,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setLanguage('fr')}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 8,
+              border: language === 'fr' ? '1px solid #ffe9b6' : '1px solid rgba(255,255,255,0.25)',
+              background: language === 'fr' ? 'rgba(255,233,182,0.14)' : 'rgba(255,255,255,0.06)',
+              color: '#ffffff',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            FR
+          </button>
+          <button
+            type="button"
+            onClick={() => setLanguage('en')}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 8,
+              border: language === 'en' ? '1px solid #ffe9b6' : '1px solid rgba(255,255,255,0.25)',
+              background: language === 'en' ? 'rgba(255,233,182,0.14)' : 'rgba(255,255,255,0.06)',
+              color: '#ffffff',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
+          >
+            EN
+          </button>
+        </div>
+      )}
+
       {/* Scoreboard — centré en absolute (pas d'overflow), visible seulement en PC */}
       {isDesktop && (
         <div
@@ -1078,21 +1171,21 @@ export default function SnakeGame({
          {/* Ligne du haut avec TON SCORE | MEILLEUR SCORE */}
          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
            <div style={{ textAlign: 'center' }}>
-             <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>TON SCORE</div>
+             <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>{t.yourScore}</div>
              <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{score}</div>
            </div>
 
            <div style={{ fontSize: 28, fontWeight: 800, color: 'rgba(255,255,255,0.75)', padding: '0 8px' }}>|</div>
 
            <div style={{ textAlign: 'center' }}>
-             <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MEILLEUR SCORE</div>
+             <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>{t.bestScore}</div>
              <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>{highScore}</div>
            </div>
          </div>
 
          {/* MON SCORE en dessous */}
          <div style={{ textAlign: 'center' }}>
-           <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>MON SCORE</div>
+           <div style={{ fontSize: 11, fontWeight: 700, color: '#ffe9b6', textTransform: 'uppercase' }}>{t.myScore}</div>
            <div style={{ fontSize: 36, fontWeight: 800, color: '#ffffff' }}>148</div>
          </div>
         </div>
@@ -1127,7 +1220,7 @@ export default function SnakeGame({
             marginBottom: 8
           }}
         >
-          {gameOver ? 'Perdu' : SNAKE_ABILITIES[abilityIndex].name}
+          {gameOver ? t.lost : t.abilities[abilityIndex].name}
         </span>
 
         {/* Description du pouvoir */}
@@ -1136,7 +1229,7 @@ export default function SnakeGame({
           color: '#b9bcc4',
           marginTop: 6
         }}>
-          {SNAKE_ABILITIES[abilityIndex].description}
+          {t.abilities[abilityIndex].description}
         </div>
       </div>
 
@@ -1159,8 +1252,8 @@ export default function SnakeGame({
           {/* Messages centrés dans le canvas */}
           {isPaused && !gameOver && ( 
             <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', zIndex: 20 }}>
-              <strong>PAUSE</strong> 
-              <span>Appuie sur T pour continuer</span>
+              <strong>{t.pause}</strong> 
+              <span>{t.pressTContinue}</span>
             </div>
           )}
           {gameOver && (
@@ -1175,8 +1268,8 @@ export default function SnakeGame({
               zIndex: 20,
               transform: 'translate(5px, -20px)'
             }}>
-              <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>Game Over!</div>
-              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>Appuie sur R pour recommencer</div>
+              <div style={{ fontWeight: 800, fontSize: 32, color: '#ff5555', letterSpacing: 1 }}>{t.gameOver}</div>
+              <div style={{ marginTop: 10, fontSize: 14, color: '#d0d5dd' }}>{t.pressR}</div>
             </div>
           )}
           {!started && !gameOver && (
@@ -1191,8 +1284,8 @@ export default function SnakeGame({
               zIndex: 20,
               transform: 'translate(0px, 0px)'  // Ajuste X,Y ici si besoin
             }}>
-              <div>Appuie sur une flèche</div>
-              <div>pour commencer</div>
+              <div>{t.pressArrow}</div>
+              <div>{t.toStart}</div>
             </div>
           )}
         </div>
@@ -1305,7 +1398,7 @@ export default function SnakeGame({
                   onClick={(e) => { e.preventDefault(); pressKey('t'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('t'); } }}
                 >T</kbd>
-                <span style={{ fontSize: controlLabelFontSize }}>Pause</span>
+                <span style={{ fontSize: controlLabelFontSize }}>{t.pauseLabel}</span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <kbd
@@ -1316,7 +1409,7 @@ export default function SnakeGame({
                   onClick={(e) => { e.preventDefault(); pressKey('r'); }}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pressKey('r'); } }}
                 >R</kbd>
-                <span style={{ fontSize: controlLabelFontSize }}>Recommencer</span>
+                <span style={{ fontSize: controlLabelFontSize }}>{t.restartLabel}</span>
               </div>
             </div>
           </div>
