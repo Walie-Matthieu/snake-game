@@ -1103,12 +1103,12 @@ export default function SnakeGame({
 
   return (
     <div className="flex flex-col items-center gap-4 w-full" style={{ position: 'relative' }}>
-      {isDesktop && (
+      {isDesktop && !onLanguageChange && (
         <div
           style={{
             position: 'absolute',
-            top: -40,      // Déplacer le sélecteur de langue en haut à droite
-            right: -400,  // Déplacer le sélecteur de langue à droite
+            top: -25,
+            right: -400,
             zIndex: 10001,
             display: 'flex',
             gap: 8,
@@ -1130,13 +1130,16 @@ export default function SnakeGame({
             aria-label="Français"
             title="Français"
           >
-            <span
+            <img
+              src="https://flagcdn.com/fr.svg"
+              alt="Drapeau français"
+              width={20}
+              height={14}
               style={{
                 display: 'inline-block',
                 width: 20,
                 height: 14,
                 borderRadius: 2,
-                background: 'linear-gradient(90deg, #0055A4 0 33.33%, #FFFFFF 33.33% 66.66%, #EF4135 66.66% 100%)',
                 boxShadow: '0 0 0 1px rgba(255,255,255,0.25) inset',
               }}
             />
@@ -1157,23 +1160,16 @@ export default function SnakeGame({
             aria-label="English"
             title="English"
           >
-            <span
+            <img
+              src="https://flagcdn.com/gb.svg"
+              alt="UK flag"
+              width={20}
+              height={14}
               style={{
                 display: 'inline-block',
                 width: 20,
                 height: 14,
                 borderRadius: 2,
-                backgroundColor: '#012169',
-                backgroundImage: [
-                  'linear-gradient(30deg, transparent 45%, #FFFFFF 45%, #FFFFFF 55%, transparent 55%)',
-                  'linear-gradient(-30deg, transparent 45%, #FFFFFF 45%, #FFFFFF 55%, transparent 55%)',
-                  'linear-gradient(30deg, transparent 48%, #C8102E 48%, #C8102E 52%, transparent 52%)',
-                  'linear-gradient(-30deg, transparent 48%, #C8102E 48%, #C8102E 52%, transparent 52%)',
-                  'linear-gradient(0deg, transparent 40%, #FFFFFF 40%, #FFFFFF 60%, transparent 60%)',
-                  'linear-gradient(90deg, transparent 40%, #FFFFFF 40%, #FFFFFF 60%, transparent 60%)',
-                  'linear-gradient(0deg, transparent 45%, #C8102E 45%, #C8102E 55%, transparent 55%)',
-                  'linear-gradient(90deg, transparent 45%, #C8102E 45%, #C8102E 55%, transparent 55%)'
-                ].join(', '),
                 boxShadow: '0 0 0 1px rgba(255,255,255,0.25) inset',
               }}
             />

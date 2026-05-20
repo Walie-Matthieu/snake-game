@@ -62,6 +62,68 @@ export default function Home() {
             <SnakeGame onStateChange={handleSnakeState} language={language} onLanguageChange={setLanguage} />
           </div>
           <aside className={styles.asideRight}>
+            <div className={styles.languageSwitcher}>
+              <button
+                type="button"
+                onClick={() => setLanguage('fr')}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: language === 'fr' ? '1px solid #ffe9b6' : '1px solid rgba(255,255,255,0.25)',
+                  background: language === 'fr' ? 'rgba(255,233,182,0.14)' : 'rgba(255,255,255,0.06)',
+                  color: '#ffffff',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+                aria-label="Français"
+                title="Français"
+              >
+                <img
+                  src="https://flagcdn.com/fr.svg"
+                  alt="Drapeau français"
+                  width={20}
+                  height={14}
+                  style={{
+                    display: 'inline-block',
+                    width: 20,
+                    height: 14,
+                    borderRadius: 2,
+                    boxShadow: '0 0 0 1px rgba(255,255,255,0.25) inset',
+                  }}
+                />
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                style={{
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: language === 'en' ? '1px solid #ffe9b6' : '1px solid rgba(255,255,255,0.25)',
+                  background: language === 'en' ? 'rgba(255,233,182,0.14)' : 'rgba(255,255,255,0.06)',
+                  color: '#ffffff',
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+                aria-label="English"
+                title="English"
+              >
+                <img
+                  src="https://flagcdn.com/gb.svg"
+                  alt="UK flag"
+                  width={20}
+                  height={14}
+                  style={{
+                    display: 'inline-block',
+                    width: 20,
+                    height: 14,
+                    borderRadius: 2,
+                    boxShadow: '0 0 0 1px rgba(255,255,255,0.25) inset',
+                  }}
+                />
+              </button>
+            </div>
             <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 12px 0', textAlign: 'left' }}>{content.aboutTitle}</h2>
             <p style={{ margin: '0 0 10px 0', textAlign: 'left' }}>
               {content.intro1}
