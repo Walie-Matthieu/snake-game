@@ -1127,8 +1127,19 @@ export default function SnakeGame({
               fontWeight: 700,
               cursor: 'pointer',
             }}
+            aria-label="Français"
+            title="Français"
           >
-            FR
+            <span
+              style={{
+                display: 'inline-block',
+                width: 20,
+                height: 14,
+                borderRadius: 2,
+                background: 'linear-gradient(90deg, #0055A4 0 33.33%, #FFFFFF 33.33% 66.66%, #EF4135 66.66% 100%)',
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.25) inset',
+              }}
+            />
           </button>
           <button
             type="button"
@@ -1143,8 +1154,29 @@ export default function SnakeGame({
               fontWeight: 700,
               cursor: 'pointer',
             }}
+            aria-label="English"
+            title="English"
           >
-            EN
+            <span
+              style={{
+                display: 'inline-block',
+                width: 20,
+                height: 14,
+                borderRadius: 2,
+                backgroundColor: '#012169',
+                backgroundImage: [
+                  'linear-gradient(30deg, transparent 45%, #FFFFFF 45%, #FFFFFF 55%, transparent 55%)',
+                  'linear-gradient(-30deg, transparent 45%, #FFFFFF 45%, #FFFFFF 55%, transparent 55%)',
+                  'linear-gradient(30deg, transparent 48%, #C8102E 48%, #C8102E 52%, transparent 52%)',
+                  'linear-gradient(-30deg, transparent 48%, #C8102E 48%, #C8102E 52%, transparent 52%)',
+                  'linear-gradient(0deg, transparent 40%, #FFFFFF 40%, #FFFFFF 60%, transparent 60%)',
+                  'linear-gradient(90deg, transparent 40%, #FFFFFF 40%, #FFFFFF 60%, transparent 60%)',
+                  'linear-gradient(0deg, transparent 45%, #C8102E 45%, #C8102E 55%, transparent 55%)',
+                  'linear-gradient(90deg, transparent 45%, #C8102E 45%, #C8102E 55%, transparent 55%)'
+                ].join(', '),
+                boxShadow: '0 0 0 1px rgba(255,255,255,0.25) inset',
+              }}
+            />
           </button>
         </div>
       )}
