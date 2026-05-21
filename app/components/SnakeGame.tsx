@@ -1050,7 +1050,7 @@ export default function SnakeGame({
     document.dispatchEvent(ev);
   };
 
-  const [languageInternal, setLanguageInternal] = useState<'fr' | 'en'>('fr');
+  const [languageInternal, setLanguageInternal] = useState<'en' | 'fr'>('en');
   const language = languageProp ?? languageInternal;
   const setLanguage = onLanguageChange ?? setLanguageInternal;
 

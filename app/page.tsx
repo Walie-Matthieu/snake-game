@@ -10,7 +10,7 @@ export default function Home() {
   const [abilityShift, setAbilityShift] = useState<boolean>(false);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [started, setStarted] = useState<boolean>(false);
-  const [language, setLanguage] = useState<'fr' | 'en'>('fr');
+  const [language, setLanguage] = useState<'en' | 'fr'>('en');
 
   const handleSnakeState = useCallback((s: { abilityIndex: number; abilityShift: boolean; gameOver: boolean; started?: boolean }) => {
     setAbilityIndex(s.abilityIndex);
