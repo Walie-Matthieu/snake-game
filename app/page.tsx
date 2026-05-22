@@ -25,7 +25,7 @@ export default function Home() {
         aboutTitle: 'À propos',
         intro1: 'Re salut, ici vous pouvez trouver le fameux jeu du Serpent aka The Snake Game.',
         intro2:
-          "J'ai codé ce jeu en React mais d'une manière légèrement différente du reste du portfolio, pour m'entraîner et aussi pour éveiller ma curiosité. J'ai essayé d'être original en ajoutant des particularités telles que le fait de lui donner des pouvoirs à chaque pomme jaune mangée. Ainsi, chaque couleur possède une particularité :",
+          "J'ai codé ce jeu en React, mais d'une manière légèrement différente du reste du portfolio, pour m'entraîner et aussi pour éveiller ma curiosité. J'ai essayé d'être original en ajoutant des particularités telles que le fait de lui donner des pouvoirs à chaque pomme jaune mangée. Ainsi, chaque couleur possède une particularité :",
         outro1: "Si ça vous a plu n'hésitez pas à me le dire.",
         outro2: "Et si ça ne vous a pas plu dites-le moi quand même !",
         lines: [
@@ -51,6 +51,22 @@ export default function Home() {
           { word: 'purple', cls: styles.colorViolet, text: 'In ', rest: ', it shrinks by a few cubes.' },
         ],
       };
+
+  const renderIntro2 = () => {
+    if (language !== 'fr') return content.intro2;
+
+    const breakAt = "J'ai essayé d'être original";
+    const breakIndex = content.intro2.indexOf(breakAt);
+    if (breakIndex === -1) return content.intro2;
+
+    return (
+      <>
+        {content.intro2.slice(0, breakIndex).trimEnd()}
+        <br />
+        {content.intro2.slice(breakIndex)}
+      </>
+    );
+  };
 
   return (
     <>
@@ -129,7 +145,7 @@ export default function Home() {
               {content.intro1}
             </p>
             <p style={{ margin: '0 0 10px 0', textAlign: 'left' }}>
-              {content.intro2}
+              {renderIntro2()}
             </p>
 
             <h3 className={styles.pouvoirTitle}></h3>
