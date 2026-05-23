@@ -60,7 +60,7 @@
   order: 2;
   /* laissez le flex gérer la position — pousse l'aside à droite */
   /* réduit l'espace entre la boîte du jeu et l'aside */
-  margin-left: 85px; /* marge entre le Canvas et la colonne "À propos" */
+  margin-left: 20px; /* marge entre le Canvas et la colonne "À propos" */
 
   transform: translate(var(--aside-offset-x), var(--aside-offset-y));
   will-change: transform;
@@ -318,71 +318,6 @@
 
 /* Base: applique les offsets via variables (fallback 0) */
 .gameLeft::before { transform: translate(var(--title-offset-x, 0), var(--title-offset-y, 0)); }
-
-/* Desktop petit (1024px - 1440px) À GARDER!!!! */
-@media (min-width: 1024px) and (max-width: 1440px) {
-
-  /* Censer bloquer le scroll vertical sur le body */
-  
-  .gameLeft {
-    --game-offset-x: 90px;       /* Pour déplacer le bloc jeu de gauche à droite */
-    --game-offset-y: -50px;      /* Pour déplacer le bloc jeu de haut en bas */
-    --title-offset-x: -90px;   /* chiffre grand = plus à gauche */
-    --title-offset-y: -7px;  /* chiffre grand = plus en bas */
-    --container-gap: -70px;  /* espace entre Canvas et panneau */
-
-    --scoreboard-offset-x: 230px;   /* + = droite, - = gauche */
-    --scoreboard-offset-y: 40px;    /* + = bas, - = haut */
-
-    --controls-offset-x: 1px;   /* déplace le panneau touches de droite à gauche */
-    --controls-offset-y: 150px;    /* + = bas, - = haut */
-  }
-  .asideRight { 
-    --aside-offset-x: 25px;
-    --aside-offset-y: -0px;    /* Ajout du décalage vertical de la colonne "À propos" */
-  }
-  .lastParagraph {
-    /* force une nouvelle ligne et largeur pleine pour éviter le “collage” à droite */
-    flex: 1 1 100%;
-    align-self: stretch;
-    max-width: 100%;
-    --last-offset-x: -700px; /* Déplace le texte de droite à gauche */
-    --last-offset-y: 20px; /* Déplace le texte de bas en haut */
-  }
-}
-
-/* Desktop moyen (1441px - 1920px) */
-@media (min-width: 1441px) and (max-width: 1920px) {
-  .gameLeft {
-    --scoreboard-offset-x: 260px;  /* déplace le panneau de score */
-    --scoreboard-offset-y: 20px;   /* + = bas, - = haut */
-
-    --controls-offset-x: 20px;     /* déplace le panneau des touches */
-    --controls-offset-y: 130px;   /* + = bas, - = haut */
-
-    --title-offset-x: -150px;    /* Déplace le titre de gauche à droite */
-    --title-offset-y: -45px;    /* Déplace le titre de haut en bas */
-  }
-  .asideRight {
-    --aside-offset-x: 740px;    /* ajuste la colonne "À propos" si besoin */
-    --aside-offset-y: -550px;  /* Déplace la colonne "À propos" de haut en bas */
-  }
-
-  .lastParagraph {
-    --last-offset-x: -700px;  /* Déplace le texte de droite à gauche */
-    --last-offset-y: 45px;   /* Déplace le texte vers le bas */
-  }
-}
-
-/* Grand écran (>1921px) */
-@media (min-width: 1921px) {
-  .gameLeft {
-    --game-offset-x: 20px;
-    --title-offset-x: -120px;
-  }
-  .asideRight { --aside-offset-x: 180px; }
-  .lastParagraph { --last-offset-x: 0px; --last-offset-y: -30px; }
-}
 
 /* Mobile spécifique (320px - 340px) : pas de scroll, pas de coupure */
 @media (min-width: 320px) and (max-width: 340px) {

@@ -84,11 +84,11 @@ export default function Home() {
       {isLoading && <LoadingScreen onDone={() => setIsLoading(false)} />}
     <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
       <main>
-        <div className={styles.row}>
-          <div className={styles.gameLeft}>
+        <div className={`${styles.row} lg:!flex-nowrap lg:items-start lg:justify-center lg:gap-10 lg:!max-w-[1500px] 2xl:gap-14 2xl:!max-w-[1820px]`}>
+          <div className={`${styles.gameLeft} lg:pt-8 lg:-mt-8 lg:mr-8 lg:[--title-offset-x:-100px] 2xl:pt-10 2xl:-mt-6 2xl:mr-12 2xl:[--title-offset-x:-130px]`}>
             <SnakeGame onStateChange={handleSnakeState} language={language} onLanguageChange={setLanguage} />
           </div>
-          <aside className={styles.asideRight}>
+          <aside className={`${styles.asideRight} lg:!ml-2 lg:mt-0 2xl:!ml-6 2xl:mt-1`}>
             <div className={styles.languageSwitcher}>
               <button
                 type="button"
@@ -186,7 +186,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <p className={styles.lastParagraph}>
+            <p className={`${styles.lastParagraph} lg:basis-full lg:self-stretch lg:max-w-full lg:mt-6 lg:pl-8 lg:-ml-[520px] 2xl:mt-10 2xl:pl-12 2xl:-ml-[620px]`}>
               <span className={styles.noWrap}>
                 {content.outro1}
               </span>
