@@ -53,21 +53,32 @@ export default function Home() {
       };
 
   const renderIntro2 = () => {
-    if (language !== 'fr') return content.intro2;
+    const breakMarkers =
+      language === 'fr'
+        ? ["J'ai essayé d'être original", 'Ainsi, chaque couleur']
+        : ['I tried to make it original', 'So each color'];
 
-    const breakAt = "J'ai essayé d'être original";
-    const breakIndex = content.intro2.indexOf(breakAt);
-    if (breakIndex === -1) return content.intro2;
+    const nodes: React.ReactNode[] = [];
+    let remainingText = content.intro2;
+    let foundBreak = false;
 
-    return (
-      <>
-        {content.intro2.slice(0, breakIndex).trimEnd()}
-        <br />
-        {content.intro2.slice(breakIndex)}
-      </>
-    );
+    breakMarkers.forEach((marker, index) => {
+      const breakIndex = remainingText.indexOf(marker);
+      if (breakIndex === -1) return;
+
+      foundBreak = true;
+      nodes.push(remainingText.slice(0, breakIndex).trimEnd());
+      nodes.push(<br key={`intro2-break-${index}`} />);
+      remainingText = remainingText.slice(breakIndex);
+    });
+
+    if (!foundBreak) return content.intro2;
+
+    nodes.push(remainingText);
+    return <>{nodes}</>;
   };
 
+  
   return (
     <>
       {isLoading && <LoadingScreen onDone={() => setIsLoading(false)} />}
