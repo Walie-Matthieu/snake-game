@@ -2,11 +2,9 @@
 
 .row {
   display: flex;
-  flex-wrap: wrap;
   align-items: flex-start;
   gap: 24px;
   width: 100%;
-  max-width: 1024px;
   padding: 16px;
   margin: 0 auto;
   overflow: visible; /* Force l'affichage du contenu qui déborde */
@@ -21,9 +19,6 @@
   position: relative;
   padding-top: 48px;
 
-  /* Offsets séparés */
-  --game-offset-x: 0px;    /* déplacer le bloc JEU (canvas + titre) */
-  --game-offset-y: 0px;
   --title-offset-x: 0px;   /* déplacer UNIQUEMENT le titre */
   --title-offset-y: 0px;
 
@@ -31,8 +26,7 @@
   --title-letter-spacing: 1px;               /* ajuste l’espacement */
   --title-color: #ffffff;                    /* couleur titre */
 
-  transform: translate(var(--game-offset-x), var(--game-offset-y));
-  will-change: transform;
+  will-change: auto;
 }
 
 /* Titre collé au bloc de jeu (au-dessus par défaut) */
@@ -60,10 +54,9 @@
   order: 2;
   /* laissez le flex gérer la position — pousse l'aside à droite */
   /* réduit l'espace entre la boîte du jeu et l'aside */
-  margin-left: 20px; /* marge entre le Canvas et la colonne "À propos" */
+  margin-left: 0; /* desktop spacing is handled from Tailwind classes in page.tsx */
 
-  transform: translate(var(--aside-offset-x), var(--aside-offset-y));
-  will-change: transform;
+  will-change: auto;
   align-self: flex-start;
   /* colonne fixe/contrôlée pour éviter qu'elle écrase le canvas/les contrôles */
   flex: 0 0 280px; /* largeur fixe souhaitée */
@@ -212,7 +205,6 @@
   word-break: normal;         /* autorise les retours */
   overflow-wrap: anywhere;    /* casse si nécessaire */
   text-wrap: balance;
-  transform: translate(var(--last-offset-x, 0px), var(--last-offset-y, 0px));
   align-self: flex-start;     /* colle à gauche dans le flex .row */
   max-width: 720px;           /* évite de trop s’étirer à droite */
 }
@@ -949,6 +941,7 @@
   }
 
   .row {
+    flex-wrap: wrap;
     max-width: 100%;
     padding: 12px;
     gap: 16px;
@@ -976,6 +969,8 @@
     --ability-text-offset-y: 0px;
     --container-gap: 16px;
     --control-scale: 1;
+
+    transform: translate(var(--game-offset-x, 0px), var(--game-offset-y, 0px));
   }
 
   .gameLeft::before {
@@ -999,14 +994,10 @@
     min-width: 0;
     max-width: 520px;
     flex: 1 1 auto;
-    --aside-offset-x: 0px;
-    --aside-offset-y: 0px;
     outline-offset: 4px;
   }
 
   .lastParagraph {
-    --last-offset-x: 0px;
-    --last-offset-y: 0px;
     max-width: 100%;
   }
 }
