@@ -85,10 +85,21 @@ export default function Home() {
     <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
       <main>
         <div className={`${styles.row} lg:flex-nowrap lg:items-start lg:justify-center lg:gap-10 lg:max-w-[min(92vw,1500px)] 2xl:gap-14 2xl:max-w-[min(90vw,1820px)]`}>
-          <div className={`${styles.gameLeft} lg:pt-8 lg:mr-8 2xl:pt-10 2xl:mr-12`}>
+          <div
+            className={`${styles.gameLeft} lg:pt-8 lg:mr-8 2xl:pt-10 2xl:mr-12`}
+            style={{
+              transform: 'translateX(-64px)',
+              '--title-offset-y': '-60px',
+              '--controls-offset-y': '96px',
+              '--controls-offset-x': '70px',
+            } as React.CSSProperties}
+          >
             <SnakeGame onStateChange={handleSnakeState} language={language} onLanguageChange={setLanguage} />
           </div>
-          <aside className={`${styles.asideRight} lg:ml-4 lg:mt-0 2xl:ml-8 2xl:mt-1`}>
+          <aside
+            className={`${styles.asideRight} lg:mt-0 2xl:mt-1`}
+            style={{ transform: 'translateX(170px)' }}
+          >
             <div className={styles.languageSwitcher}>
               <button
                 type="button"
@@ -186,7 +197,10 @@ export default function Home() {
               </ul>
             </div>
 
-            <p className={`${styles.lastParagraph} lg:basis-full lg:self-stretch lg:max-w-full lg:mt-6 lg:pl-8 2xl:mt-10 2xl:pl-12`}>
+            <p
+              className={`${styles.lastParagraph} lg:basis-full lg:self-stretch lg:max-w-full lg:mt-6 2xl:mt-10`}
+              style={{ transform: 'translateX(-700px)' }}
+            >
               <span className={styles.noWrap}>
                 {content.outro1}
               </span>
