@@ -3,21 +3,19 @@
 .row {
   display: flex;
   align-items: flex-start;
-  gap: 24px;
+  gap: 0;
   width: 100%;
-  padding: 16px;
+  padding: 1rem;
   margin: 0 auto;
   overflow: visible; /* Force l'affichage du contenu qui déborde */
  /* outline: 2px solid orange; Visualise la zone de débordement */
 }
 
 .gameLeft {
-  order: 1;
-  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   position: relative;
-  padding-top: 48px;
+  padding-top: 3rem;
 
   --title-offset-x: 0px;   /* déplacer UNIQUEMENT le titre */
   --title-offset-y: 0px;
@@ -33,8 +31,8 @@
 .gameLeft::before {
   content: 'Snake Game';
   position: absolute;
-  top: 24px;
-  left: -50px;
+  top: 1.5rem;
+  left: -3rem;
   font-size: var(--title-font-size);
   font-family: 'Poppins', system-ui, Arial, sans-serif;
   font-weight: 700;
@@ -48,20 +46,8 @@
 /* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
 .asideRight {
   position: relative;
-  margin-top: 20px;
   left: auto;
-
-  order: 2;
-  /* laissez le flex gérer la position — pousse l'aside à droite */
-  /* réduit l'espace entre la boîte du jeu et l'aside */
-  margin-left: 0; /* desktop spacing is handled from Tailwind classes in page.tsx */
-
   will-change: auto;
-  align-self: flex-start;
-  /* colonne fixe/contrôlée pour éviter qu'elle écrase le canvas/les contrôles */
-  flex: 0 0 280px; /* largeur fixe souhaitée */
-  min-width: 220px;
-  max-width: 320px;
 
   line-height: 1.6;
   border-radius: 18px;
@@ -73,8 +59,8 @@
 
 .languageSwitcher {
   position: absolute;
-  top: -60px;
-  right: 80px;
+  top: -3.75rem;
+  right: 5rem;
   z-index: 60;
   display: flex;
   align-items: center;
@@ -206,7 +192,7 @@
   overflow-wrap: anywhere;    /* casse si nécessaire */
   text-wrap: balance;
   align-self: flex-start;     /* colle à gauche dans le flex .row */
-  max-width: 720px;           /* évite de trop s’étirer à droite */
+  max-width: 45rem;           /* évite de trop s’étirer à droite */
 }
 
 .pasPluLine {
@@ -941,7 +927,6 @@
   }
 
   .row {
-    flex-wrap: wrap;
     max-width: 100%;
     padding: 12px;
     gap: 16px;

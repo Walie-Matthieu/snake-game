@@ -84,21 +84,14 @@ export default function Home() {
       {isLoading && <LoadingScreen onDone={() => setIsLoading(false)} />}
     <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
       <main>
-        <div className={`${styles.row} lg:flex-nowrap lg:items-start lg:justify-center lg:gap-10 lg:max-w-[min(92vw,1500px)] 2xl:gap-14 2xl:max-w-[min(90vw,1820px)]`}>
+        <div className={`${styles.row} lg:flex-nowrap lg:items-start lg:justify-center lg:gap-16 lg:max-w-[min(92vw,1500px)] 2xl:gap-20 2xl:max-w-[min(90vw,1820px)]`}>
           <div
-            className={`${styles.gameLeft} lg:pt-8 lg:mr-8 2xl:pt-10 2xl:mr-12`}
-            style={{
-              transform: 'translateX(-64px)',
-              '--title-offset-y': '-60px',
-              '--controls-offset-y': '96px',
-              '--controls-offset-x': '70px',
-            } as React.CSSProperties}
+            className={`${styles.gameLeft} lg:order-1 lg:flex-none lg:pt-8 lg:mr-10 2xl:pt-10 2xl:mr-12`}
           >
             <SnakeGame onStateChange={handleSnakeState} language={language} onLanguageChange={setLanguage} />
           </div>
           <aside
-            className={`${styles.asideRight} lg:mt-0 2xl:mt-1`}
-            style={{ transform: 'translateX(170px)' }}
+            className={`${styles.asideRight} lg:order-2 lg:flex-none lg:self-start lg:mt-0 lg:ml-14 2xl:mt-1 2xl:ml-16`}
           >
             <div className={styles.languageSwitcher}>
               <button
@@ -177,13 +170,13 @@ export default function Home() {
               <ul style={{ margin: '0 0 12px 0', padding: 0, textAlign: 'left', listStyle: 'none' }}>
                 {content.lines.map((l, i) => {
                   const active = !gameOver && i === abilityIndex && started;
-                  const translate = active ? (abilityShift ? -12 : -8) : 0;
+                  const translate = active ? (abilityShift ? '-0.75rem' : '-0.5rem') : '0rem';
                   return (
                     <li key={i} style={{ margin: '6px 0' }}>
                       <div
                         style={{
                           display: 'inline-block',
-                          transform: `translateX(${translate}px)`,
+                          transform: `translateX(${translate})`,
                           transition: 'transform 220ms ease',
                         }}
                       >
@@ -197,10 +190,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <p
-              className={`${styles.lastParagraph} lg:basis-full lg:self-stretch lg:max-w-full lg:mt-6 2xl:mt-10`}
-              style={{ transform: 'translateX(-700px)' }}
-            >
+            <p className={`${styles.lastParagraph} lg:basis-full lg:self-stretch lg:max-w-full lg:mt-6 2xl:mt-10`}>
               <span className={styles.noWrap}>
                 {content.outro1}
               </span>
