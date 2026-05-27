@@ -214,14 +214,14 @@
 @media (min-width: 1024px) {
   .lastParagraph {
     margin-top: 1.5rem;
-    margin-left: -29rem;
+    margin-left: -45rem;
   }
 }
 
 @media (min-width: 1536px) {
   .lastParagraph {
     margin-top: 2.5rem;
-    margin-left: -42rem;
+    margin-left: -45rem;
   }
 }
 
