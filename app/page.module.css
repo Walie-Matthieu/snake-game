@@ -297,6 +297,20 @@
 /* Base: applique les offsets via variables (fallback 0) */
 .gameLeft::before { transform: translate(var(--title-offset-x, 0), var(--title-offset-y, 0)); }
 
+@media (min-width: 1024px) {
+  .asideRight {
+    width: 18rem;
+    flex: 0 0 18rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .asideRight {
+    width: 20rem;
+    flex: 0 0 20rem;
+  }
+}
+
 /* Mobile spécifique (320px - 340px) : pas de scroll, pas de coupure */
 @media (min-width: 320px) and (max-width: 340px) {
 

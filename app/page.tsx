@@ -91,7 +91,7 @@ export default function Home() {
             <SnakeGame onStateChange={handleSnakeState} language={language} onLanguageChange={setLanguage} />
           </div>
           <aside
-            className={`${styles.asideRight} lg:order-2 lg:flex-none lg:self-start lg:mt-0 lg:ml-14 2xl:mt-1 2xl:ml-16`}
+            className={`${styles.asideRight} lg:order-2 lg:flex-none lg:w-72 lg:self-start lg:mt-0 lg:ml-14 2xl:w-80 2xl:mt-1 2xl:ml-16`}
           >
             <div className={styles.languageSwitcher}>
               <button
