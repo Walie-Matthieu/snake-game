@@ -46,7 +46,6 @@
 /* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
 .asideRight {
   position: relative;
-  left: auto;
   will-change: auto;
 
   line-height: 1.6;
@@ -987,7 +986,6 @@
 
   .asideRight {
     display: none !important;
-    margin-left: 0;
     margin-top: 14px;
     width: min(92vw, 520px);
     min-width: 0;
