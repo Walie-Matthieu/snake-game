@@ -300,6 +300,7 @@
   .asideRight {
     width: 18rem;
     flex: 0 0 18rem;
+    left: 8rem;
   }
 }
 
@@ -307,6 +308,7 @@
   .asideRight {
     width: 20rem;
     flex: 0 0 20rem;
+    left: 10rem;
   }
 }
 
