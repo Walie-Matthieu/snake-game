@@ -1,5 +1,20 @@
 ﻿/* Container principal - forcer overflow visible */
 
+.page {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+  background-color: #0c1a42;
+  color: #f0ecec;
+}
+
+.main {
+  width: 100%;
+}
+
 .row {
   display: flex;
   align-items: flex-start;
@@ -192,6 +207,20 @@
   text-wrap: balance;
   align-self: flex-start;     /* colle à gauche dans le flex .row */
   max-width: 45rem;           /* évite de trop s’étirer à droite */
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .lastParagraph {
+    margin-top: 1.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .lastParagraph {
+    margin-top: 2.5rem;
+  }
 }
 
 .pasPluLine {
@@ -297,18 +326,43 @@
 .gameLeft::before { transform: translate(var(--title-offset-x, 0), var(--title-offset-y, 0)); }
 
 @media (min-width: 1024px) {
+  .row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3.5rem;
+    max-width: min(92vw, 93.75rem);
+  }
+
+  .gameLeft {
+    flex: 0 0 auto;
+  }
+
   .asideRight {
     width: 18rem;
     flex: 0 0 18rem;
-    left: 8rem;
+    order: 2;
+    margin-top: 0;
+    margin-left: 8%;
   }
 }
 
 @media (min-width: 1536px) {
+  .row {
+    gap: 5rem;
+    max-width: min(90vw, 113.75rem);
+  }
+
+  .gameLeft {
+    flex: 0 0 auto;
+  }
+
   .asideRight {
     width: 20rem;
     flex: 0 0 20rem;
-    left: 10rem;
+    order: 2;
+    margin-top: 0;
+    margin-left: 10%;
   }
 }
 

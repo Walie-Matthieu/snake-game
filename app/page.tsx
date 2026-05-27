@@ -82,11 +82,11 @@ export default function Home() {
   return (
     <>
       {isLoading && <LoadingScreen onDone={() => setIsLoading(false)} />}
-    <section className={`${styles.page} min-h-screen flex items-center justify-center text-center px-4 bg-blue-900`}>
-      <main>
-        <div className={`${styles.row} lg:flex-nowrap lg:items-start lg:justify-center lg:gap-16 lg:max-w-[min(92vw,1500px)] 2xl:gap-20 2xl:max-w-[min(90vw,1820px)]`}>
+    <section className={styles.page}>
+      <main className={styles.main}>
+        <div className={styles.row}>
           <div
-            className={`${styles.gameLeft} lg:order-1 lg:flex-none lg:pt-8 lg:mr-10 2xl:pt-10 2xl:mr-12`}
+            className={styles.gameLeft}
           >
             <SnakeGame onStateChange={handleSnakeState} language={language} onLanguageChange={setLanguage} />
           </div>
@@ -190,7 +190,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <p className={`${styles.lastParagraph} lg:basis-full lg:self-stretch lg:max-w-full lg:mt-6 2xl:mt-10`}>
+            <p className={styles.lastParagraph}>
               <span className={styles.noWrap}>
                 {content.outro1}
               </span>
