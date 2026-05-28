@@ -338,6 +338,13 @@
 
   .gameLeft {
     flex: 0 0 auto;
+
+    --controls-offset-y: 100px;
+    --controls-offset-x: 50px;
+  }
+
+  .gameLeft::before {
+    transform: translate(-40px, -20px);
   }
 
   .asideRight {
@@ -357,6 +364,13 @@
 
   .gameLeft {
     flex: 0 0 auto;
+
+    --controls-offset-y: 100px;
+    --controls-offset-x: 50px;
+  }
+
+  .gameLeft::before {
+    transform: translate(-40px, -20px);
   }
 
   .asideRight {
