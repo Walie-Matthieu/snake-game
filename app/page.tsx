@@ -78,6 +78,20 @@ export default function Home() {
     return <>{nodes}</>;
   };
 
+  const paragraphLangClass = language === 'fr' ? styles.lastParagraphFr : styles.lastParagraphEn;
+
+  const renderLastParagraph = (extraClass: string) => (
+    <p className={`${styles.lastParagraph} ${paragraphLangClass} ${extraClass}`}>
+      <span className={styles.noWrap}>
+        {content.outro1}
+      </span>
+      <br />
+      <span className={`${styles.pasPluLine} ${styles.noWrap}`}>
+        {content.outro2}
+      </span>
+    </p>
+  );
+
   
   return (
     <>
@@ -190,17 +204,10 @@ export default function Home() {
               </ul>
             </div>
 
-            <p className={styles.lastParagraph}>
-              <span className={styles.noWrap}>
-                {content.outro1}
-              </span>
-              <br />
-              <span className={`${styles.pasPluLine} ${styles.noWrap}`}>
-                {content.outro2}
-              </span>
-            </p>
+            {renderLastParagraph(styles.lastParagraphInAside)}
           </aside>
         </div>
+        {renderLastParagraph(styles.lastParagraphDesktop)}
       </main>
       </section>
     </>

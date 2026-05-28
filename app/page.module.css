@@ -211,17 +211,56 @@
   margin-top: 1.5rem;
 }
 
+.lastParagraphFr,
+.lastParagraphEn {
+  margin-left: 0;
+}
+
+.lastParagraphInAside {
+  display: block;
+}
+
+.lastParagraphDesktop {
+  display: none;
+}
+
 @media (min-width: 1024px) {
+  .lastParagraphInAside {
+    display: none;
+  }
+
+  .lastParagraphDesktop {
+    display: block;
+  }
+
   .lastParagraph {
-    margin-top: 1.5rem;
-    margin-left: -45rem;
+    margin-top: 1rem;
+  }
+
+  .lastParagraphFr {
+    margin-left: 15rem;
+    margin-top: 0rem;
+  }
+
+  .lastParagraphEn {
+    margin-left: 15rem;
+    margin-top: 0rem;
   }
 }
 
 @media (min-width: 1536px) {
   .lastParagraph {
     margin-top: 2.5rem;
-    margin-left: -45rem;
+  }
+
+  .lastParagraphFr {
+    margin-left: 15rem;
+    margin-top: 0rem;
+  }
+
+  .lastParagraphEn {
+    margin-left: 15rem;
+    margin-top: 0rem;
   }
 }
 
@@ -341,6 +380,8 @@
 
     --controls-offset-y: 100px;
     --controls-offset-x: 50px;
+
+    transform: translate(0px, 0px); /* Déplace le bloc jeu de gauche à droite et de haut en bas */
   }
 
   .gameLeft::before {
@@ -385,9 +426,8 @@
 /* Mobile spécifique (320px - 340px) : pas de scroll, pas de coupure */
 @media (min-width: 320px) and (max-width: 340px) {
 
-  /* Masquer aside et dernier paragraphe */
-  .asideRight,
-  .lastParagraph {
+  /* Masquer aside */
+  .asideRight {
     display: none !important;
   }
 
@@ -463,8 +503,7 @@
 
 /* 2️⃣ Petits Android : 341-360px (Galaxy S8/S9) */
 @media (min-width: 341px) and (max-width: 360px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -525,8 +564,7 @@
 
 /* 3️⃣ iPhone SE 2020, iPhone 6/7/8 : 361-375px */
 @media (min-width: 361px) and (max-width: 375px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -586,8 +624,7 @@
 
 /* 4️⃣ iPhone 12 Mini, Galaxy S20 : 376-390px */
 @media (min-width: 376px) and (max-width: 391px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -647,8 +684,7 @@
 
 /* 5️⃣ iPhone 12/13/14, Pixel 5/6 : 391-414px */
 @media (min-width: 391px) and (max-width: 414px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -713,8 +749,7 @@
 
 /* 6️⃣ iPhone XR/11, iPhone Plus : 415-430px */
 @media (min-width: 415px) and (max-width: 430px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -767,8 +802,7 @@
 
 /* 7️⃣ iPhone Pro Max, Galaxy S21 Ultra : 431-480px */
 @media (min-width: 431px) and (max-width: 480px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -821,8 +855,7 @@
 
 /* 8️⃣ Paysage petits mobiles : 481-540px */
 @media (min-width: 481px) and (max-width: 540px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -875,8 +908,7 @@
 
 /* 9️⃣ Paysage grands mobiles, petites tablettes : 541-600px */
 @media (min-width: 541px) and (max-width: 600px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
@@ -1073,8 +1105,7 @@
 
 /* Petit mobile: priorité au jeu, les textes longs passent sous silence */
 @media (max-width: 768px) {
-  .asideRight,
-  .lastParagraph {
+  .asideRight {
     display: none !important;
   }
 
