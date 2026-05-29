@@ -981,8 +981,8 @@ export default function SnakeGame({
   const KEYS_GROUP_OFFSET_Y = 4;      // + bas / - haut
 
   // Déplace le Canvas
-  const CANVAS_OFFSET_X = isDesktop ? -40 : 0;
-  const CANVAS_OFFSET_Y = isDesktop ? 10 : 0;
+  const CANVAS_OFFSET_X = isDesktop ? '-8%' : '0px';
+  const CANVAS_OFFSET_Y = isDesktop ? '2%' : '0px';
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = isDesktop ? -70 : 0;
@@ -993,7 +993,7 @@ export default function SnakeGame({
     minWidth: 0,
     boxSizing: 'border-box',
     overflow: 'hidden',
-      transform: `translate(${CANVAS_OFFSET_X}px, ${CANVAS_OFFSET_Y}px)`,
+      transform: `translate(${CANVAS_OFFSET_X}, ${CANVAS_OFFSET_Y})`,
     position: 'relative', // <- permet aux overlays position:absolute d'être centrés sur le canvas
   };
 
@@ -1230,8 +1230,8 @@ export default function SnakeGame({
           textAlign: 'center',
           rowGap: 'var(--ability-gap, 8px)', // ← lis depuis le CSS (fallback 8px)
           transform: `translate(
-            calc(${CANVAS_OFFSET_X}px + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
-            calc(${CANVAS_OFFSET_Y}px + var(--ability-text-offset-y, ${ABILITY_TEXT_OFFSET_Y}px))
+            calc(${CANVAS_OFFSET_X} + var(--ability-text-offset-x, ${ABILITY_TEXT_OFFSET_X}px)),
+            calc(${CANVAS_OFFSET_Y} + var(--ability-text-offset-y, ${ABILITY_TEXT_OFFSET_Y}px))
           )`,
         }}
       >

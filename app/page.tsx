@@ -180,7 +180,7 @@ export default function Home() {
             <h3 className={styles.pouvoirTitle}></h3>
 
             {/* Wrapper avec classe pour contrôler toutes les lignes ensemble */}
-            <div className={styles.powerLinesWrapper}>
+            <div className={`${styles.powerLinesWrapper} ${language === 'fr' ? styles.powerLinesWrapperFr : styles.powerLinesWrapperEn}`}>
               <ul style={{ margin: '0 0 12px 0', padding: 0, textAlign: 'left', listStyle: 'none' }}>
                 {content.lines.map((l, i) => {
                   const active = !gameOver && i === abilityIndex && started;

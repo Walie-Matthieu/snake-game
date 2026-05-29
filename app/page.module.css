@@ -363,6 +363,11 @@
   will-change: transform;
 }
 
+.powerLinesWrapperFr,
+.powerLinesWrapperEn {
+  margin-top: 0;
+}
+
 /* Base: applique les offsets via variables (fallback 0) */
 .gameLeft::before { transform: translate(var(--title-offset-x, 0), var(--title-offset-y, 0)); }
 
@@ -388,12 +393,20 @@
     transform: translate(-40px, -20px);
   }
 
+  .powerLinesWrapperFr {
+    margin-top: 0.25rem;
+  }
+
+  .powerLinesWrapperEn {
+    margin-top: 3rem;
+  }
+
   .asideRight {
     width: 18rem;
     flex: 0 0 18rem;
     order: 2;
     margin-top: 6rem;
-    margin-left: 8%;
+    margin-left: 7%;
   }
 }
 
@@ -412,6 +425,14 @@
 
   .gameLeft::before {
     transform: translate(-40px, -20px);
+  }
+
+  .powerLinesWrapperFr {
+    margin-top: 0.4rem;
+  }
+
+  .powerLinesWrapperEn {
+    margin-top: 3rem;
   }
 
   .asideRight {
@@ -523,7 +544,7 @@
   .gameLeft {
     align-items: center;
     padding-top: 7px;
-    width: 100%;
+    width: 100%; 
     max-width: 100%;
     box-sizing: border-box;
 
