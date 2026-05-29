@@ -384,7 +384,7 @@
     flex: 0 0 auto;
 
     --controls-offset-y: 100px;
-    --controls-offset-x: 50px;
+    --controls-offset-x: 70px;
 
     transform: translate(0px, 0px); /* Déplace le bloc jeu de gauche à droite et de haut en bas */
   }
@@ -420,7 +420,7 @@
     flex: 0 0 auto;
 
     --controls-offset-y: 100px;
-    --controls-offset-x: 50px;
+    --controls-offset-x: 70px;
   }
 
   .gameLeft::before {

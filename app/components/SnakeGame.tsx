@@ -980,9 +980,9 @@ export default function SnakeGame({
   const KEYS_GROUP_OFFSET_X = 0;       // + droite / - gauche
   const KEYS_GROUP_OFFSET_Y = 4;      // + bas / - haut
 
-  // Déplace le Canvas
-  const CANVAS_OFFSET_X = isDesktop ? '-8%' : '0px';
-  const CANVAS_OFFSET_Y = isDesktop ? '2%' : '0px';
+  // Déplace le Canvas pour la version Desktop
+  const CANVAS_OFFSET_X = isDesktop ? '0rem' : '0px';
+  const CANVAS_OFFSET_Y = isDesktop ? '2rem' : '0px';
 
   // Offset dédié pour le texte des capacités
   const ABILITY_TEXT_OFFSET_X = isDesktop ? -70 : 0;
