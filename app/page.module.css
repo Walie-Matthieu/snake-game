@@ -47,7 +47,7 @@
   content: 'Snake Game';
   position: absolute;
   top: 1.5rem;
-  left: -3rem;
+  left: calc(-3rem + var(--title-offset-x, 0));
   font-size: var(--title-font-size);
   font-family: 'Poppins', system-ui, Arial, sans-serif;
   font-weight: 700;
@@ -368,9 +368,6 @@
   margin-top: 0;
 }
 
-/* Base: applique les offsets via variables (fallback 0) */
-.gameLeft::before { transform: translate(var(--title-offset-x, 0), var(--title-offset-y, 0)); }
-
 @media (min-width: 1024px) {
   .row {
     flex-direction: row;
@@ -385,12 +382,11 @@
 
     --controls-offset-y: 100px;
     --controls-offset-x: 70px;
+    --title-offset-x: 0rem;
+    --title-offset-y: 0rem;
+    --title-font-size: clamp(1.9rem, 2vw, 2.9rem);
 
     transform: translate(0px, 0px); /* Déplace le bloc jeu de gauche à droite et de haut en bas */
-  }
-
-  .gameLeft::before {
-    transform: translate(-40px, -20px);
   }
 
   .powerLinesWrapperFr {
@@ -410,6 +406,22 @@
   }
 }
 
+@media (min-width: 1280px) {
+  .gameLeft {
+    --title-offset-x: -1.5rem;
+    --title-offset-y: -0.75rem;
+    --title-font-size: clamp(2.05rem, 1.95vw, 3.15rem);
+  }
+
+  .row {
+    gap: 4rem;
+  }
+
+  .asideRight {
+    margin-top: 6.5rem;
+  }
+}
+
 @media (min-width: 1536px) {
   .row {
     gap: 5rem;
@@ -421,10 +433,9 @@
 
     --controls-offset-y: 100px;
     --controls-offset-x: 70px;
-  }
-
-  .gameLeft::before {
-    transform: translate(-40px, -20px);
+    --title-offset-x: -2.5rem;
+    --title-offset-y: -1.25rem;
+    --title-font-size: clamp(2.2rem, 1.9vw, 3.5rem);
   }
 
   .powerLinesWrapperFr {
