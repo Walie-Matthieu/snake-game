@@ -390,7 +390,8 @@
     flex: 0 0 auto;
 
     --controls-offset-y: 130px;
-    --controls-offset-x: 70px;
+    --controls-offset-x: 60px;
+    --scoreboard-offset-x: 330px;
     --scoreboard-offset-y: 36px;
     --title-offset-x: 0rem;
     --title-offset-y: 0rem;
@@ -418,6 +419,8 @@
 
 @media (min-width: 1280px) {
   .gameLeft {
+    --controls-offset-x: 66px;
+    --scoreboard-offset-x: 340px;
     --title-offset-x: -1.5rem;
     --title-offset-y: -0.75rem;
     --title-font-size: clamp(2.05rem, 1.95vw, 3.15rem);
@@ -443,7 +446,8 @@
     flex: 0 0 auto;
 
     --controls-offset-y: 140px;
-    --controls-offset-x: 70px;
+    --controls-offset-x: 92px;
+    --scoreboard-offset-x: 350px;
     --scoreboard-offset-y: 52px;
     --title-offset-x: -2.5rem;
     --title-offset-y: -1.25rem;
