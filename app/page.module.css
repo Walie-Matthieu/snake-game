@@ -45,17 +45,20 @@
 /* Titre collé au bloc de jeu (au-dessus par défaut) */
 .gameLeft::before {
   content: 'Snake Game';
-  position: absolute;
-  top: 1.5rem;
-  left: calc(-3rem + var(--title-offset-x, 0));
+  position: fixed !important;
+  top: 0.75rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   font-size: var(--title-font-size);
   font-family: 'Poppins', system-ui, Arial, sans-serif;
   font-weight: 700;
   letter-spacing: var(--title-letter-spacing);
   color: var(--title-color);
   text-shadow: 0 0 6px rgba(255,255,255,0.4);
-  line-height: 3;
+  line-height: 1.2;
   margin: 0;
+  z-index: 1000;
+  pointer-events: none;
 }
 
 /* === "À propos" (asideRight) : ajuster transform / marges pour déplacer le bloc indépendamment === */
@@ -369,6 +372,12 @@
 }
 
 @media (min-width: 1024px) {
+  .gameLeft::before {
+    top: 0.75rem !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 10rem)) !important;
+  }
+
   .row {
     flex-direction: row;
     justify-content: center;
@@ -380,8 +389,10 @@
   .gameLeft {
     flex: 0 0 auto;
 
-    --controls-offset-y: 100px;
-    --controls-offset-x: 70px;
+    --controls-offset-y: 130px;
+    --controls-offset-x: 60px;
+    --scoreboard-offset-x: 330px;
+    --scoreboard-offset-y: 36px;
     --title-offset-x: 0rem;
     --title-offset-y: 0rem;
     --title-font-size: clamp(1.9rem, 2vw, 2.9rem);
@@ -408,9 +419,12 @@
 
 @media (min-width: 1280px) {
   .gameLeft {
+    --controls-offset-x: 66px;
+    --scoreboard-offset-x: 340px;
     --title-offset-x: -1.5rem;
     --title-offset-y: -0.75rem;
     --title-font-size: clamp(2.05rem, 1.95vw, 3.15rem);
+    --scoreboard-offset-y: 44px;
   }
 
   .row {
@@ -431,8 +445,10 @@
   .gameLeft {
     flex: 0 0 auto;
 
-    --controls-offset-y: 100px;
-    --controls-offset-x: 70px;
+    --controls-offset-y: 140px;
+    --controls-offset-x: 92px;
+    --scoreboard-offset-x: 350px;
+    --scoreboard-offset-y: 52px;
     --title-offset-x: -2.5rem;
     --title-offset-y: -1.25rem;
     --title-font-size: clamp(2.2rem, 1.9vw, 3.5rem);
